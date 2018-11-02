@@ -1,9 +1,11 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.contrib.auth import get_user
 from django.contrib.auth.models import AnonymousUser
-
 from django.contrib.auth import get_user_model
+from django.conf import settings
+
+from freezegun import freeze_time
 
 User = get_user_model()
 
@@ -106,3 +108,17 @@ class TestAuthAndAuth(TestCase):
         }
         resp = self.client.post(reverse('password_change'), data, follow=True)
         self.assertContains(resp, 'Password change successful')
+
+    def test_session_timeout(self):
+        self.assertEqual(600, settings.SESSION_COOKIE_AGE)  # 10 minutes
+
+        with freeze_time('2018-11-02 14:48'):
+            self.client.force_login(self.user)
+
+        # Still logged in after 5 minutes
+        with freeze_time('2018-11-02 14:53'):
+            self.assertFalse(get_user(self.client).is_anonymous)
+
+        # Logged out after 10 minutes
+        with freeze_time('2018-11-02 14:58'):
+            self.assertTrue(get_user(self.client).is_anonymous)
