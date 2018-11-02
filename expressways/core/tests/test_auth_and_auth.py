@@ -23,8 +23,8 @@ class TestAuthAndAuth(TestCase):
         resp = self.client.get(reverse('login'))
 
         html = resp.content.decode()
-        self.assertInHTML('<input type="text" name="username" autofocus required id="id_username">', html)
-        self.assertInHTML('<input type="password" name="password" required id="id_password">', html)
+        self.assertInHTML('<input id="id_username" name="username" type="text" autofocus>', html)
+        self.assertInHTML('<input id="id_password" name="password" type="password">', html)
 
     def test_user_logs_in_successfully(self):
         '''

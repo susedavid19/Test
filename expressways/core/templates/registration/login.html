@@ -1,11 +1,10 @@
 {% extends 'core/base.html' %}
+{% load material_form %}
 
 {% block content %}
 <form method="post">
   {% csrf_token %}
-  <table>
-  {{form}}
-  </table>
-  <input type="submit" value="Login">
+  {% form form=form %}{% endform %}
+  <button type="submit" class="btn">Login</button>
 </form>
 {% endblock %}

@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
+    {% include 'material/includes/material_css.html' %}
+    {% include 'material/includes/material_js.html' %}
   </head>
   <body>
+    <div class="container">
+      <nav>
+        <div class="nav-wrapper">
+          <a href="/" class="brand-logo">Expressways</a>
+        </div>
+    </nav>
+    <br>
   {% block content %}
   {% endblock %}
+    </div>
   </body>
 </html>
