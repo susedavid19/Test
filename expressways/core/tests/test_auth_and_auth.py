@@ -83,3 +83,26 @@ class TestAuthAndAuth(TestCase):
         resp = self.client.get(reverse('core:home'))
         self.assertRedirects(resp, '{}?next={}'.format(reverse('login'),
                                                        reverse('core:home')))
+
+    def test_password_change(self):
+        '''
+          When the user selects the option to change their password
+          And the user submits their old password, new password and new password confirmation
+          Then their password is updated to the new value
+          And they are shown a confirmation message
+        '''
+        self.client.force_login(self.user)
+
+        resp = self.client.get(reverse('password_change'))
+        html = resp.content.decode()
+        self.assertInHTML('<input type="password" name="old_password" autofocus required id="id_old_password">', html)
+        self.assertInHTML('<input type="password" name="new_password1" required id="id_new_password1">', html)
+        self.assertInHTML('<input type="password" name="new_password2" required id="id_new_password2">', html)
+
+        data = {
+            'old_password': self.password,
+            'new_password1': 'ahmesa:uX6AinoShox3j',
+            'new_password2': 'ahmesa:uX6AinoShox3j',
+        }
+        resp = self.client.post(reverse('password_change'), data, follow=True)
+        self.assertContains(resp, 'Password change successful')
