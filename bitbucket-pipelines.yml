@@ -10,7 +10,6 @@ pipelines:
         script:
           - pip3 install -r requirements/test.txt
           - export DATABASE_URL="postgres://express:express@127.0.0.1:5432/express"
-          - export SELENIUM_REMOTE="True"
           - pytest expressways
 definitions:
   services:
