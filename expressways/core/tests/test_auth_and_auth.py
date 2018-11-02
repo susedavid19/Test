@@ -97,9 +97,9 @@ class TestAuthAndAuth(TestCase):
 
         resp = self.client.get(reverse('password_change'))
         html = resp.content.decode()
-        self.assertInHTML('<input type="password" name="old_password" autofocus required id="id_old_password">', html)
-        self.assertInHTML('<input type="password" name="new_password1" required id="id_new_password1">', html)
-        self.assertInHTML('<input type="password" name="new_password2" required id="id_new_password2">', html)
+        self.assertInHTML('<input type="password" name="old_password" autofocus id="id_old_password">', html)
+        self.assertInHTML('<input type="password" name="new_password1" id="id_new_password1">', html)
+        self.assertInHTML('<input type="password" name="new_password2" id="id_new_password2">', html)
 
         data = {
             'old_password': self.password,
