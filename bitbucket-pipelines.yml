@@ -1,0 +1,21 @@
+image: quay.io/wspdigitalukteam/base-image:bionic
+
+pipelines:
+  default:
+    - step:
+        caches:
+          - pip
+        services:
+          - postgres
+        script:
+          - pip3 install -r requirements/test.txt
+          - export DATABASE_URL="postgres://express:express@127.0.0.1:5432/express"
+          - pytest expressways
+definitions:
+  services:
+    postgres:
+      image: postgres:10.5
+      environment:
+        POSTGRES_PASSWORD: express
+        POSTGRES_USER: express
+        POSTGRES_DB: express
