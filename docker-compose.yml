@@ -1,0 +1,28 @@
+version: "3.6"
+
+services:
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - 8000
+    entrypoint: /data/docker-entrypoint.sh
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
+      GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --workers=3"
+    volumes:
+      - static-files:/static
+      - media-files:/media
+  proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    ports:
+      - 80:80
+    volumes:
+      - static-files:/static:ro
+      - media-files:/media:ro
+volumes:
+  static-files:
+  media-files:

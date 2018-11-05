@@ -1,3 +1,9 @@
+# infra stuff
 Vagrantfile
 .vagrant
+
+# dump dirs
 __pycache__
+
+# IDE files
+.idea

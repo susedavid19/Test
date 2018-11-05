@@ -1,0 +1,28 @@
+version: '3.6'
+
+services:
+  application:
+    ports:
+      - 7000:8000
+    volumes:
+      - type: bind
+        source: .
+        target: /data
+    environment:
+      GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --reload --workers=3"
+  proxy:
+    ports:
+      - 7080:80
+  database:
+    image: postgres:10.5
+    environment:
+      POSTGRES_PASSWORD: express
+      POSTGRES_USER: express
+      POSTGRES_DB: express
+    expose:
+      - 5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:

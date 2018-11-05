@@ -1,0 +1,11 @@
+FROM quay.io/wspdigitalukteam/base-image:bionic
+LABEL maintainer="Joel Merrick <joel.merrick@wsp.com>"
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && apt-get -y dist-upgrade && apt-get install --no-install-recommends -y nginx
+
+COPY nginx.conf /etc/nginx/sites-enabled/default
+
+WORKDIR /etc/nginx
+
+CMD ["nginx", "-g", "daemon off;"]
