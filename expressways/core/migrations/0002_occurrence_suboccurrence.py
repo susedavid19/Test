@@ -56,6 +56,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
+                ('archived', models.BooleanField(default=False)),
             ],
         ),
         migrations.CreateModel(
@@ -63,6 +64,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
+                ('archived', models.BooleanField(default=False)),
                 ('occurrence', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sub_occurrences', to='core.Occurrence')),
             ],
         ),
