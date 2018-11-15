@@ -13,11 +13,15 @@ def add_permissions(apps, schema_editor):
     Occurrence = apps.get_model('core', 'Occurrence')
     content_type = ContentType.objects.get_for_model(Occurrence)
     for permission in Permission.objects.filter(content_type=content_type):
+        if not permission.codename.startswith(('add_', 'view_')):
+            continue
         group.permissions.add(permission)
 
     SubOccurrence = apps.get_model('core', 'SubOccurrence')
     content_type = ContentType.objects.get_for_model(SubOccurrence)
     for permission in Permission.objects.filter(content_type=content_type):
+        if not permission.codename.startswith(('add_', 'view_')):
+            continue
         group.permissions.add(permission)
 
     group.save()
