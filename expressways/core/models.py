@@ -3,7 +3,7 @@ from django.db import models
 
 class FilterArchivedManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().exclude(archived=True)
+        return super().get_queryset().exclude(archived=True).order_by('id')
 
 
 class Occurrence(models.Model):

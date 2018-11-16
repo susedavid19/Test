@@ -22,5 +22,6 @@ admin.site.register(Occurrence, OccurrenceAdmin)
 class SubOccurrenceAdmin(admin.ModelAdmin):
     exclude = ['archived']
     actions = [archive]
+    list_filter = ['occurrence']
 
 admin.site.register(SubOccurrence, SubOccurrenceAdmin)
