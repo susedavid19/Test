@@ -18,3 +18,8 @@ You should see the site appear at `localhost:7080`.
 ```
 docker-compose exec application python3 /data/manage.py createsuperuser
 ```
+
+#### Loading Initial Data
+```
+docker-compose exec application python3 /data/manage.py loaddata /data/expressways/core/fixtures/occurrences.json
+```
