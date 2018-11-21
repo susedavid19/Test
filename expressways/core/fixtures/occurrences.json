@@ -1,0 +1,916 @@
+[
+  {
+    "model": "core.occurrence",
+    "pk": 1,
+    "fields": {
+      "name": "Debris in Road",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 2,
+    "fields": {
+      "name": "Live Lane Stoppage",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 3,
+    "fields": {
+      "name": "Traffic Conditions",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 4,
+    "fields": {
+      "name": "Animals in Road",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 5,
+    "fields": {
+      "name": "Inclement Weather",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 6,
+    "fields": {
+      "name": "Maintenance",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 7,
+    "fields": {
+      "name": "NMUs or Slow Moving Vehicles",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 8,
+    "fields": {
+      "name": "Core Responder Operations",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 9,
+    "fields": {
+      "name": "Incorrect Signal Settings",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 10,
+    "fields": {
+      "name": "Infrastructure or Highway Environment",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 11,
+    "fields": {
+      "name": "RTCs",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 12,
+    "fields": {
+      "name": "REA, Layby or Service Area",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.occurrence",
+    "pk": 13,
+    "fields": {
+      "name": "Further Occurrences",
+      "archived": false
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 1,
+    "fields": {
+      "name": "Debris Blocks Lane(s)",
+      "archived": false,
+      "occurrence": 1
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 2,
+    "fields": {
+      "name": "Debris impedes traffic",
+      "archived": false,
+      "occurrence": 1
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 3,
+    "fields": {
+      "name": "Vehicle Sheds Load",
+      "archived": false,
+      "occurrence": 1
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 4,
+    "fields": {
+      "name": "Spillage",
+      "archived": false,
+      "occurrence": 1
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 5,
+    "fields": {
+      "name": "Broken down vehicle (live lane)",
+      "archived": false,
+      "occurrence": 2
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 6,
+    "fields": {
+      "name": "Broken down vehicle (straddling live lane / verge)",
+      "archived": false,
+      "occurrence": 2
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 7,
+    "fields": {
+      "name": "Vehicle runs out of fuel",
+      "archived": false,
+      "occurrence": 2
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 8,
+    "fields": {
+      "name": "Electric Vehicle runs out of charge",
+      "archived": false,
+      "occurrence": 2
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 9,
+    "fields": {
+      "name": "vehicle Check",
+      "archived": false,
+      "occurrence": 2
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 10,
+    "fields": {
+      "name": "Comfort Stop",
+      "archived": false,
+      "occurrence": 2
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 11,
+    "fields": {
+      "name": "Stop for directions",
+      "archived": false,
+      "occurrence": 2
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 12,
+    "fields": {
+      "name": "Vehicle on fire",
+      "archived": false,
+      "occurrence": 2
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 13,
+    "fields": {
+      "name": "HGV breakdown",
+      "archived": false,
+      "occurrence": 2
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 14,
+    "fields": {
+      "name": "health deterioration of occupant ",
+      "archived": false,
+      "occurrence": 2
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 15,
+    "fields": {
+      "name": "Mainline congestion",
+      "archived": false,
+      "occurrence": 3
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 16,
+    "fields": {
+      "name": "Queueing onto mainline at junction",
+      "archived": false,
+      "occurrence": 3
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 17,
+    "fields": {
+      "name": "Gradients / climbing lanes",
+      "archived": false,
+      "occurrence": 3
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 18,
+    "fields": {
+      "name": "HGV overtaking",
+      "archived": false,
+      "occurrence": 3
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 19,
+    "fields": {
+      "name": "merging and diverging traffic",
+      "archived": false,
+      "occurrence": 3
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 20,
+    "fields": {
+      "name": "Unconfirmed incident (50 mph setting)",
+      "archived": false,
+      "occurrence": 3
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 21,
+    "fields": {
+      "name": "Alive",
+      "archived": false,
+      "occurrence": 4
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 22,
+    "fields": {
+      "name": "Dead",
+      "archived": false,
+      "occurrence": 4
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 23,
+    "fields": {
+      "name": "Group of animals",
+      "archived": false,
+      "occurrence": 4
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 24,
+    "fields": {
+      "name": "Flooding",
+      "archived": false,
+      "occurrence": 5
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 25,
+    "fields": {
+      "name": "Snow accumulation",
+      "archived": false,
+      "occurrence": 5
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 26,
+    "fields": {
+      "name": "Ice",
+      "archived": false,
+      "occurrence": 5
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 27,
+    "fields": {
+      "name": "Strong Winds",
+      "archived": false,
+      "occurrence": 5
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 28,
+    "fields": {
+      "name": "Fog / mist",
+      "archived": false,
+      "occurrence": 5
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 29,
+    "fields": {
+      "name": "Glare from sun",
+      "archived": false,
+      "occurrence": 5
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 30,
+    "fields": {
+      "name": "Emergency temporary traffic management",
+      "archived": false,
+      "occurrence": 6
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 31,
+    "fields": {
+      "name": "Planned temporary traffic management",
+      "archived": false,
+      "occurrence": 6
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 32,
+    "fields": {
+      "name": "Reactive temporary traffic management",
+      "archived": false,
+      "occurrence": 6
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 33,
+    "fields": {
+      "name": "Mobile lane closure",
+      "archived": false,
+      "occurrence": 6
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 34,
+    "fields": {
+      "name": "Long term traffic management",
+      "archived": false,
+      "occurrence": 6
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 35,
+    "fields": {
+      "name": "Gritting vehicle or maintenance survey vehicle ",
+      "archived": false,
+      "occurrence": 6
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 36,
+    "fields": {
+      "name": "pedestrians in road at scene of accident",
+      "archived": false,
+      "occurrence": 7
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 37,
+    "fields": {
+      "name": "Cyclist travelling adjacent to running lane",
+      "archived": false,
+      "occurrence": 7
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 38,
+    "fields": {
+      "name": "Group of cyclists travelling adjacent to running lane",
+      "archived": false,
+      "occurrence": 7
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 39,
+    "fields": {
+      "name": "Pedestrian walking adjacent to running lane",
+      "archived": false,
+      "occurrence": 7
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 40,
+    "fields": {
+      "name": "NMU crossing road (perpendicular to traffic)",
+      "archived": false,
+      "occurrence": 7
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 41,
+    "fields": {
+      "name": "Farm vehicles",
+      "archived": false,
+      "occurrence": 7
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 42,
+    "fields": {
+      "name": "Abnormal loads",
+      "archived": false,
+      "occurrence": 7
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 43,
+    "fields": {
+      "name": "Equestrians",
+      "archived": false,
+      "occurrence": 7
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 44,
+    "fields": {
+      "name": "Motor cycles, electric vehicles (under 50cc)",
+      "archived": false,
+      "occurrence": 7
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 45,
+    "fields": {
+      "name": "Vehicle towing",
+      "archived": false,
+      "occurrence": 7
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 46,
+    "fields": {
+      "name": "Bus accessing / egressing bus stop",
+      "archived": false,
+      "occurrence": 7
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 47,
+    "fields": {
+      "name": "Recovery of vehicle (live lane)",
+      "archived": false,
+      "occurrence": 8
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 48,
+    "fields": {
+      "name": "Recovery of vehicle (ERA / layby)",
+      "archived": false,
+      "occurrence": 8
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 49,
+    "fields": {
+      "name": "Rolling road block",
+      "archived": false,
+      "occurrence": 8
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 50,
+    "fields": {
+      "name": "Core responder positioned at roadside or on overbridge",
+      "archived": false,
+      "occurrence": 8
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 51,
+    "fields": {
+      "name": "Rolling road block",
+      "archived": false,
+      "occurrence": 8
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 52,
+    "fields": {
+      "name": "Police or VOSA stops",
+      "archived": false,
+      "occurrence": 8
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 53,
+    "fields": {
+      "name": "Police incident",
+      "archived": false,
+      "occurrence": 8
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 54,
+    "fields": {
+      "name": "Emergency service access",
+      "archived": false,
+      "occurrence": 8
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 55,
+    "fields": {
+      "name": "Surveys",
+      "archived": false,
+      "occurrence": 8
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 56,
+    "fields": {
+      "name": "Police extraordinary circumstances",
+      "archived": false,
+      "occurrence": 8
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 57,
+    "fields": {
+      "name": "Lane closure set without need (manually)",
+      "archived": false,
+      "occurrence": 9
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 58,
+    "fields": {
+      "name": "Lane closure set without need (automatically)",
+      "archived": false,
+      "occurrence": 9
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 59,
+    "fields": {
+      "name": "Reduced speed set without need (manually)",
+      "archived": false,
+      "occurrence": 9
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 60,
+    "fields": {
+      "name": "Reduced speed set without need (automatically)",
+      "archived": false,
+      "occurrence": 9
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 61,
+    "fields": {
+      "name": "Landslide",
+      "archived": false,
+      "occurrence": 10
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 62,
+    "fields": {
+      "name": "Collapsed man-hole",
+      "archived": false,
+      "occurrence": 10
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 63,
+    "fields": {
+      "name": "Structural defect or collapse",
+      "archived": false,
+      "occurrence": 10
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 64,
+    "fields": {
+      "name": "Geometric conditions",
+      "archived": false,
+      "occurrence": 10
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 65,
+    "fields": {
+      "name": "Speed enforcement system",
+      "archived": false,
+      "occurrence": 10
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 66,
+    "fields": {
+      "name": "Poor road surface",
+      "archived": false,
+      "occurrence": 10
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 67,
+    "fields": {
+      "name": "Damage only collision",
+      "archived": false,
+      "occurrence": 11
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 68,
+    "fields": {
+      "name": "Slight collision",
+      "archived": false,
+      "occurrence": 11
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 69,
+    "fields": {
+      "name": "Serious collision",
+      "archived": false,
+      "occurrence": 11
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 70,
+    "fields": {
+      "name": "Fatal collision",
+      "archived": false,
+      "occurrence": 11
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 71,
+    "fields": {
+      "name": "Wide Load sticks out of ERA / layby",
+      "archived": false,
+      "occurrence": 12
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 72,
+    "fields": {
+      "name": "Vehicle enters / exits ERA",
+      "archived": false,
+      "occurrence": 12
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 73,
+    "fields": {
+      "name": "Vehicle enters / exists layby",
+      "archived": false,
+      "occurrence": 12
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 74,
+    "fields": {
+      "name": "Vehicle enters / exits verge",
+      "archived": false,
+      "occurrence": 12
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 75,
+    "fields": {
+      "name": "Vehicle enters / exits service area",
+      "archived": false,
+      "occurrence": 12
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 76,
+    "fields": {
+      "name": "Vehicle assisted exit from ERA / layby",
+      "archived": false,
+      "occurrence": 12
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 77,
+    "fields": {
+      "name": "Hazard adjacent to the highway boundary",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 78,
+    "fields": {
+      "name": "Major event",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 79,
+    "fields": {
+      "name": "Protest",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 80,
+    "fields": {
+      "name": "Roadside trading",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 81,
+    "fields": {
+      "name": "Security breach",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 82,
+    "fields": {
+      "name": "Terrorist attack",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 83,
+    "fields": {
+      "name": "Suicide attempt",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 84,
+    "fields": {
+      "name": "Temporary / permanent weight restriction",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 85,
+    "fields": {
+      "name": "Oncoming vehicle",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 86,
+    "fields": {
+      "name": "Vehicle reversing on mainline",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 87,
+    "fields": {
+      "name": "Aircraft / drone collides with carriageway",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 88,
+    "fields": {
+      "name": "Ramp metering",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 89,
+    "fields": {
+      "name": "Convoy",
+      "archived": false,
+      "occurrence": 13
+    }
+  },
+  {
+    "model": "core.suboccurrence",
+    "pk": 90,
+    "fields": {
+      "name": "Rubbernecking",
+      "archived": false,
+      "occurrence": 13
+    }
+  }
+]
