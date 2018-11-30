@@ -24,6 +24,15 @@ services:
     volumes:
       - static-files:/static:ro
       - media-files:/media:ro
+  queue:
+    image: rabbitmq:3.7
+    expose:
+      - 15672
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: /data/docker-worker-entrypoint.sh
 volumes:
   static-files:
   media-files:
