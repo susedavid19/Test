@@ -12,6 +12,7 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
       GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --workers=3"
       ALLOWED_HOST:
+      DEBUG:
     volumes:
       - static-files:/static
       - media-files:/media
