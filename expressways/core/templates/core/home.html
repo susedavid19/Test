@@ -2,105 +2,35 @@
 
 {% block content %}
   <section id="list">
+    {% for configuration in configurations %}
     <div class="row item">
-      <div class="col s2">
-        <div class="row">
-          <div class="col s12">
-            Occurrence
-          </div>
-          <div class="col s12">
-            Distractions
-          </div>
-        </div>
-      </div>
       <div class="col s2">
         <div class="row">
           <div class="col s12">
             Sub-Occurrence
           </div>
           <div class="col s12">
-            Rubbernecking
+            {{configuration.sub_occurrence}}
           </div>
         </div>
       </div>
-      <div class="col s1">
-      <div class="row">
-        <div class="col s12">
-          Frequency
-        </div>
-        <div class="col s12">
-          3000
+      <div class="col s2">
+        <div class="row">
+          <div class="col s12">
+            Frequency
+          </div>
+          <div class="col s12">
+            {{configuration.frequency}}
+          </div>
         </div>
       </div>
-    </div>
       <div class="col s2">
         <div class="row">
           <div class="col s12">
             Lane Closure
           </div>
           <div class="col s12">
-            XI
-          </div>
-        </div>
-      </div>
-      <div class="col s1">
-        <div class="row">
-          <div class="col s12">
-            Duration
-          </div>
-          <div class="col s12">
-            60 min
-          </div>
-        </div>
-      </div>
-      <div class="col s2">
-        <div class="row">
-          <div class="col s12">
-            Flow Rate
-          </div>
-          <div class="col s12">
-            Medium High
-          </div>
-        </div>
-      </div>
-      <div class="col s1"></div>
-      <div class="col s1 delete">
-        <div class="row">
-          <i class="fas fa-trash"></i>
-        </div>
-    </div>
-    </div>
-    <div class="row item">
-      <div class="col s2">
-        <div class="row">
-          <div class="col s12">
-            Occurrence
-          </div>
-          <div class="col s12">
-            Distractions
-          </div>
-          <div class="col s12 item--sub-occurrence">
-            Rubbernecking
-          </div>
-        </div>
-      </div>
-      <div class="col s2">
-      <div class="row">
-        <div class="col s12">
-          Frequency
-        </div>
-        <div class="col s12">
-          3000
-        </div>
-      </div>
-    </div>
-      <div class="col s2">
-        <div class="row">
-          <div class="col s12">
-            Lane Closure
-          </div>
-          <div class="col s12">
-            XI
+            {{configuration.lane_closures}}
           </div>
         </div>
       </div>
@@ -110,7 +40,7 @@
             Duration
           </div>
           <div class="col s12">
-            60 min
+            {{configuration.duration}} mins
           </div>
         </div>
       </div>
@@ -120,71 +50,58 @@
             Flow Rate
           </div>
           <div class="col s12">
-            Medium High
+            {{configuration.get_flow_display}}
           </div>
         </div>
       </div>
       <div class="col s1"></div>
       <div class="col s1 delete">
         <div class="row">
-          <i class="fas fa-trash"></i>
+          <form method="POST" action="{% url 'core:delete' configuration.pk %}">
+            {% csrf_token %}
+            <button class="fas fa-trash"></button>
+          </form>
         </div>
     </div>
-  </div>
+    </div>
+    {% endfor %}
+  <form method="POST" action="{% url 'core:new' %}">
+    {% csrf_token %}
     <ul class="collapsible">
       <li>
         <div class="collapsible-header">+ Add a new occurrence...</div>
         <div class="collapsible-body">
           <div class="row">
             <div class="input-field col s4">
-              <select>
-                <option selected value="1">This one</option>
-                <option value="2">Other One</option>
-                <option value="3">Another One</option>
-              </select>
-              <label>Operational Occurrence</label>
-            </div>
-            <div class="input-field col s4">
-              <input type="text" id="sub-occurrence" class="autocomplete">
-              <label for="sub-occurrence">Operational Sub-occurrence</label>
+              {{form.sub_occurrence}}
+              <label>Operational Sub-occurrence</label>
             </div>
           </div>
           <div class="row">
-            <div class="input-field col s4">
-              <select>
-                <option selected value="1">II</option>
-                <option value="2">IX</option>
-                <option value="3">XI</option>
-                <option value="4">XX</option>
-              </select>
+            <div class="input-field col s3">
+              {{form.lane_closures}}
               <label>Lane Closure</label>
             </div>
-            <div class="input-field col s4">
-              <select>
-                <option selected value="0">-</option>
-                <option value="15">15</option>
-                <option value="30">30</option>
-                <option value="45">45</option>
-                <option value="60">60</option>
-              </select>
+            <div class="input-field col s3">
+              {{form.duration}}
               <label>Duration</label>
             </div>
-            <div class="input-field col s4">
-              <select>
-                <option selected value="1">High</option>
-                <option value="2">Medium High</option>
-                <option value="3">Medium Low</option>
-                <option value="4">Low</option>
-              </select>
+            <div class="input-field col s3">
+              {{form.flow}}
               <label>Flow Rate</label>
+            </div>
+            <div class="input-field col s3">
+              {{form.frequency}}
+              <label>Frequency</label>
             </div>
           </div>
           <div class="row">
-            <a class="btn green waves-effect waves-light">Save</a>
+            <button type="submit" class="btn green waves-effect waves-light">Save</button>
           </div>
         </div>
         </li>
       </ul>
+    </form>
   </section>
   <div class="row">
     <a class="btn right green waves-effect waves-light">Calculate Results</a>

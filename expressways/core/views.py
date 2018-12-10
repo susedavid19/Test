@@ -1,22 +1,37 @@
 from django.views import View
+from django.views.generic.edit import CreateView, DeleteView
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from braces.views import LoginRequiredMixin
 import time
 
 from expressways.calculation.tasks import add
+from expressways.core.models import OccurrenceConfiguration
+from expressways.core.forms import OccurrenceConfigurationForm
+
 
 class HomeView(LoginRequiredMixin, View):
     def get(self, request):
-        left = int(request.GET.get('left', 1))
-        right = int(request.GET.get('right', 1))
-
-        res = add.delay(left, right)
-        while not res.ready():
-            time.sleep(1)
-
+        form = OccurrenceConfigurationForm()
+        configurations = OccurrenceConfiguration.objects.all()
         context = {
-            'left': left,
-            'right': right,
-            'result': res.get(),
+            'configurations': configurations,
+            'form': form,
         }
         return render(request, 'core/home.html', context)
+
+
+class NewOccurrenceConfiguration(LoginRequiredMixin, CreateView):
+    model = OccurrenceConfiguration
+    form_class = OccurrenceConfigurationForm
+    success_url = reverse_lazy('core:home')
+
+
+class DeleteOccurrenceConfiguration(LoginRequiredMixin, DeleteView):
+    model = OccurrenceConfiguration
+    success_url = reverse_lazy('core:home')
+
+
+class CalculateView(LoginRequiredMixin, View):
+    def post(self, request):
+        pass
