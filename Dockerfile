@@ -15,3 +15,4 @@ COPY config /data/config
 COPY manage.py /data/manage.py
 COPY docker-entrypoint.sh /data/docker-entrypoint.sh
 COPY docker-worker-entrypoint.sh /data/docker-worker-entrypoint.sh
+COPY docker-flower-entrypoint.sh /data/docker-flower-entrypoint.sh
