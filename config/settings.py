@@ -42,6 +42,7 @@ if ALLOWED_HOST:
 
 INSTALLED_APPS = [
     'expressways.core',
+    'expressways.calculation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

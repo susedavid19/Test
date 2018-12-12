@@ -1,11 +1,13 @@
 from django.views import View
 from django.views.generic.edit import CreateView, DeleteView
-from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy, reverse
+from django.http import JsonResponse
 from braces.views import LoginRequiredMixin
 import time
 
-from expressways.calculation.tasks import add
+from expressways.calculation.tasks import add, calculate
+from expressways.calculation.models import CalculationResult
 from expressways.core.models import OccurrenceConfiguration
 from expressways.core.forms import OccurrenceConfigurationForm
 
@@ -34,4 +36,24 @@ class DeleteOccurrenceConfiguration(LoginRequiredMixin, DeleteView):
 
 class CalculateView(LoginRequiredMixin, View):
     def post(self, request):
-        pass
+        items = []
+        for item in OccurrenceConfiguration.objects.all():
+            items.append({
+                'lane_closures': item.lane_closures,
+                'duration': item.duration,
+                'flow': item.flow,
+                'frequency': item.frequency,
+            })
+
+        res = calculate.delay(items)
+
+        request.session['task_id'] = res.id
+
+        return redirect(reverse('core:home'))
+
+
+class ResultView(LoginRequiredMixin, View):
+    def get(self, request, task_id):
+        result = get_object_or_404(CalculationResult, task_id=task_id)
+
+        return JsonResponse({'objective_1': result.objective_1, 'objective_2': result.objective_2})

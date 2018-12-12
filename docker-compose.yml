@@ -34,6 +34,10 @@ services:
       context: .
       dockerfile: Dockerfile
     entrypoint: /data/docker-worker-entrypoint.sh
+    environment:
+      DJANGO_SETTINGS_MODULE: "config.settings"
+      DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
+      DEBUG:
 volumes:
   static-files:
   media-files:

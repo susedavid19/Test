@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd /data
-celery -A expressways.calculation.tasks worker --loglevel=info
+celery -A expressways.calculation worker --loglevel=info

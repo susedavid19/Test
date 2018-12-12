@@ -20,3 +20,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     var instances = M.Autocomplete.init(elems, options);
 });
+
+window.onload = function() {
+    if (result_url !== null) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.responseType = 'json';
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var res1 = document.getElementById('result-1');
+                res1.innerHTML = xhttp.response.objective_1;
+
+                var res2 = document.getElementById('result-2');
+                res2.innerHTML = xhttp.response.objective_2;
+            }
+        };
+        xhttp.open("GET", result_url, true);
+        xhttp.send();
+    }
+};

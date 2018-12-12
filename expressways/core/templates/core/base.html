@@ -7,6 +7,8 @@
     {% include 'material/includes/material_css.html' %}
     {% include 'material/includes/material_js.html' %}
     <link rel="stylesheet" href="{% static "base.css" %}">
+    {% block extrahead %}
+    {% endblock %}
     <script src="{% static "base.js" %}"></script>
   </head>
   <body>
