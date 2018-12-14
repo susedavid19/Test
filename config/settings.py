@@ -31,7 +31,8 @@ SECRET_KEY = '4(p^o-!%@8*rk+2=-g5#1#$$x!2dz#qdroma3=&(y(a55#l_8+'
 DEBUG = env('DEBUG', default=False)
 
 ALLOWED_HOSTS = [
-    'localhost'
+    'localhost',
+    '127.0.0.1',
 ]
 
 ALLOWED_HOST = env('ALLOWED_HOST', default=None)

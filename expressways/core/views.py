@@ -28,13 +28,28 @@ class NewOccurrenceConfiguration(LoginRequiredMixin, CreateView):
     form_class = OccurrenceConfigurationForm
     success_url = reverse_lazy('core:home')
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        del self.request.session['task_id']
+        return response
+
 
 class DeleteOccurrenceConfiguration(LoginRequiredMixin, DeleteView):
     model = OccurrenceConfiguration
     success_url = reverse_lazy('core:home')
 
+    def delete(self, request, *args, **kwargs):
+        response = super().delete(request, *args, **kwargs)
+        del self.request.session['task_id']
+        return response
+
 
 class CalculateView(LoginRequiredMixin, View):
+    def get(self, request):
+        #  clicked calculate button while logged out and then got redirected
+        #  here after signing in
+        return redirect(reverse('core:home'))
+
     def post(self, request):
         items = []
         for item in OccurrenceConfiguration.objects.all():
