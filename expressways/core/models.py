@@ -41,13 +41,15 @@ DURATION_CHOICES = (
     (30, '30'),
     (45, '45'),
     (60, '60'),
+    (120, '120'),
+    (300, '300'),
 )
 
 FLOW_CHOICES = (
-    ('H', 'High'),
-    ('MH', 'Medium High'),
-    ('ML', 'Medium Low'),
-    ('L', 'Low'),
+    (1750, 'High'),
+    (1250, 'Medium High'),
+    (750, 'Medium Low'),
+    (300, 'Low'),
 )
 
 
@@ -63,9 +65,8 @@ class OccurrenceConfiguration(models.Model):
         choices=DURATION_CHOICES,
         default=15,
     )
-    flow = models.CharField(
-        max_length=2,
+    flow = models.PositiveIntegerField(
         choices=FLOW_CHOICES,
-        default='H',
+        default=300,
     )
     frequency = models.PositiveIntegerField()
