@@ -30,7 +30,8 @@ class NewOccurrenceConfiguration(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        del self.request.session['task_id']
+        if 'task_id' in self.request.session:
+            del self.request.session['task_id']
         return response
 
 
@@ -40,7 +41,8 @@ class DeleteOccurrenceConfiguration(LoginRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         response = super().delete(request, *args, **kwargs)
-        del self.request.session['task_id']
+        if 'task_id' in self.request.session:
+            del self.request.session['task_id']
         return response
 
 
