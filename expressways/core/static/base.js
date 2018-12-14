@@ -56,6 +56,9 @@ var getResults = function() {
                 stopSpinner();
             } else if (this.readyState == 4 && this.status == 404) {
                 setTimeout(getResults, 2000);
+            } else if (this.readyState == 4) {
+                stopSpinner();
+                M.toast({html: `An error has occurred (${this.status})`})
             }
         };
         xhttp.open("GET", result_url, true);
