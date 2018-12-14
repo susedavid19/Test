@@ -21,8 +21,28 @@ document.addEventListener('DOMContentLoaded', function() {
     var instances = M.Autocomplete.init(elems, options);
 });
 
-window.onload = function() {
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems, {});
+});
+
+
+var startSpinner = function() {
+    var elem = document.querySelector('#spinner');
+    var instance = M.Modal.getInstance(elem);
+    instance.open();
+};
+
+var stopSpinner = function() {
+    var elem = document.querySelector('#spinner');
+    var instance = M.Modal.getInstance(elem);
+    instance.close();
+};
+
+var getResults = function() {
     if (result_url !== null) {
+        startSpinner();
+
         var xhttp = new XMLHttpRequest();
         xhttp.responseType = 'json';
         xhttp.onreadystatechange = function() {
@@ -32,9 +52,15 @@ window.onload = function() {
 
                 var res2 = document.getElementById('result-2');
                 res2.innerHTML = xhttp.response.objective_2;
+
+                stopSpinner();
+            } else if (this.readyState == 4 && this.status == 404) {
+                setTimeout(getResults, 2000);
             }
         };
         xhttp.open("GET", result_url, true);
         xhttp.send();
     }
 };
+
+window.onload = getResults;
