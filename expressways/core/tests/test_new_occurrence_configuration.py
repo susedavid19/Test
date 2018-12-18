@@ -18,7 +18,7 @@ class TestNewOccurrenceConfiguration(TestCase):
             'sub_occurrence': 1,
             'lane_closures': 'XX',
             'duration': 60,
-            'flow': 'H',
+            'flow': 1750,
             'frequency': 1000,
         }
 

@@ -20,7 +20,7 @@ class TestDeleteOccurrenceConfiguration(TestCase):
             sub_occurrence=sub_occurrence,
             lane_closures='XX',
             duration=60,
-            flow='H',
+            flow=1750,
             frequency=1000,
         )
 

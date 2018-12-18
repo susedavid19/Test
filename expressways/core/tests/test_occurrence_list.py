@@ -31,7 +31,7 @@ class TestOccurrenceList(TestCase):
         OccurrenceConfiguration.objects.create(sub_occurrence=sub_occurrence,
                                                lane_closures='XX',
                                                duration=60,
-                                               flow='L',
+                                               flow=300,
                                                frequency=1000)
 
         resp = self.client.get(self.url)
