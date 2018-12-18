@@ -40,7 +40,7 @@ var stopSpinner = function() {
 };
 
 var getResults = function() {
-    if (result_url !== null) {
+    if (typeof result_url !== "undefined") {
         startSpinner();
 
         var xhttp = new XMLHttpRequest();
