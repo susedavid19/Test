@@ -30,9 +30,9 @@ services:
     depends_on:
       - application
   queue:
-    image: rabbitmq:3.7
+    image: redis:5
     expose:
-      - 15672
+      - 6379
   worker:
     build:
       context: .
