@@ -39,6 +39,15 @@ var stopSpinner = function() {
     instance.close();
 };
 
+var displayError = function(msg) {
+    if(msg !== undefined) {
+       var message = document.querySelector('#error-msg');
+       message.innerHTML = msg;
+    }
+    var card = document.querySelector('#error-card');
+    card.style.display = 'block';
+};
+
 var getResults = function() {
     if (typeof result_url !== "undefined") {
         startSpinner();
@@ -58,7 +67,7 @@ var getResults = function() {
                 setTimeout(getResults, 2000);
             } else if (this.readyState == 4) {
                 stopSpinner();
-                M.toast({html: `An error has occurred (${this.status})`})
+                displayError(xhttp.response.msg);
             }
         };
         xhttp.open("GET", result_url, true);

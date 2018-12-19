@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse
 from braces.views import LoginRequiredMixin
+from celery.result import AsyncResult
 import time
 
 from expressways.calculation.tasks import add, calculate
@@ -71,6 +72,10 @@ class CalculateView(LoginRequiredMixin, View):
 
 class ResultView(LoginRequiredMixin, View):
     def get(self, request, task_id):
+        res = AsyncResult(task_id)
+        if res.failed():
+            return JsonResponse({'msg': 'The Task Failed'}, status=500)
+
         result = get_object_or_404(CalculationResult, task_id=task_id)
 
         return JsonResponse({'objective_1': result.objective_1, 'objective_2': result.objective_2})
