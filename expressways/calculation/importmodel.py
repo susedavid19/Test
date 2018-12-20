@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from functools import reduce
 import os
 
 
@@ -33,6 +34,33 @@ def load_csv_model(df, path, flow):
         df_temp = pd.read_csv(path, usecols=[5, 6, 8, 11, 14])
         df_temp['Flows'] = int(flow)
         df = df.append(df_temp, ignore_index=True)
+    return df
+
+
+def load_csv_model_freq_light(df, path, flow, freq):
+    """
+    Load a excel file from a path and return a dataframe
+    :param path: path as str to the desired filename
+    :param freq: frequency of the model
+    :return df: dataframe with the loaded data
+    """
+
+    if df.empty:
+        del df
+        df = pd.read_csv(path, usecols=[5, 6, 8, 14])
+        df['Flows'] = int(flow)
+        df = df.loc[df['Vehicle Type Description'] == "Car"]
+        df = df.loc[df['Path Name'] == "Main- ALL"]
+        df_copy = df.copy()
+        for i in range(freq - 1):
+            df = df.append(df_copy, ignore_index=True)
+    else:
+        df_temp = pd.read_csv(path, usecols=[5, 6, 8, 14])
+        df_temp['Flows'] = int(flow)
+        df_temp = df_temp.loc[df_temp['Vehicle Type Description'] == "Car"]
+        df_temp = df_temp.loc[df_temp['Path Name'] == "Main- ALL"]
+        for i in range(freq):
+            df = df.append(df_temp, ignore_index=True)
     return df
 
 
@@ -92,3 +120,23 @@ def query_data(header, params):
         header = header.loc[header[param_names[i]] == params[i]]
 
     return header['Filename'].iloc[0]
+
+
+def GCD(a, b):
+    """
+    Greatest common divider the Euclidean way
+    :param a,b: two integers
+    """
+    if b == 0:
+        return a
+    else:
+        return GCD(b, a % b)
+
+
+def norm_freqs(freq_list):
+    """
+    :param freq_list:
+    :return:
+    """
+    gcd_value = reduce(GCD, freq_list)
+    return [int(x / gcd_value) for x in freq_list]
