@@ -135,8 +135,9 @@ def GCD(a, b):
 
 def norm_freqs(freq_list):
     """
-    :param freq_list:
-    :return:
+    Normalise the frequencies by dividing with the greatest common divider of the frequencies 
+    :param freq_list: a list with the frequencies of the models
+    :return: a normalised version of the input
     """
     gcd_value = reduce(GCD, freq_list)
     return [int(x / gcd_value) for x in freq_list]

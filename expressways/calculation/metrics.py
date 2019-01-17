@@ -2,18 +2,6 @@ import pandas as pd
 import numpy as np
 
 
-def wquantile(x,q):
-    xsort = x.sort_values(x.columns[0])
-    xsort['index'] = range(len(x))
-    p = q * x[x.columns[1]].sum()
-    pop = float(xsort[xsort.columns[1]][xsort['index']==0])
-    i = 0
-    while pop < p:
-        pop = pop + float(xsort[xsort.columns[1]][xsort['index']==i+1])
-        i = i + 1
-    return xsort[xsort.columns[0]][xsort['index']==i]
-
-
 def weighted_quantile(values, quantiles, sample_weight=None, values_sorted=False, old_style=True):
     """ Very close to numpy.percentile, but supports weights.
     NOTE: quantiles should be in [0, 1]!
@@ -46,11 +34,9 @@ def weighted_quantile(values, quantiles, sample_weight=None, values_sorted=False
     return np.interp(quantiles, weighted_quantiles, values)
 
 
-def pti(df, type = "Car"):
+def pti(df, type="Car"):
     free_flow = df["Journey Duration (s)"].loc[df['Vehicle Type Description'] == "Car"].quantile(0.15)
-    np_data = np.array(df[["Journey Duration (s)","Flows"]])
+    np_data = np.array(df[["Journey Duration (s)", "Flows"]])
 
-    planning_time = weighted_quantile(np_data[:,0],0.95,sample_weight=np_data[:,1])
-    return planning_time/free_flow
-
-
+    planning_time = weighted_quantile(np_data[:, 0], 0.95, sample_weight=np_data[:, 1])
+    return planning_time / free_flow
