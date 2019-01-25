@@ -31,7 +31,8 @@ SECRET_KEY = '4(p^o-!%@8*rk+2=-g5#1#$$x!2dz#qdroma3=&(y(a55#l_8+'
 DEBUG = env('DEBUG', default=False)
 
 ALLOWED_HOSTS = [
-    'localhost'
+    'localhost',
+    '127.0.0.1',
 ]
 
 ALLOWED_HOST = env('ALLOWED_HOST', default=None)
@@ -42,6 +43,7 @@ if ALLOWED_HOST:
 
 INSTALLED_APPS = [
     'expressways.core',
+    'expressways.calculation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -131,3 +133,4 @@ STATIC_ROOT = '/static/'
 
 LOGIN_REDIRECT_URL = 'core:home'
 SESSION_COOKIE_AGE = 600
+SESSION_SAVE_EVERY_REQUEST = True

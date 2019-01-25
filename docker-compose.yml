@@ -12,6 +12,9 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
       GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --workers=3"
       ALLOWED_HOST:
+      DEBUG:
+    depends_on:
+      - queue
     volumes:
       - static-files:/static
       - media-files:/media
@@ -24,6 +27,23 @@ services:
     volumes:
       - static-files:/static:ro
       - media-files:/media:ro
+    depends_on:
+      - application
+  queue:
+    image: redis:5
+    expose:
+      - 6379
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: /data/docker-worker-entrypoint.sh
+    environment:
+      DJANGO_SETTINGS_MODULE: "config.settings"
+      DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
+      DEBUG:
+    depends_on:
+      - queue
 volumes:
   static-files:
   media-files:

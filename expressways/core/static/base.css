@@ -1,0 +1,48 @@
+.container {
+  margin-top: 12px;
+}
+
+.item {
+  margin: 8px 2px;
+  padding: 8px;
+  border: 1px solid grey;
+  border-radius: 4px; 
+}
+
+.item .row {
+  margin-bottom: 2px;
+}
+
+.item .row .col:first-child {
+  font-weight: 700;
+  font-size: 0.7em;
+  text-transform: uppercase;
+}
+
+.item--sub-occurrence:before {
+  content: "(";
+}
+
+.item--sub-occurrence:after {
+  content: ")";
+}
+
+.delete {
+  text-align: center;
+  align-self: center;
+}
+
+.collapsible {
+  border: 0px;
+  border-radius: 4px;
+  box-shadow: unset;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
+.result {
+  font-size: 3em;
+  text-align: center;
+}

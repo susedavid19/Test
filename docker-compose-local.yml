@@ -23,6 +23,13 @@ services:
       - 5432
     volumes:
       - db-data:/var/lib/postgresql/data
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: /data/docker-flower-entrypoint.sh
+    ports:
+      - 5555:5555
 
 volumes:
   db-data:
