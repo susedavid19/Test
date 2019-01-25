@@ -105,8 +105,6 @@ def load_data_hdf5(df, path):
         df = pd.read_hdf(path)
     return df
 
-    return
-
 
 def query_data(header, params):
     """
@@ -135,9 +133,12 @@ def GCD(a, b):
 
 def norm_freqs(freq_list):
     """
-    Normalise the frequencies by dividing with the greatest common divider of the frequencies 
+    Normalise the frequencies by dividing with the greatest common divider of the frequencies
+    We can then achieve less copies of the same models in the final model without affecting the statistical measures
     :param freq_list: a list with the frequencies of the models
     :return: a normalised version of the input
     """
+    # Recursively pick the items of the list and calculate the GCD
     gcd_value = reduce(GCD, freq_list)
+    # normalise the items of the list by dividing with the GCD
     return [int(x / gcd_value) for x in freq_list]

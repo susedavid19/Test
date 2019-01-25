@@ -4,7 +4,7 @@ import pandas as pd
 
 from expressways.calculation.celery import app
 from expressways.calculation.models import CalculationResult
-from expressways.calculation.importmodel import *
+from expressways.calculation.import_model import *
 from expressways.calculation.metrics import *
 
 

@@ -23,7 +23,7 @@ def weighted_quantile(values, quantiles, sample_weight=None, values_sorted=False
         sorter = np.argsort(values)
         values = values[sorter]
         sample_weight = sample_weight[sorter]
-
+    # the last term is to calculate the center of the bin
     weighted_quantiles = np.cumsum(sample_weight) - 0.5 * sample_weight
     if old_style:
         # To be convenient with numpy.percentile
@@ -38,5 +38,5 @@ def pti(df, type="Car"):
     free_flow = df["Journey Duration (s)"].loc[df['Vehicle Type Description'] == "Car"].quantile(0.15)
     np_data = np.array(df[["Journey Duration (s)", "Flows"]])
 
-    planning_time = weighted_quantile(np_data[:, 0], 0.95, sample_weight=np_data[:, 1])
+    planning_time = weighted_quantile(np_data[:, 0], 0.95, sample_weight=np_data[:, 1])  # 0.95 the 95th percentile
     return planning_time / free_flow
