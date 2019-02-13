@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 User = get_user_model()
 
@@ -19,7 +20,7 @@ class TestPasswordValidators(TestCase):
         On password change page,
         when the user submit their old password, new password and new password confirmation,
         the new values should be
-        - minimum length of 9 characters
+        - minimum length of characters
         - at least 1 uppercase character
         - at least 1 number
         - at least 1 symbol character
@@ -39,7 +40,7 @@ class TestPasswordValidators(TestCase):
         '''
         On password change page,
         when the user submit their old password, new password and new password confirmation,
-        if the new values have length less than 9 characters, raise error text
+        if the new values have length less than minimum characters, raise error text
         '''
         self.client.force_login(self.user)
 
@@ -49,7 +50,8 @@ class TestPasswordValidators(TestCase):
             'new_password2': '1Expre$$',
         }
         resp = self.client.post(reverse('password_change'), data, follow=True)
-        self.assertContains(resp, 'This password is too short. It must contain at least 9 characters')
+        msg = 'This password is too short. It must contain at least %d characters'
+        self.assertContains(resp, msg % settings.MINIMUM_PASSWORD_LENGTH)
 
     def test_password_missing_uppercase(self):
         '''

@@ -95,6 +95,8 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
+MINIMUM_PASSWORD_LENGTH = env('MINIMUM_PASSWORD_LENGTH', default=9)
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -102,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
         'OPTIONS': {
-            'min_length': 9
+            'min_length': MINIMUM_PASSWORD_LENGTH
         }
     },
     {
@@ -146,3 +148,4 @@ STATIC_ROOT = '/static/'
 LOGIN_REDIRECT_URL = 'core:home'
 SESSION_COOKIE_AGE = 600
 SESSION_SAVE_EVERY_REQUEST = True
+
