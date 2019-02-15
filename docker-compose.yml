@@ -13,6 +13,7 @@ services:
       GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --workers=3"
       ALLOWED_HOST:
       DEBUG:
+      MINIMUM_PASSWORD_LENGTH: 9
     depends_on:
       - queue
     volumes:
