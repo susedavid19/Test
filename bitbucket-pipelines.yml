@@ -11,6 +11,43 @@ pipelines:
           - pip3 install -r requirements/test.txt
           - export DATABASE_URL="postgres://express:express@127.0.0.1:5432/express"
           - pytest expressways
+  branches:
+    pipeline-test:
+      - step:
+         name: Build Test
+         script:
+           - echo 'test built'
+      - step:
+         name: Deploy to Test
+         trigger: manual
+         deployment: test
+         script:
+           - pip3 install awscli
+           - aws s3 sync --region "eu-west-1" s3://wsp-bitbucket-pipelines/ . && chmod +x ./pipeline.sh
+           - ENV=test ./pipeline.sh run-update
+           - echo 'test deployed'
+    pipeline-stag:
+      - step:
+         name: Build Staging
+         script:
+           - echo 'staging built!'
+      - step:
+         name: Deploy to Staging
+         trigger: manual
+         deployment: staging
+         script:
+           - echo 'staging deployed'
+    pipeline-prod:
+      - step:
+         name: Build Production
+         script:
+           - echo 'production built'
+      - step:
+         name: Deploy to Production
+         trigger: manual
+         deployment: production
+         script:
+           - echo 'production deployed'
 definitions:
   services:
     postgres:

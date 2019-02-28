@@ -1,0 +1,6 @@
+---
+_version: 1
+project: 'he-expressways'
+update_commands:
+  - target: 'whoami'
+variables:
