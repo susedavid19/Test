@@ -38,4 +38,4 @@ class TestOccurrenceList(TestCase):
 
         doc = etree.HTML(resp.content.decode())
 
-        self.assertEqual(1, len(doc.xpath('//section[@id="list"]/div[@class="row item"]')))
+        self.assertEqual(1, len(doc.xpath('//section[@id="configuration-list"]/div[@class="row"]')))

@@ -1,0 +1,64 @@
+.container {
+    margin-top: 12px;
+}
+  
+.row {
+    margin-bottom: 2px;
+}
+
+#objective-area, #collapse-div, #calculation {
+    border-top: 1px solid lightgray;
+}    
+
+#new-configuration .row {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#collapse-trigger {
+    margin: 10px 0;
+}
+
+#collapse-trigger a {
+    color: black;
+}
+
+section {
+    padding: 10px 0px;
+}
+
+#configuration-list .row {
+    padding: 8px;
+    border: 1px solid grey;
+    border-radius: 4px; 
+}    
+
+#configuration-list .col-name {
+    font-weight: 700;
+    font-size: 0.7em;
+    text-transform: uppercase;
+}
+
+#new-configuration label {
+    font-size: 0.8em;
+    color: gray;
+}
+
+h2 {
+    font-size: 1.3em;
+    padding: 10px 0;
+    font-weight: 400;
+}
+
+.result div {
+    text-align: center;
+    font-weight: 400;
+    font-size: 40px;
+}
+
+.modal-dialog {
+    background-color: white; 
+    padding: 50px; 
+    width: 500px;
+    text-align: center;
+}
