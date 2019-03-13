@@ -1,4 +1,4 @@
-version: "3.6"
+version: '3.6'
 
 services:
   application:
@@ -11,7 +11,7 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
       GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --workers=3"
-      ALLOWED_HOST:
+      ALLOWED_HOST: '${ELB_IP_ADDRESS}'
       DEBUG:
       MINIMUM_PASSWORD_LENGTH: 9
     depends_on:
