@@ -10,6 +10,8 @@ services:
         target: /data
     environment:
       GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --reload --workers=3"
+    links:
+      - selenium
   proxy:
     ports:
       - 7080:80
@@ -30,6 +32,11 @@ services:
     entrypoint: /data/docker-flower-entrypoint.sh
     ports:
       - 5555:5555
+  selenium:
+    image: selenium/standalone-chrome-debug:3.7.1
+    ports:
+      - 4444:4444
+      - 5900:5900
 
 volumes:
   db-data:
