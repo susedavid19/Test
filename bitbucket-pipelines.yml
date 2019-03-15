@@ -19,7 +19,15 @@ definitions:
         POSTGRES_PASSWORD: express
         POSTGRES_USER: express
         POSTGRES_DB: express
-    selenium:
-      image: selenium/standalone-chrome:latest
-      ports:
-        - 4444:4444
+    selenium-hub:
+      image: selenium/hub
+      environment:
+        GRID_TIMEOUT: 60
+        GRID_BROWSER_TIMEOUT: 60
+        SE_OPTS: -host localhost
+    chrome:
+      image: selenium/node-chrome
+      environment:
+        HUB_HOST: localhost
+        HUB_PORT: 4444
+        SE_OPTS: -timeout 60 -browserTimeout 60
