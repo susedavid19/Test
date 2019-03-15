@@ -50,7 +50,9 @@ var getResults = function() {
                 res2.innerHTML = xhttp.response.objective_2;
                 
                 setTimeout(stopSpinner, 500);
-            } else if (this.readyState == 4 && this.status != 200) {
+            } else if (this.readyState == 4 && this.status == 404) {
+                setTimeout(getResults, 2000);
+            } else if (this.readyState == 4) {
                 setTimeout(stopSpinner, 500);
                 displayError(this.statusText);
             }

@@ -10,9 +10,9 @@
 
 {% block content %}
   <div class="row">
-    <div class="col s12">
+    <div class="col">
       <div id="error-card" class="card red accent-2" style="display: none;">
-        <div class="card-content white-text">
+        <div class="card-body white-text">
           <span class="card-title">An Error Occurred</span>
           <p id="error-msg"></p>
           <p>Please try again later</p>
@@ -23,14 +23,6 @@
   {% for configuration in configurations %}
   <section id="configuration-list">
     <div class="row">
-      <div class="col align-self-start">
-        <div class="col-name">
-          Occurrence
-        </div>
-        <div>
-          {{configuration.sub_occurrence}}
-        </div>
-      </div>
       <div class="col align-self-start">
         <div class="col-name">
           Sub-Occurrence
@@ -90,10 +82,6 @@
         {% csrf_token %}
         <div class="row">
           <div class="col">
-            <label>Operational Occurrence</label>
-            {{form.sub_occurrence}}
-          </div>
-          <div class="col">
             <label for="id_sub_occurrence">Operational Sub-occurrence</label>
             {{form.sub_occurrence}}
           </div>
@@ -117,7 +105,7 @@
           </div>
         </div>
         <div class="form-row">
-          <button type="submit" class="btn green waves-effect waves-light">Save</button>
+          <button id="save_btn" type="submit" class="btn green waves-effect waves-light">Save</button>
         </div>
       </form>
     </div>
@@ -125,7 +113,7 @@
   <section id="calculation">
     <form class="d-flex flex-column" method="POST" action="{% url 'core:calculate' %}">
       {% csrf_token %}
-      <button type="submit" class="btn green align-self-end">Calculate Results</button>
+      <button id="calculate_btn" type="submit" class="btn green align-self-end">Calculate Results</button>
     </form>
   </section>
   <section id="objective-area">
