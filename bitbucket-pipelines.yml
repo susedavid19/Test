@@ -19,7 +19,7 @@ definitions:
         POSTGRES_PASSWORD: express
         POSTGRES_USER: express
         POSTGRES_DB: express
-  selenium:
-    image: selenium/standalone-chrome:latest
-    ports:
-      - 4444:4444
+    selenium:
+      image: selenium/standalone-chrome:latest
+      ports:
+        - 4444:4444
