@@ -25,12 +25,9 @@ class BaseTestCase(StaticLiveServerTestCase):
     Provides base test class which connects to the Docker
     container running selenium.
     """
-    host = '0.0.0.0'
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.host = socket.gethostbyname(socket.gethostname())
         cls.selenium = webdriver.Remote(
             command_executor='http://selenium:4444/wd/hub',
             desired_capabilities=desired_capabilities.DesiredCapabilities.CHROME,
