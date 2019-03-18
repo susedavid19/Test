@@ -26,10 +26,9 @@ definitions:
       environment:
         GRID_TIMEOUT: 60
         GRID_BROWSER_TIMEOUT: 60
-        SE_OPTS: -host localhost
     chrome:
       image: selenium/node-chrome
       environment:
-        HUB_HOST: localhost
+        HUB_HOST: selenium-hub
         HUB_PORT: 4444
         SE_OPTS: -timeout 60 -browserTimeout 60
