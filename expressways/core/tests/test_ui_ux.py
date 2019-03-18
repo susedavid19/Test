@@ -53,8 +53,11 @@ class BaseTestCase(StaticLiveServerTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.selenium.quit()
-        super().tearDownClass()
+        try:
+            cls.selenium.quit()
+            super().tearDownClass()
+        except:
+            pass
 
 class TestUiUx(BaseTestCase):
     fixtures = ['occurrences']
