@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import override_settings, tag
@@ -137,10 +138,14 @@ class TestUiUx(BaseTestCase):
         self.add_new_configuration(self.configuration_data)
         self.selenium.find_element_by_id('calculate_btn').click()
 
-        WebDriverWait(self.selenium, 60).until(EC.presence_of_element_located((By.XPATH, '//div[@id="error-card"]')))
-        self.assertTrue(self.selenium.find_element_by_xpath('//*[contains(text(), "An Error Occurred")]'))
-        result1 = self.selenium.find_element_by_xpath('//div[@id="result-1"]')
-        self.assertEqual('-', result1.text)
-        result2 = self.selenium.find_element_by_xpath('//div[@id="result-2"]')
-        self.assertEqual('-', result2.text)
-        print('{} all OK.'.format(sys._getframe(  ).f_code.co_name))
+        try:
+            WebDriverWait(self.selenium, 60).until(EC.presence_of_element_located((By.XPATH, '//div[@id="error-card"]')))
+        except TimeoutException as error:
+            print('Timeout exception has been thrown: {}'.format(error))
+        else:            
+            self.assertTrue(self.selenium.find_element_by_xpath('//*[contains(text(), "An Error Occurred")]'))
+            result1 = self.selenium.find_element_by_xpath('//div[@id="result-1"]')
+            self.assertEqual('-', result1.text)
+            result2 = self.selenium.find_element_by_xpath('//div[@id="result-2"]')
+            self.assertEqual('-', result2.text)
+            print('{} all OK.'.format(sys._getframe(  ).f_code.co_name))
