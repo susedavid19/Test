@@ -137,7 +137,7 @@ class TestUiUx(BaseTestCase):
         self.add_new_configuration(self.configuration_data)
         self.selenium.find_element_by_id('calculate_btn').click()
 
-        error_card = WebDriverWait(self.selenium, 10).until(EC.presence_of_element_located((By.XPATH, '//div[@id="error-card"]')))
+        WebDriverWait(self.selenium, 60).until(EC.presence_of_element_located((By.XPATH, '//div[@id="error-card"]')))
         self.assertTrue(self.selenium.find_element_by_xpath('//*[contains(text(), "An Error Occurred")]'))
         result1 = self.selenium.find_element_by_xpath('//div[@id="result-1"]')
         self.assertEqual('-', result1.text)
