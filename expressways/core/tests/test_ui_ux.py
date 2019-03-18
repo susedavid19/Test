@@ -142,6 +142,8 @@ class TestUiUx(BaseTestCase):
         except:
             print('No error card found!')
         else:
+            self.assertTrue(error_card)
+            self.assertTrue(self.selenium.find_element_by_xpath('//*[contains(text(), "An Error Occurred")]'))
             result1 = self.selenium.find_element_by_xpath('//div[@id="result-1"]')
             self.assertEqual('-', result1.text)
             result2 = self.selenium.find_element_by_xpath('//div[@id="result-2"]')
