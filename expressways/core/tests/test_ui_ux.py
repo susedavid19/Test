@@ -1,5 +1,6 @@
 import socket
 import json
+import sys
 from selenium import webdriver
 from selenium.webdriver.common import desired_capabilities, keys
 from selenium.webdriver.common.by import By
@@ -25,11 +26,16 @@ class BaseTestCase(StaticLiveServerTestCase):
     Provides base test class which connects to the Docker
     container running selenium.
     """
+    host = '0.0.0.0' # bind to allow external access
+
     @classmethod
     def setUpClass(cls):
+
         super().setUpClass()
+        # Set host to externally accessible web server address
+        cls.host = socket.gethostbyname(socket.gethostname())
         cls.selenium = webdriver.Remote(
-            command_executor='http://localhost:4444/wd/hub',
+            command_executor='http://selenium-hub:4444/wd/hub',
             desired_capabilities=desired_capabilities.DesiredCapabilities.CHROME,
         )
         cls.selenium.implicitly_wait(5)
@@ -80,11 +86,13 @@ class TestUiUx(BaseTestCase):
         """
         On home page, all relevant tags has its class attribute set to respective value
         """
+        print('Running', sys._getframe(  ).f_code.co_name)
         self.login()
         self.selenium.get(self.live_server_url)
         for element, className in self.element_class_obj.items():
             list_elements = self.selenium.find_elements_by_xpath('//{}[@class=" {}"]'.format(element, className))
             self.assertNotEqual(0, len(list_elements))
+        print('{} all OK.'.format(sys._getframe(  ).f_code.co_name))
 
     def add_new_configuration(self, data):
         """
@@ -109,10 +117,12 @@ class TestUiUx(BaseTestCase):
         if current task calculation result is available,
         correct objective results value will appear and no error card displayed
         """
+        print('Running', sys._getframe(  ).f_code.co_name)
         self.login()
         self.selenium.get(self.live_server_url)
         self.add_new_configuration(self.configuration_data)
         self.selenium.find_element_by_id('calculate_btn').click()
+        self.selenium.get(self.live_server_url)
 
         result_url = self.selenium.execute_script('return result_url;')
         task_id = result_url.split('/')[2]
@@ -138,6 +148,7 @@ class TestUiUx(BaseTestCase):
             self.assertEqual(str(self.objective2), objective2.text)
             error_card = self.selenium.find_elements_by_xpath('//div[@id="error-card" and @style="display: none;"]')
             self.assertEqual(1, len(error_card))
+            print('{} all OK.'.format(sys._getframe(  ).f_code.co_name))
 
     def test_invalid_calculate_results(self):
         """
@@ -145,6 +156,7 @@ class TestUiUx(BaseTestCase):
         if current task calculation result is not available,
         no change on objective results default value ie. '-' and error card is displayed
         """
+        print('Running', sys._getframe(  ).f_code.co_name)
         self.login()
         self.selenium.get(self.live_server_url)
         self.add_new_configuration(self.configuration_data)
@@ -171,3 +183,4 @@ class TestUiUx(BaseTestCase):
             self.assertEqual('-', result1.text)
             result2 = self.selenium.find_element_by_xpath('//div[@id="result-2"]')
             self.assertEqual('-', result2.text)
+            print('{} all OK.'.format(sys._getframe(  ).f_code.co_name))
