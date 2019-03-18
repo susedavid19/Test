@@ -12,6 +12,7 @@ pipelines:
         script:
           - pip3 install -r requirements/test.txt
           - export DATABASE_URL="postgres://express:express@127.0.0.1:5432/express"
+          - export SELENIUM_REMOTE="True"
           - pytest expressways
 definitions:
   services:
@@ -26,7 +27,7 @@ definitions:
       environment:
         GRID_TIMEOUT: 60
         GRID_BROWSER_TIMEOUT: 60
-        SE_OPTS: -host 127.0.0.1
+        SE_OPTS: -host localhost
     chrome:
       image: selenium/node-chrome
       environment:

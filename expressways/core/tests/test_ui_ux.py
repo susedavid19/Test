@@ -1,6 +1,8 @@
 import socket
 import json
 import sys
+import os
+
 from selenium import webdriver
 from selenium.webdriver.common import desired_capabilities, keys
 from selenium.webdriver.common.by import By
@@ -31,13 +33,22 @@ class BaseTestCase(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
 
+        is_remote_driver = os.getenv("SELENIUM_REMOTE", False)
+
         super().setUpClass()
         # Set host to externally accessible web server address
         cls.host = socket.gethostbyname(socket.gethostname())
-        cls.selenium = webdriver.Remote(
-            command_executor='http://selenium-hub:4444/wd/hub',
-            desired_capabilities=desired_capabilities.DesiredCapabilities.CHROME,
-        )
+        if is_remote_driver:
+            cls.selenium = webdriver.Remote(
+                command_executor='http://127.0.0.1:4444/wd/hub',
+                desired_capabilities=desired_capabilities.DesiredCapabilities.CHROME,
+            )
+        else:
+            cls.selenium = webdriver.Remote(
+                command_executor='http://selenium-hub:4444/wd/hub',
+                desired_capabilities=desired_capabilities.DesiredCapabilities.CHROME,
+            )
+            
         cls.selenium.implicitly_wait(5)
 
     @classmethod
