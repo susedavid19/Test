@@ -122,49 +122,10 @@ class TestUiUx(BaseTestCase):
         self.selenium.find_element_by_id('save_btn').click()
         self.selenium.implicitly_wait(5)
 
-    def test_valid_calculate_results(self):
-        """
-        On home page, when user clicks on calculate results button, 
-        if current task calculation result is available,
-        correct objective results value will appear and no error card displayed
-        """
-        print('Running', sys._getframe(  ).f_code.co_name)
-        self.login()
-        self.selenium.get(self.live_server_url)
-        self.add_new_configuration(self.configuration_data)
-        self.selenium.find_element_by_id('calculate_btn').click()
-        self.selenium.get(self.live_server_url)
-
-        result_url = self.selenium.execute_script('return result_url;')
-        task_id = result_url.split('/')[2]
-        session = self.client.session
-        session['task_id'] = task_id
-        session.save()
-
-        CalculationResult.objects.create(
-            task_id= task_id,
-            items= json.dumps([self.configuration_data]),
-            objective_1= self.objective1,
-            objective_2= self.objective2,
-        )
-        self.selenium.execute_script('result_url = "/result/{}";'.format(task_id))
-        self.selenium.get(self.live_server_url)
-
-        try:
-            objective1 = WebDriverWait(self.selenium, 10).until(EC.text_to_be_present_in_element((By.XPATH, '//div[@id="result-1"]'), str(self.objective1)))
-        except:
-            print('Nothing changed')
-        else:
-            objective2 = self.selenium.find_element_by_xpath('//div[@id="result-2"]')
-            self.assertEqual(str(self.objective2), objective2.text)
-            error_card = self.selenium.find_elements_by_xpath('//div[@id="error-card" and @style="display: none;"]')
-            self.assertEqual(1, len(error_card))
-            print('{} all OK.'.format(sys._getframe(  ).f_code.co_name))
-
     def test_invalid_calculate_results(self):
         """
         On home page, when user clicks on calculate results button, 
-        if current task calculation result is not available,
+        since current task calculation result is not yet available,
         no change on objective results default value ie. '-' and error card is displayed
         """
         print('Running', sys._getframe(  ).f_code.co_name)
@@ -172,18 +133,6 @@ class TestUiUx(BaseTestCase):
         self.selenium.get(self.live_server_url)
         self.add_new_configuration(self.configuration_data)
         self.selenium.find_element_by_id('calculate_btn').click()
-
-        task_id = self.task_id
-        session = self.client.session
-        session['task_id'] = task_id
-        session.save()
-
-        CalculationResult.objects.create(
-            task_id= task_id,
-            items= json.dumps([self.configuration_data]),
-            objective_1= self.objective1,
-            objective_2= self.objective2,
-        )
 
         try:
             error_card = WebDriverWait(self.selenium, 10).until(EC.presence_of_element_located((By.XPATH, '//div[@id="error-card"]')))
