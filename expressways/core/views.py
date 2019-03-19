@@ -1,4 +1,5 @@
 from django.views import View
+from django.views.generic import ListView
 from django.views.generic.edit import CreateView, DeleteView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
@@ -9,7 +10,7 @@ import time
 
 from expressways.calculation.tasks import add, calculate
 from expressways.calculation.models import CalculationResult
-from expressways.core.models import OccurrenceConfiguration
+from expressways.core.models import OccurrenceConfiguration, SubOccurrence
 from expressways.core.forms import OccurrenceConfigurationForm
 
 
@@ -79,3 +80,14 @@ class ResultView(LoginRequiredMixin, View):
         result = get_object_or_404(CalculationResult, task_id=task_id)
 
         return JsonResponse({'objective_1': result.objective_1, 'objective_2': result.objective_2})
+
+
+class SubOccurrenceOptionsView(LoginRequiredMixin, ListView):
+    model = SubOccurrence
+    template_name = 'core/sub_occurrences_list_options.html'
+    context_object_name = 'sub_occurrences'
+
+    def get_queryset(self):
+        occurrence_id = self.request.GET.get('occurrence')
+        query_set = self.model.objects.filter(occurrence_id=occurrence_id).order_by('name')
+        return query_set

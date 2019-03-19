@@ -25,6 +25,14 @@
     <div class="row">
       <div class="col align-self-start">
         <div class="col-name">
+          Occurrence
+        </div>
+        <div>
+          {{configuration.occurrence}}
+        </div>
+      </div>
+      <div class="col align-self-start">
+        <div class="col-name">
           Sub-Occurrence
         </div>
         <div>
@@ -78,9 +86,13 @@
       </a>
     </div>
     <div class="collapse" id="collapse-div">
-      <form method="POST" action="{% url 'core:new' %}">
+      <form id="configurationForm" method="POST" action="{% url 'core:new' %}" data-sub-occurrences-url="{% url 'core:load_sub_occurrences' %}">
         {% csrf_token %}
         <div class="row">
+          <div class="col">
+            <label for="id_occurrence">Operational Occurrence</label>
+            {{form.occurrence}}
+          </div>
           <div class="col">
             <label for="id_sub_occurrence">Operational Sub-occurrence</label>
             {{form.sub_occurrence}}

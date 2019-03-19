@@ -65,9 +65,27 @@ var getResults = function() {
     }
 };
 
+var getSubOccurrences = function() {
+    $('#id_occurrence').change(function () {
+        let url = $('#configurationForm').attr('data-sub-occurrences-url');
+        let occurrence_id = $(this).val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'occurrence': occurrence_id
+            },
+            success: function(data) {
+                $('#id_sub_occurrence').html(data); 
+            }
+        })
+    });
+}
+
 var main = function() {
     setClassToTags();
     getResults();
+    getSubOccurrences();
 }
 
 window.onload = main;

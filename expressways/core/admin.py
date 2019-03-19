@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from expressways.core.models import Occurrence, SubOccurrence
+from expressways.core.models import Occurrence, SubOccurrence, OccurrenceConfiguration
 
 
 def archive(modeladmin, request, queryset):
@@ -25,3 +25,4 @@ class SubOccurrenceAdmin(admin.ModelAdmin):
     list_filter = ['occurrence']
 
 admin.site.register(SubOccurrence, SubOccurrenceAdmin)
+admin.site.register(OccurrenceConfiguration)
