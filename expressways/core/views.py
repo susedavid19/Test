@@ -10,7 +10,7 @@ import time
 
 from expressways.calculation.tasks import add, calculate
 from expressways.calculation.models import CalculationResult
-from expressways.core.models import OccurrenceConfiguration, SubOccurrence
+from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence
 from expressways.core.forms import OccurrenceConfigurationForm
 
 
@@ -25,17 +25,21 @@ class HomeView(LoginRequiredMixin, View):
         return render(request, 'core/home.html', context)
 
 
-class NewOccurrenceConfiguration(LoginRequiredMixin, CreateView):
-    model = OccurrenceConfiguration
-    form_class = OccurrenceConfigurationForm
-    success_url = reverse_lazy('core:home')
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        if 'task_id' in self.request.session:
-            del self.request.session['task_id']
-        return response
-
+class NewOccurrenceConfiguration(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        data = self.request.POST
+        occurrence = Occurrence.objects.get(id=data.get('occurrence'))
+        sub_occurrence = SubOccurrence.objects.get(id=data.get('sub_occurrence'))
+        config_obj = OccurrenceConfiguration(
+            occurrence=occurrence,
+            sub_occurrence=sub_occurrence,
+            lane_closures=data.get('lane_closures'),
+            duration=data.get('duration'),
+            flow=data.get('flow'),
+            frequency=data.get('frequency')
+        )
+        config_obj.save()
+        return redirect(reverse_lazy('core:home'))
 
 class DeleteOccurrenceConfiguration(LoginRequiredMixin, DeleteView):
     model = OccurrenceConfiguration

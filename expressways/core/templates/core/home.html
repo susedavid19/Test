@@ -22,60 +22,57 @@
   </div>
   {% for configuration in configurations %}
   <section id="configuration-list">
-    <div class="row">
-      <div class="col align-self-start">
-        <div class="col-name">
-          Occurrence
+    <div class="card">
+      <div class="card-body">
+        <div class="row card-title d-flex justify-content-between">
+          <div class="title-name">
+            {{configuration.occurrence}}
+          </div>
+          <div class="flex-grow-1">
+            {{configuration.sub_occurrence}}
+          </div>
+          <div>
+            <form class="text-center" method="POST" action="{% url 'core:delete' configuration.pk %}">
+              {% csrf_token %}
+              <button class="fas fa-trash"></button>
+            </form>
+          </div>
         </div>
-        <div>
-          {{configuration.occurrence}}
+        <div class="row card-text d-flex justify-content-around">
+          <div class="config">
+            <div class="col-name">
+              Frequency
+            </div>
+            <div>
+              {{configuration.frequency}}
+            </div>
+          </div>
+          <div class="config">
+            <div class="col-name">
+              Lane Closure
+            </div>
+            <div>
+              {{configuration.lane_closures}}
+            </div>
+          </div>
+          <div class="config">
+            <div class="col-name">
+              Duration
+            </div>
+            <div>
+              {{configuration.duration}} mins
+            </div>
+          </div>
+          <div class="config">
+            <div class="col-name">
+              Flow Rate
+            </div>
+            <div>
+              {{configuration.get_flow_display}}
+            </div>
+          </div>
         </div>
       </div>
-      <div class="col align-self-start">
-        <div class="col-name">
-          Sub-Occurrence
-        </div>
-        <div>
-          {{configuration.sub_occurrence}}
-        </div>
-      </div>
-      <div class="col align-self-start">
-        <div class="col-name">
-          Frequency
-        </div>
-        <div>
-          {{configuration.frequency}}
-        </div>
-      </div>
-      <div class="col align-self-start">
-        <div class="col-name">
-          Lane Closure
-        </div>
-        <div>
-          {{configuration.lane_closures}}
-        </div>
-      </div>
-      <div class="col align-self-start">
-        <div class="col-name">
-          Duration
-        </div>
-        <div>
-          {{configuration.duration}} mins
-        </div>
-      </div>
-      <div class="col align-self-start">
-        <div class="col-name">
-          Flow Rate
-        </div>
-        <div>
-          {{configuration.get_flow_display}}
-        </div>
-      </div>
-      <div class="col align-self-center">
-        <form class="text-center" method="POST" action="{% url 'core:delete' configuration.pk %}">
-          {% csrf_token %}
-          <button class="fas fa-trash"></button>
-        </form>
     </div>
   </section>
   {% endfor %}
@@ -86,15 +83,15 @@
       </a>
     </div>
     <div class="collapse" id="collapse-div">
-      <form id="configurationForm" method="POST" action="{% url 'core:new' %}" data-sub-occurrences-url="{% url 'core:load_sub_occurrences' %}">
+      <form id="configurationForm" method="POST" action="{% url 'core:new' %}" data-sub-occurrences-url="{% url 'core:load_sub_occurrences' %}" novalidate>
         {% csrf_token %}
         <div class="row">
           <div class="col">
-            <label for="id_occurrence">Operational Occurrence</label>
+            <label>Operational Occurrence</label>
             {{form.occurrence}}
           </div>
           <div class="col">
-            <label for="id_sub_occurrence">Operational Sub-occurrence</label>
+            <label>Operational Sub-occurrence</label>
             {{form.sub_occurrence}}
           </div>
         </div>
