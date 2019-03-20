@@ -39,6 +39,8 @@ class NewOccurrenceConfiguration(LoginRequiredMixin, View):
             frequency=data.get('frequency')
         )
         config_obj.save()
+        if 'task_id' in self.request.session:
+            del self.request.session['task_id']
         return redirect(reverse_lazy('core:home'))
 
 class DeleteOccurrenceConfiguration(LoginRequiredMixin, DeleteView):

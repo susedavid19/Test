@@ -31,7 +31,8 @@ section {
 #configuration-list .card {
     border: 1px solid grey;
     border-radius: 4px;
-    padding: 0px 10px;
+    padding: 0px 20px;
+    margin-bottom: 15px;
 }
 
 #configuration-list .row {

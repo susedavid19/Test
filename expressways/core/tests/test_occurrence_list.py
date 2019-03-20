@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from lxml import etree
 
-from expressways.core.models import SubOccurrence, OccurrenceConfiguration
+from expressways.core.models import Occurrence, SubOccurrence, OccurrenceConfiguration
 
 User = get_user_model()
 
@@ -27,8 +27,10 @@ class TestOccurrenceList(TestCase):
         self.assertEqual(0, len(doc.xpath('//section[@id="list"]/div[@class="row item"]')))
 
     def test_single_occurrence_configuration_is_displayed(self):
+        occurrence = Occurrence.objects.first()
         sub_occurrence = SubOccurrence.objects.first()
-        OccurrenceConfiguration.objects.create(sub_occurrence=sub_occurrence,
+        OccurrenceConfiguration.objects.create(occurrence=occurrence,
+                                               sub_occurrence=sub_occurrence,
                                                lane_closures='XX',
                                                duration=60,
                                                flow=300,
@@ -38,4 +40,4 @@ class TestOccurrenceList(TestCase):
 
         doc = etree.HTML(resp.content.decode())
 
-        self.assertEqual(1, len(doc.xpath('//section[@id="configuration-list"]/div[@class="row"]')))
+        self.assertEqual(1, len(doc.xpath('//section[@id="configuration-list"]/div[@class="card"]')))
