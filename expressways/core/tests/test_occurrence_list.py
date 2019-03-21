@@ -27,10 +27,8 @@ class TestOccurrenceList(TestCase):
         self.assertEqual(0, len(doc.xpath('//section[@id="list"]/div[@class="row item"]')))
 
     def test_single_occurrence_configuration_is_displayed(self):
-        occurrence = Occurrence.objects.first()
         sub_occurrence = SubOccurrence.objects.first()
-        OccurrenceConfiguration.objects.create(occurrence=occurrence,
-                                               sub_occurrence=sub_occurrence,
+        OccurrenceConfiguration.objects.create(sub_occurrence=sub_occurrence,
                                                lane_closures='XX',
                                                duration=60,
                                                flow=300,

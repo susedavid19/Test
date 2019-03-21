@@ -26,7 +26,7 @@
       <div class="card-body">
         <div class="row card-title d-flex justify-content-between">
           <div class="title-name">
-            {{configuration.occurrence}}
+            {{configuration.sub_occurrence.occurrence.name}}
           </div>
           <div class="flex-grow-1">
             {{configuration.sub_occurrence}}
@@ -83,7 +83,7 @@
       </a>
     </div>
     <div class="collapse" id="collapse-div">
-      <form id="configurationForm" method="POST" action="{% url 'core:new' %}" data-sub-occurrences-url="{% url 'core:load_sub_occurrences' %}" novalidate>
+      <form id="configurationForm" method="POST" action="{% url 'core:new' %}" data-sub-occurrences-url="{% url 'core:load_sub_occurrences' %}">
         {% csrf_token %}
         <div class="row">
           <div class="col">

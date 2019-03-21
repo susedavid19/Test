@@ -17,7 +17,6 @@ class TestNewOccurrenceConfiguration(TestCase):
         self.client.force_login(user)
 
         self.valid_data = {
-            'occurrence': 1,
             'sub_occurrence': 1,
             'lane_closures': 'XX',
             'duration': 60,
@@ -33,7 +32,7 @@ class TestNewOccurrenceConfiguration(TestCase):
         self.assertRedirects(resp, '{}?next={}'.format(reverse('login'),
                                                        reverse('core:new')))
 
-    @unittest.skip('skipped due to null fields')
+    @unittest.skip('skipped due to null field')
     def test_missing_values_dont_create_configuration(self):
         '''
         This won't really ever occur because form validation will stop it

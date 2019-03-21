@@ -54,10 +54,8 @@ FLOW_CHOICES = (
 
 
 class OccurrenceConfiguration(models.Model):
-    occurrence = models.ForeignKey(Occurrence,
-                                       on_delete=models.SET_NULL, null=True)
-    sub_occurrence = models.ForeignKey(SubOccurrence,
-                                       on_delete=models.SET_NULL, null=True)
+    sub_occurrence = models.OneToOneField(SubOccurrence, 
+        on_delete=models.CASCADE, default=1)
     lane_closures = models.CharField(
         max_length=2,
         choices=LANE_CHOICES,
@@ -74,6 +72,6 @@ class OccurrenceConfiguration(models.Model):
     frequency = models.PositiveIntegerField()
 
     def __str__(self):
-        return ('{}_{}_{}_{}_{}_{}').format(self.occurrence.id, self.sub_occurrence.id, 
+        return ('{}_{}_{}_{}_{}').format(self.sub_occurrence.name, 
             self.lane_closures, self.duration, self.flow, self.frequency)
     

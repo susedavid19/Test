@@ -28,10 +28,8 @@ class HomeView(LoginRequiredMixin, View):
 class NewOccurrenceConfiguration(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         data = self.request.POST
-        occurrence = Occurrence.objects.get(id=data.get('occurrence'))
         sub_occurrence = SubOccurrence.objects.get(id=data.get('sub_occurrence'))
         config_obj = OccurrenceConfiguration(
-            occurrence=occurrence,
             sub_occurrence=sub_occurrence,
             lane_closures=data.get('lane_closures'),
             duration=data.get('duration'),
