@@ -135,9 +135,9 @@ class TestUiUx(BaseTestCase):
         """
         self.login()
         self.selenium.get(self.live_server_url)
-        self.assertEqual(0, OccurrenceConfiguration.objects.count())
+        self.assertEqual(0, len(self.selenium.find_elements_by_xpath('//section[@id="configuration-list"]//div[@class="card"]')))
         self.add_new_configuration(self.configuration_data)
-        self.assertEqual(1, OccurrenceConfiguration.objects.count())
+        self.assertTrue(self.selenium.find_element_by_xpath('//section[@id="configuration-list"]//div[@class="card"]'))
 
     @unittest.skip("element wait failed in pipeline")
     def test_invalid_calculate_results(self):

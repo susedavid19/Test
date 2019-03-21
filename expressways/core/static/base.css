@@ -45,8 +45,7 @@ section {
 }
 
 #configuration-list .config {
-    min-width: 100px;
-    align-self: stretch;
+    min-width: 150px;
 }
 
 #configuration-list .col-name {
