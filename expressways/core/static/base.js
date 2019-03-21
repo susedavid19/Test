@@ -1,46 +1,29 @@
-document.addEventListener("DOMContentLoaded", function() {
-  var elems = document.querySelectorAll(".collapsible");
-  var options = {};
-  var instances = M.Collapsible.init(elems);
-});
+var element_class_obj = {
+    'select': 'custom-select',
+    'input': 'form-control'
+};
 
-document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('select');
-    var instances = M.FormSelect.init(elems);
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.autocomplete');
-    let options = {
-      data: {
-        "This One": null,
-        "A Different One": null,
-        "Another One": null
-      },
+var setClassToTags = function() {
+    for (const [element, className] of Object.entries(element_class_obj)) {
+        var elements = document.getElementsByTagName(element);
+        for (let idx = 0; idx < elements.length; idx++) {
+            if (elements[idx].className.split(' ').indexOf(className) == -1) {
+                elements[idx].className += ' ' + className;
+            }
+        }
     }
-    var instances = M.Autocomplete.init(elems, options);
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems, {'dismissible': false});
-});
-
+}
 
 var startSpinner = function() {
-    var elem = document.querySelector('#spinner');
-    var instance = M.Modal.getInstance(elem);
-    instance.open();
-};
+    $('#spinner').modal('show');
+}
 
 var stopSpinner = function() {
-    var elem = document.querySelector('#spinner');
-    var instance = M.Modal.getInstance(elem);
-    instance.close();
-};
+    $('#spinner').modal('hide');
+}
 
 var displayError = function(msg) {
-    if(msg !== undefined) {
+    if(msg) {
        var message = document.querySelector('#error-msg');
        message.innerHTML = msg;
     }
@@ -53,7 +36,11 @@ var getResults = function() {
         startSpinner();
 
         var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", result_url, true);
+        xhttp.send();
         xhttp.responseType = 'json';
+        xhttp.timeout = 5000;
+
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 var res1 = document.getElementById('result-1');
@@ -61,18 +48,26 @@ var getResults = function() {
 
                 var res2 = document.getElementById('result-2');
                 res2.innerHTML = xhttp.response.objective_2;
-
-                stopSpinner();
+                
+                setTimeout(stopSpinner, 500);
             } else if (this.readyState == 4 && this.status == 404) {
                 setTimeout(getResults, 2000);
             } else if (this.readyState == 4) {
-                stopSpinner();
-                displayError(xhttp.response.msg);
+                setTimeout(stopSpinner, 500);
+                displayError(this.statusText);
             }
         };
-        xhttp.open("GET", result_url, true);
-        xhttp.send();
+
+        xhttp.ontimeout = function() {
+            setTimeout(stopSpinner, 500);
+            displayError('Connection timed out!');
+        }
     }
 };
 
-window.onload = getResults;
+var main = function() {
+    setClassToTags();
+    getResults();
+}
+
+window.onload = main;

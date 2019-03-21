@@ -18,7 +18,7 @@ class TestNav(TestCase):
     def test_no_admin_link_for_none_staff(self):
         resp = self.client.get(reverse('core:home'))
 
-        self.assertInHTML('<a href="{}">Admin</a>'.format(reverse('admin:index')),
+        self.assertInHTML('<a class="nav-link" href="{}">Admin</a>'.format(reverse('admin:index')),
                           resp.content.decode(),
                           count=0)
 
@@ -28,17 +28,17 @@ class TestNav(TestCase):
 
         resp = self.client.get(reverse('core:home'))
 
-        self.assertInHTML('<a href="{}">Admin</a>'.format(reverse('admin:index')),
+        self.assertInHTML('<a class="nav-link" href="{}">Admin</a>'.format(reverse('admin:index')),
                           resp.content.decode())
 
     def test_logout_link(self):
         resp = self.client.get(reverse('core:home'))
 
-        self.assertInHTML('<a href="{}">Logout</a>'.format(reverse('logout')),
+        self.assertInHTML('<a class="nav-link" href="{}">Logout</a>'.format(reverse('logout')),
                           resp.content.decode())
 
     def test_change_password_link(self):
         resp = self.client.get(reverse('core:home'))
 
-        self.assertInHTML('<a href="{}">Change Password</a>'.format(reverse('password_change')),
+        self.assertInHTML('<a class="nav-link" href="{}">Change Password</a>'.format(reverse('password_change')),
                           resp.content.decode())

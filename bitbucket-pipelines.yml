@@ -7,9 +7,12 @@ pipelines:
           - pip
         services:
           - postgres
+          - selenium-hub
+          - chrome
         script:
           - pip3 install -r requirements/test.txt
           - export DATABASE_URL="postgres://express:express@127.0.0.1:5432/express"
+          - export SELENIUM_REMOTE="True"
           - pytest expressways
   branches:
     pipeline-test:
@@ -56,3 +59,15 @@ definitions:
         POSTGRES_PASSWORD: express
         POSTGRES_USER: express
         POSTGRES_DB: express
+    selenium-hub:
+      image: selenium/hub
+      environment:
+        GRID_TIMEOUT: 60
+        GRID_BROWSER_TIMEOUT: 60
+        SE_OPTS: -host localhost
+    chrome:
+      image: selenium/node-chrome
+      environment:
+        HUB_PORT_4444_TCP_ADDR: localhost
+        HUB_PORT_4444_TCP_PORT: 4444
+        SE_OPTS: -timeout 60 -browserTimeout 60

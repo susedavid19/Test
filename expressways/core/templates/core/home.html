@@ -10,9 +10,9 @@
 
 {% block content %}
   <div class="row">
-    <div class="col s12">
+    <div class="col">
       <div id="error-card" class="card red accent-2" style="display: none;">
-        <div class="card-content white-text">
+        <div class="card-body white-text">
           <span class="card-title">An Error Occurred</span>
           <p id="error-msg"></p>
           <p>Please try again later</p>
@@ -20,149 +20,128 @@
       </div>
     </div>
   </div>
-  <section id="list">
-    {% for configuration in configurations %}
-    <div class="row item">
-      <div class="col s2">
-        <div class="row">
-          <div class="col s12">
-            Sub-Occurrence
-          </div>
-          <div class="col s12">
-            {{configuration.sub_occurrence}}
-          </div>
+  {% for configuration in configurations %}
+  <section id="configuration-list">
+    <div class="row">
+      <div class="col align-self-start">
+        <div class="col-name">
+          Sub-Occurrence
+        </div>
+        <div>
+          {{configuration.sub_occurrence}}
         </div>
       </div>
-      <div class="col s2">
-        <div class="row">
-          <div class="col s12">
-            Frequency
-          </div>
-          <div class="col s12">
-            {{configuration.frequency}}
-          </div>
+      <div class="col align-self-start">
+        <div class="col-name">
+          Frequency
+        </div>
+        <div>
+          {{configuration.frequency}}
         </div>
       </div>
-      <div class="col s2">
-        <div class="row">
-          <div class="col s12">
-            Lane Closure
-          </div>
-          <div class="col s12">
-            {{configuration.lane_closures}}
-          </div>
+      <div class="col align-self-start">
+        <div class="col-name">
+          Lane Closure
+        </div>
+        <div>
+          {{configuration.lane_closures}}
         </div>
       </div>
-      <div class="col s2">
-        <div class="row">
-          <div class="col s12">
-            Duration
-          </div>
-          <div class="col s12">
-            {{configuration.duration}} mins
-          </div>
+      <div class="col align-self-start">
+        <div class="col-name">
+          Duration
+        </div>
+        <div>
+          {{configuration.duration}} mins
         </div>
       </div>
-      <div class="col s2">
-        <div class="row">
-          <div class="col s12">
-            Flow Rate
-          </div>
-          <div class="col s12">
-            {{configuration.get_flow_display}}
-          </div>
+      <div class="col align-self-start">
+        <div class="col-name">
+          Flow Rate
+        </div>
+        <div>
+          {{configuration.get_flow_display}}
         </div>
       </div>
-      <div class="col s1"></div>
-      <div class="col s1 delete">
-        <div class="row">
-          <form method="POST" action="{% url 'core:delete' configuration.pk %}">
-            {% csrf_token %}
-            <button class="fas fa-trash"></button>
-          </form>
-        </div>
+      <div class="col align-self-center">
+        <form class="text-center" method="POST" action="{% url 'core:delete' configuration.pk %}">
+          {% csrf_token %}
+          <button class="fas fa-trash"></button>
+        </form>
     </div>
+  </section>
+  {% endfor %}
+  <section id="new-configuration">
+    <div id="collapse-trigger">
+      <a data-toggle="collapse" href="#collapse-div" aria-expanded="false" aria-controls="collapse-div">
+        + Add a new occurrence...
+      </a>
     </div>
-    {% endfor %}
-  <form method="POST" action="{% url 'core:new' %}">
-    {% csrf_token %}
-    <ul class="collapsible">
-      <li>
-        <div class="collapsible-header">+ Add a new occurrence...</div>
-        <div class="collapsible-body">
-          <div class="row">
-            <div class="input-field col s4">
-              {{form.sub_occurrence}}
-              <label>Operational Sub-occurrence</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="input-field col s3">
-              {{form.lane_closures}}
-              <label>Lane Closure</label>
-            </div>
-            <div class="input-field col s3">
-              {{form.duration}}
-              <label>Duration</label>
-            </div>
-            <div class="input-field col s3">
-              {{form.flow}}
-              <label>Flow Rate</label>
-            </div>
-            <div class="input-field col s3">
-              {{form.frequency}}
-              <label>Frequency</label>
-            </div>
-          </div>
-          <div class="row">
-            <button type="submit" class="btn green waves-effect waves-light">Save</button>
+    <div class="collapse" id="collapse-div">
+      <form method="POST" action="{% url 'core:new' %}">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col">
+            <label for="id_sub_occurrence">Operational Sub-occurrence</label>
+            {{form.sub_occurrence}}
           </div>
         </div>
-        </li>
-      </ul>
+        <div class="row">
+          <div class="col">
+            <label>Lane Closure</label>
+            {{form.lane_closures}}
+          </div>
+          <div class="col">
+            <label>Duration</label>
+            {{form.duration}}
+          </div>
+          <div class="col">
+            <label>Flow Rate</label>
+            {{form.flow}}
+          </div>
+          <div class="col">
+            <label>Frequency</label>
+            {{form.frequency}}
+          </div>
+        </div>
+        <div class="form-row">
+          <button id="save_btn" type="submit" class="btn green waves-effect waves-light">Save</button>
+        </div>
+      </form>
+    </div>
+  </section>
+  <section id="calculation">
+    <form class="d-flex flex-column" method="POST" action="{% url 'core:calculate' %}">
+      {% csrf_token %}
+      <button id="calculate_btn" type="submit" class="btn green align-self-end">Calculate Results</button>
     </form>
   </section>
-  <div class="row">
-    <form method="POST" action="{% url 'core:calculate' %}">
-      {% csrf_token %}
-      <button type="submit" class="btn right green waves-effect waves-light">Calculate Results</button>
-    </form>
-  </div>
-  <div class="divider"></div>
-  <div class="row">
-    <div class="row valign-wrapper">
-      <div class="col s6">
+  <section id="objective-area">
+    <div class="row">
+      <div class="col-6">
         <h2>Operational Objective 1</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vehicula porta fermentum. Ut placerat odio vel ipsum cursus imperdiet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas eu pulvinar lorem, a mattis elit. Sed sollicitudin consectetur scelerisque.</p>
       </div>
-      <div class="col s6 result">
+      <div class="col result align-self-center">
         <div id="result-1">-</div>
       </div>
     </div>
-    <div class="row valign-wrapper">
-      <div class="col s6">
+    <div class="row">
+      <div class="col-6">
         <h2>Operational Objective 2</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vehicula porta fermentum. Ut placerat odio vel ipsum cursus imperdiet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas eu pulvinar lorem, a mattis elit. Sed sollicitudin consectetur scelerisque.</p>
       </div>
-      <div class="col s6 result">
+      <div class="col result align-self-center">
         <div id="result-2">-</div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div id="spinner" class="modal">
-    <div class="modal-content">
-      <h4>Loading Results</h4>
-      <div class="preloader-wrapper big active">
-        <div class="spinner-layer spinner-blue-only">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div><div class="gap-patch">
-            <div class="circle"></div>
-          </div><div class="circle-clipper right">
-            <div class="circle"></div>
-          </div>
-        </div>
+  <div id="spinner" class="modal fade">
+    <div class="modal-dialog modal-sm">
+      <h4 class="modal-title">Loading Results</h4>
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
       </div>
     </div>
   </div>

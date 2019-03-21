@@ -30,6 +30,22 @@ services:
     entrypoint: /data/docker-flower-entrypoint.sh
     ports:
       - 5555:5555
-
+  selenium-hub:
+    image: selenium/hub
+    environment:
+      GRID_TIMEOUT: 60
+      GRID_BROWSER_TIMEOUT: 60
+    ports:
+      - 4444:4444
+  chrome:
+    image: selenium/node-chrome-debug
+    environment:
+      HUB_HOST: selenium-hub
+      HUB_PORT: 4444
+      SE_OPTS: -timeout 60 -browserTimeout 60
+    ports:
+      - 5900:5900
+    depends_on:
+      - selenium-hub
 volumes:
   db-data:
