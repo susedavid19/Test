@@ -1,5 +1,6 @@
 .container {
     margin-top: 12px;
+    width: 70%;
 }
   
 .row {
@@ -27,16 +28,36 @@ section {
     padding: 10px 0px;
 }
 
-#configuration-list .row {
-    padding: 8px;
+#configuration-list .card {
     border: 1px solid grey;
-    border-radius: 4px; 
+    border-radius: 4px;
+    padding: 0px 20px;
+    margin-bottom: 15px;
+}
+
+#configuration-list .row {
+    padding: 5px 0px;
 }    
+
+#configuration-list .title-name {
+    font-weight: 700;
+    margin-right: 5px;
+}
+
+#configuration-list .config {
+    min-width: 150px;
+}
 
 #configuration-list .col-name {
     font-weight: 700;
     font-size: 0.7em;
     text-transform: uppercase;
+}
+
+#configuration-list button {
+    background: none;
+    border: none;
+    text-align: right;
 }
 
 #new-configuration label {

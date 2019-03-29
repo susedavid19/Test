@@ -6,24 +6,25 @@ class FilterArchivedManager(models.Manager):
         return super().get_queryset().exclude(archived=True).order_by('id')
 
 
-class Occurrence(models.Model):
+class CommonInfo(models.Model):
     name = models.CharField(max_length=200)
     archived = models.BooleanField(default=False)
 
     objects = FilterArchivedManager()
 
+    class Meta:
+        abstract = True
+
+
+class Occurrence(CommonInfo):
     def __str__(self):
         return self.name
 
 
-class SubOccurrence(models.Model):
-    name = models.CharField(max_length=200)
-    archived = models.BooleanField(default=False)
+class SubOccurrence(CommonInfo):
     occurrence = models.ForeignKey(Occurrence,
                                    on_delete=models.CASCADE,
                                    related_name='sub_occurrences')
-
-    objects = FilterArchivedManager()
 
     def __str__(self):
         return self.name
@@ -54,8 +55,8 @@ FLOW_CHOICES = (
 
 
 class OccurrenceConfiguration(models.Model):
-    sub_occurrence = models.ForeignKey(SubOccurrence,
-                                       on_delete=models.CASCADE)
+    sub_occurrence = models.OneToOneField(SubOccurrence, 
+        on_delete=models.CASCADE, default=1)
     lane_closures = models.CharField(
         max_length=2,
         choices=LANE_CHOICES,
@@ -70,3 +71,8 @@ class OccurrenceConfiguration(models.Model):
         default=300,
     )
     frequency = models.PositiveIntegerField()
+
+    def __str__(self):
+        return ('{}_{}_{}_{}_{}').format(self.sub_occurrence.name, 
+            self.lane_closures, self.duration, self.flow, self.frequency)
+    

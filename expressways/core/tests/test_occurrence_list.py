@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from lxml import etree
 
-from expressways.core.models import SubOccurrence, OccurrenceConfiguration
+from expressways.core.models import Occurrence, SubOccurrence, OccurrenceConfiguration
 
 User = get_user_model()
 
@@ -38,4 +38,4 @@ class TestOccurrenceList(TestCase):
 
         doc = etree.HTML(resp.content.decode())
 
-        self.assertEqual(1, len(doc.xpath('//section[@id="configuration-list"]/div[@class="row"]')))
+        self.assertEqual(1, len(doc.xpath('//section[@id="configuration-list"]/div[@class="card"]')))
