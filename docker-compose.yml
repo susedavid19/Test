@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     expose:
       - 8000
-    entrypoint: /data/docker-entrypoint.sh
+    command: bash -c /data/docker-entrypoint.sh
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
       GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --workers=3"
@@ -35,16 +35,15 @@ services:
     expose:
       - 6379
   worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    entrypoint: /data/docker-worker-entrypoint.sh
+    build: .
+    command: bash -c /data/docker-worker-entrypoint.sh
     environment:
       DJANGO_SETTINGS_MODULE: "config.settings"
       DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
       DEBUG:
     depends_on:
       - queue
+      - application
 volumes:
   static-files:
   media-files:

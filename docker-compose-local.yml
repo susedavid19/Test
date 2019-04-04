@@ -10,6 +10,8 @@ services:
         target: /data
     environment:
       GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --reload --workers=3"
+    depends_on:
+      - database
   proxy:
     ports:
       - 7080:80
@@ -24,12 +26,12 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
   flower:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    entrypoint: /data/docker-flower-entrypoint.sh
+    build: . 
+    command: bash -c /data/docker-flower-entrypoint.sh
     ports:
       - 5555:5555
+    depends_on:
+      - application
   selenium-hub:
     image: selenium/hub
     environment:
