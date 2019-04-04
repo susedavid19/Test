@@ -53,11 +53,18 @@ FLOW_CHOICES = (
     (300, 'Low'),
 )
 
+SPEED_CHOICES = (
+    (70, '70'),
+    (60, '60'),
+    (50, '50'),
+    (40, '40'),
+)
 
 class OccurrenceConfiguration(models.Model):
     sub_occurrence = models.OneToOneField(SubOccurrence, 
         on_delete=models.CASCADE, default=1)
     lane_closures = models.CharField(
+        verbose_name='impact',
         max_length=2,
         choices=LANE_CHOICES,
         default='II',
@@ -67,8 +74,13 @@ class OccurrenceConfiguration(models.Model):
         default=15,
     )
     flow = models.PositiveIntegerField(
+        verbose_name='flow rate',
         choices=FLOW_CHOICES,
         default=300,
+    )
+    speed_limit = models.PositiveIntegerField(
+        choices=SPEED_CHOICES,
+        default=70,
     )
     frequency = models.PositiveIntegerField()
 

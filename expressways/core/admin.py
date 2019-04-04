@@ -25,4 +25,11 @@ class SubOccurrenceAdmin(admin.ModelAdmin):
     list_filter = ['occurrence']
 
 admin.site.register(SubOccurrence, SubOccurrenceAdmin)
-admin.site.register(OccurrenceConfiguration)
+
+
+class OccurrenceConfigurationAdmin(admin.ModelAdmin):
+    list_display = ('sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'frequency')
+    list_filter = ('sub_occurrence__occurrence', 'flow', 'lane_closures', 'speed_limit')
+    list_editable = ('frequency',)
+
+admin.site.register(OccurrenceConfiguration, OccurrenceConfigurationAdmin)
