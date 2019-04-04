@@ -3,4 +3,5 @@ _version: 1
 project: 'he-expressways'
 update_commands:
   - target: 'cd /data/he-expressways/django && docker pull quay.io/wspdigitalukteam/base-image:bionic && sudo -u wspreadonly git pull && sudo -u wspreadonly $(which docker-compose) build && docker-compose stop && docker-compose up -d && docker image prune -a -f'
+  - target: 'cd /data/he-expressways/django && docker-compose exec -T application bash -c /data/docker-entrypoint.sh'
 variables:

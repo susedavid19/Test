@@ -26,8 +26,8 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
   flower:
-    image: mher/flower
-    command: bash -c "/data/docker-flower-entrypoint.sh"
+    build: . 
+    command: bash -c /data/docker-flower-entrypoint.sh
     ports:
       - 5555:5555
     depends_on:

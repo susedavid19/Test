@@ -3,11 +3,12 @@
 This is the repository for the Expressways OMS Tool.
 
 ## Getting Started
-### Local Environment
+### Local Environment Default Setup
 ```
 git clone git@bitbucket.org:wspdigitaluk/expressways.git
 cd expressways
 docker-compose -f docker-compose.yml -f docker-compose-local.yml up -d
+docker-compose exec application bash -c /data/docker-entrypoint.sh
 ```
 You should see the site appear at `localhost:7080`.
 
