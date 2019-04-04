@@ -76,7 +76,8 @@
     </div>
     {% endfor %}
   </section>
-  <section id="new-configuration">
+  <!-- COMMENT OUT ADDING NEW CONFIGURATION SECTION FOR NOW WHILE REQUIREMENT IS FINALISED -->
+  <!-- <section id="new-configuration">
     <div id="collapse-trigger">
       <a data-toggle="collapse" href="#collapse-div" aria-expanded="false" aria-controls="collapse-div">
         + Add a new occurrence...
@@ -118,7 +119,7 @@
         </div>
       </form>
     </div>
-  </section>
+  </section> -->
   <section id="calculation">
     <form class="d-flex flex-column" method="POST" action="{% url 'core:calculate' %}">
       {% csrf_token %}
