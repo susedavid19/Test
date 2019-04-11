@@ -76,49 +76,6 @@
     </div>
     {% endfor %}
   </section>
-  <section id="new-configuration">
-    <div id="collapse-trigger">
-      <a data-toggle="collapse" href="#collapse-div" aria-expanded="false" aria-controls="collapse-div">
-        + Add a new occurrence...
-      </a>
-    </div>
-    <div class="collapse" id="collapse-div">
-      <form id="configurationForm" method="POST" action="{% url 'core:new' %}" data-sub-occurrences-url="{% url 'core:load_sub_occurrences' %}">
-        {% csrf_token %}
-        <div class="row">
-          <div class="col">
-            <label>Operational Occurrence</label>
-            {{form.occurrence}}
-          </div>
-          <div class="col">
-            <label>Operational Sub-occurrence</label>
-            {{form.sub_occurrence}}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <label>Lane Closure</label>
-            {{form.lane_closures}}
-          </div>
-          <div class="col">
-            <label>Duration</label>
-            {{form.duration}}
-          </div>
-          <div class="col">
-            <label>Flow Rate</label>
-            {{form.flow}}
-          </div>
-          <div class="col">
-            <label>Frequency</label>
-            {{form.frequency}}
-          </div>
-        </div>
-        <div class="form-row">
-          <button id="save_btn" type="submit" class="btn green waves-effect waves-light">Save</button>
-        </div>
-      </form>
-    </div>
-  </section>
   <section id="calculation">
     <form class="d-flex flex-column" method="POST" action="{% url 'core:calculate' %}">
       {% csrf_token %}

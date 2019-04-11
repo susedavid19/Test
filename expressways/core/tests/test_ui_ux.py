@@ -98,6 +98,7 @@ class TestUiUx(BaseTestCase):
         self.selenium.find_element_by_tag_name('button').click()
         self.element_class_obj = self.selenium.execute_script('return element_class_obj')
 
+    @unittest.skip("adding new configuration section from home page currently disabled")
     def test_class_is_set_on_tags(self):
         """
         On home page, all relevant tags has its class attribute set to respective value
@@ -127,6 +128,7 @@ class TestUiUx(BaseTestCase):
         self.selenium.find_element_by_id('save_btn').click()
         self.selenium.implicitly_wait(5)
 
+    @unittest.skip("adding new configuration section from home page currently disabled")
     def test_add_new_configuration(self):
         """
         On home page, when user clicks on 'Add a new occurrence...' section,
