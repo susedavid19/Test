@@ -77,8 +77,8 @@ SPEED_CHOICES = (
 )
 
 class OccurrenceConfiguration(models.Model):
-    sub_occurrence = models.OneToOneField(SubOccurrence, 
-        on_delete=models.CASCADE, default=1)
+    sub_occurrence = models.ForeignKey(SubOccurrence, 
+        on_delete=models.CASCADE)
     lane_closures = models.CharField(
         verbose_name='impact',
         max_length=2,
