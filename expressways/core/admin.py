@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from expressways.core.models import Occurrence, SubOccurrence, OccurrenceConfiguration, DesignComponent, EffectIntervention
 
@@ -28,9 +29,12 @@ admin.site.register(SubOccurrence, SubOccurrenceAdmin)
 
 
 class OccurrenceConfigurationAdmin(admin.ModelAdmin):
-    list_display = ('sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'frequency')
+    list_display = ('sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'frequency', 'possible_interventions')
     list_filter = ('sub_occurrence__occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration')
     list_editable = ('frequency',)
+
+    def possible_interventions(self, obj):
+        return mark_safe("<br><br>".join([inter.__str__() for inter in obj.effects.all()]))
 
 admin.site.register(OccurrenceConfiguration, OccurrenceConfigurationAdmin)
 
