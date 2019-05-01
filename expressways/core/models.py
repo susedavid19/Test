@@ -30,6 +30,22 @@ class SubOccurrence(CommonInfo):
         return self.name
 
 
+class DesignComponent(CommonInfo):
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+
+class EffectIntervention(models.Model):
+    design_component = models.ForeignKey(DesignComponent, on_delete=models.CASCADE)
+    frequency_change = models.IntegerField()
+    duration_change = models.IntegerField()
+    justification = models.TextField()
+
+    def __str__(self):
+        return f'{self.design_component.name}_{self.frequency_change}_{self.duration_change}'
+
 LANE_CHOICES = (
     ('II', 'II'),
     ('IX', 'IX'),
@@ -83,6 +99,10 @@ class OccurrenceConfiguration(models.Model):
         default=70,
     )
     frequency = models.PositiveIntegerField()
+    effects = models.ManyToManyField(
+        'EffectIntervention',
+        verbose_name='Possible intervention'
+    )
 
     def __str__(self):
         return ('{}_{}_{}_{}_{}').format(self.sub_occurrence.name, 

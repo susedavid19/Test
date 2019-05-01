@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from expressways.core.models import Occurrence, SubOccurrence, OccurrenceConfiguration
+from expressways.core.models import Occurrence, SubOccurrence, OccurrenceConfiguration, DesignComponent, EffectIntervention
 
 
 def archive(modeladmin, request, queryset):
@@ -33,3 +33,16 @@ class OccurrenceConfigurationAdmin(admin.ModelAdmin):
     list_editable = ('frequency',)
 
 admin.site.register(OccurrenceConfiguration, OccurrenceConfigurationAdmin)
+
+class DesignComponentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+    exclude = ['archived']
+    actions = [archive]
+
+admin.site.register(DesignComponent, DesignComponentAdmin)
+
+class EffectInterventionAdmin(admin.ModelAdmin):
+    list_display = ('design_component', 'frequency_change', 'duration_change', 'justification')
+    list_editable = ('frequency_change', 'duration_change',)
+
+admin.site.register(EffectIntervention, EffectInterventionAdmin)
