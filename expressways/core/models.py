@@ -38,6 +38,11 @@ class DesignComponent(CommonInfo):
         return self.name
 
 
+class Road(CommonInfo):
+    def __str__(self):
+        return self.name
+    
+
 LANE_CHOICES = (
     ('II', 'II'),
     ('IX', 'IX'),
@@ -69,8 +74,15 @@ SPEED_CHOICES = (
 )
 
 class OccurrenceConfiguration(models.Model):
-    sub_occurrence = models.ForeignKey(SubOccurrence, 
-        on_delete=models.CASCADE)
+    road = models.ForeignKey(
+        Road,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    sub_occurrence = models.ForeignKey(
+        SubOccurrence, 
+        on_delete=models.CASCADE
+    )
     lane_closures = models.CharField(
         verbose_name='impact',
         max_length=2,
