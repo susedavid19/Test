@@ -29,5 +29,5 @@ docker-compose exec application python3 /data/manage.py createsuperuser
 #### Loading Initial Data
 Default data will be loaded during container build. If you need to reload the data, run below command:
 ```
-docker-compose exec application python3 /data/manage.py loaddata /data/expressways/core/fixtures/occurrences.json
+docker-compose exec application python3 /data/manage.py loaddata occurrences designcomponents --app core
 ```

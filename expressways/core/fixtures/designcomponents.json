@@ -1,0 +1,38 @@
+[
+    {
+      "model": "core.designcomponent",
+      "pk": 1,
+      "fields": {
+        "name": "WCH & Slow Moving Vehicle Prohibition",
+        "archived": false,
+        "description": "The prevention of Walker, Cyclists, Horseriders and Slow Moving Vehicles (e.g. tractors)"
+      }
+    },
+    {
+      "model": "core.designcomponent",
+      "pk": 2,
+      "fields": {
+        "name": "Emergency Areas",
+        "archived": false,
+        "description": "Emergency Areas with Maintenance Hardstand Areas (~ 1.3-1.5km spacing).  Removal of laybys."
+      }
+    },
+    {
+      "model": "core.designcomponent",
+      "pk": 3,
+      "fields": {
+        "name": "Traffic Officer Service",
+        "archived": false,
+        "description": "Traffic Officer Service (inc. CCTV)"
+      }
+    },
+    {
+      "model": "core.designcomponent",
+      "pk": 4,
+      "fields": {
+        "name": "VMS",
+        "archived": false,
+        "description": "VMS with QP, CM, SVD"
+      }
+    }
+    ]

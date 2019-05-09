@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 
 class FilterArchivedManager(models.Manager):
@@ -25,6 +26,13 @@ class SubOccurrence(CommonInfo):
     occurrence = models.ForeignKey(Occurrence,
                                    on_delete=models.CASCADE,
                                    related_name='sub_occurrences')
+
+    def __str__(self):
+        return self.name
+
+
+class DesignComponent(CommonInfo):
+    description = models.TextField()
 
     def __str__(self):
         return self.name
@@ -61,8 +69,8 @@ SPEED_CHOICES = (
 )
 
 class OccurrenceConfiguration(models.Model):
-    sub_occurrence = models.OneToOneField(SubOccurrence, 
-        on_delete=models.CASCADE, default=1)
+    sub_occurrence = models.ForeignKey(SubOccurrence, 
+        on_delete=models.CASCADE)
     lane_closures = models.CharField(
         verbose_name='impact',
         max_length=2,
@@ -83,8 +91,36 @@ class OccurrenceConfiguration(models.Model):
         default=70,
     )
     frequency = models.PositiveIntegerField()
+    effect = models.ManyToManyField(
+        DesignComponent,
+        verbose_name='Possible intervention',
+        through='EffectIntervention'
+    )
 
     def __str__(self):
-        return ('{}_{}_{}_{}_{}').format(self.sub_occurrence.name, 
-            self.lane_closures, self.duration, self.flow, self.frequency)
-    
+        return f'{self.sub_occurrence.name}, {self.lane_closures}, {self.duration}, {self.flow}, {self.frequency}' 
+
+
+class EffectIntervention(models.Model):
+    design_component = models.ForeignKey(
+        DesignComponent, 
+        on_delete=models.CASCADE, 
+        verbose_name='Design component',
+        null=True,
+    )
+    configuration_effect = models.ForeignKey(
+        OccurrenceConfiguration,
+        on_delete=models.CASCADE,
+        verbose_name='Effect on configuration',
+        null=True,
+    )
+    frequency_change = models.IntegerField(
+        validators=[MinValueValidator(-100)]
+    )
+    duration_change = models.IntegerField(
+        validators=[MinValueValidator(-100)]
+    )
+    justification = models.TextField()
+
+    def __str__(self):
+        return f'{self.design_component.name} with {self.frequency_change}% frequency and {self.duration_change}% duration change'
