@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.core.exceptions import ValidationError
 
 from expressways.core.factories import ConfigurationFactory, ConfigWithEffectFactory, ConfigWithMultEffectsFactory
 from expressways.core.models import OccurrenceConfiguration, EffectIntervention
@@ -44,6 +45,13 @@ class TestEffectOnConfiguration(TestCase):
         EffectIntervention.objects.filter(configuration_effect=config).update(duration_change=-30)
         effect.refresh_from_db()
         self.assertEqual(effect.duration_change, -30)
+        EffectIntervention.objects.filter(configuration_effect=config).update(duration_change=-150, frequency_change=-200)
+        effect.refresh_from_db()
+        try:
+            effect.full_clean()
+        except ValidationError as e:
+            self.assertTrue('duration_change' in e.message_dict)
+            self.assertTrue('frequency_change' in e.message_dict)
 
     def test_add_configuration_with_same_suboccurrence(self):
         """
