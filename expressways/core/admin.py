@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from expressways.core.models import Occurrence, SubOccurrence, OccurrenceConfiguration, DesignComponent, EffectIntervention, Road
-
+from expressways.core.admin_list_filter import RoadListFilter
 
 def archive(modeladmin, request, queryset):
     for item in queryset:
@@ -35,10 +35,15 @@ class InterventionInline(admin.TabularInline):
 class OccurrenceConfigurationAdmin(admin.ModelAdmin):
     fields = ('road', 'sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'frequency')
     list_display = ('road', 'sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'frequency', 'possible_interventions')
-    list_filter = ('road__name', 'sub_occurrence__occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration')
+    list_filter = (RoadListFilter, 'sub_occurrence__occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration')
     list_editable = ('frequency',)
     inlines = (InterventionInline,)
     exclude = ('effect',)
+
+    class Media:
+        css = {
+            'all': ('admin/configuration-style.css',)
+        }
 
     def possible_interventions(self, obj):
         return mark_safe("<br><br>".join([inter.__str__() for inter in obj.effect.all()]))
