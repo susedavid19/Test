@@ -20,6 +20,9 @@
       </div>
     </div>
   </div>
+  <div class="row">
+    <p>Road selected: <strong>{{ road.name }}</strong></p>
+  </div>
   <section id="configuration-list">
     {% for configuration in configurations %}
     <div class="card">
@@ -79,7 +82,7 @@
   <section id="calculation">
     <form class="d-flex flex-column" method="POST" action="{% url 'core:calculate' %}">
       {% csrf_token %}
-      <button id="calculate_btn" type="submit" class="btn green align-self-end">Calculate Results</button>
+      <button id="calculate_btn" type="submit" class="btn green accent-3 align-self-end">Calculate Results</button>
     </form>
   </section>
   <section id="objective-area">

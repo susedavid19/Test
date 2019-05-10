@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<p>Select respective road before proceed:</p>
+<form class="d-flex flex-column" method="POST">
+  {% csrf_token %}
+  {{form}}
+  <br>
+  <button type="submit" class="btn green accent-3 align-self-end">Start Analysis</button>
+</form>
+{% endblock %}

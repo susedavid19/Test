@@ -1,6 +1,6 @@
-from django.forms import ModelForm, ModelChoiceField
+from django.forms import Form, ModelForm, ModelChoiceField
 
-from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence
+from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road
 
 
 class OccurrenceConfigurationForm(ModelForm):
@@ -13,3 +13,6 @@ class OccurrenceConfigurationForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['sub_occurrence'].queryset = SubOccurrence.objects.none()
+
+class RoadSelectionForm(Form):
+    road = ModelChoiceField(queryset=Road.objects.all(), label='', empty_label=None)
