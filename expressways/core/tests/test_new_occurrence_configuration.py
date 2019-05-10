@@ -24,6 +24,7 @@ class TestNewOccurrenceConfiguration(TestCase):
             'frequency': 1000,
         }
 
+    @unittest.skip('new configuration defined on admin')
     def test_login_required(self):
         self.client.logout()
 
@@ -41,6 +42,7 @@ class TestNewOccurrenceConfiguration(TestCase):
 
         self.assertEqual(0, OccurrenceConfiguration.objects.count())
 
+    @unittest.skip('new configuration defined on admin')
     def test_add_configuration(self):
         self.assertEqual(0, OccurrenceConfiguration.objects.count())
 
@@ -48,11 +50,13 @@ class TestNewOccurrenceConfiguration(TestCase):
 
         self.assertEqual(1, OccurrenceConfiguration.objects.count())
 
+    @unittest.skip('new configuration defined on admin')
     def test_redirect_to_home_after_configuration_created(self):
         resp = self.client.post(reverse('core:new'), self.valid_data)
 
         self.assertRedirects(resp, reverse('core:home'))
 
+    @unittest.skip('new configuration defined on admin')
     def test_id_remove_from_session(self):
         session = self.client.session
         session['task_id'] = '1234'
