@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from expressways.core.models import Occurrence, SubOccurrence, OccurrenceConfiguration, DesignComponent, EffectIntervention
-
+from expressways.core.models import Occurrence, SubOccurrence, OccurrenceConfiguration, DesignComponent, EffectIntervention, Road
+from expressways.core.admin_list_filter import RoadListFilter
 
 def archive(modeladmin, request, queryset):
     for item in queryset:
@@ -33,14 +33,25 @@ class InterventionInline(admin.TabularInline):
     extra = 0
 
 class OccurrenceConfigurationAdmin(admin.ModelAdmin):
-    list_display = ('sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'frequency', 'possible_interventions')
-    list_filter = ('sub_occurrence__occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration')
+    fields = ('road', 'sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'frequency')
+    list_display = ('road', 'sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'frequency', 'possible_interventions')
+    list_filter = (RoadListFilter, 'sub_occurrence__occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration')
     list_editable = ('frequency',)
     inlines = (InterventionInline,)
     exclude = ('effect',)
 
+    class Media:
+        css = {
+            'all': ('admin/configuration-style.css',)
+        }
+
     def possible_interventions(self, obj):
         return mark_safe("<br><br>".join([inter.__str__() for inter in obj.effect.all()]))
+    
+    def get_readonly_fields(self, request, obj=None):
+        if obj: # editing an existing object
+            return self.readonly_fields + ('road',)
+        return self.readonly_fields
 
 admin.site.register(OccurrenceConfiguration, OccurrenceConfigurationAdmin)
 
@@ -62,3 +73,9 @@ class EffectInterventionAdmin(admin.ModelAdmin):
         return False
 
 admin.site.register(EffectIntervention, EffectInterventionAdmin)
+
+class RoadAdmin(admin.ModelAdmin):
+    exclude = ['archived']
+    actions = [archive]
+
+admin.site.register(Road, RoadAdmin)

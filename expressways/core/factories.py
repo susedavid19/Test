@@ -12,11 +12,14 @@ class UserFactory(fdj.DjangoModelFactory):
         superuser = f.Trait(
             username = 'test-admin',
             email = 'test-admin@xp.com',
+            is_staff = True,
+            is_superuser = True,
         )
 
     username = f.Sequence('person{0}'.format)
     email = f.Sequence('person{0}@xpress.com'.format)
     password = f.PostGenerationMethodCall('set_password', '123P@s$w0rd')
+    is_active = True
 
 class OccurrenceFactory(fdj.DjangoModelFactory):
     class Meta:
@@ -37,10 +40,17 @@ class DesignComponentFactory(fdj.DjangoModelFactory):
 
     name = 'Traffic Officer Service'
 
+class RoadFactory(fdj.DjangoModelFactory):
+    class Meta:
+        model = Road
+
+    name = 'M6 Junction 9-10'
+
 class ConfigurationFactory(fdj.DjangoModelFactory):
     class Meta:
         model = OccurrenceConfiguration
 
+    road = f.SubFactory(RoadFactory)
     sub_occurrence = f.SubFactory(SubOccurrenceFactory)
     lane_closures = 'II'
     duration = 15

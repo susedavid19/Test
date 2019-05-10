@@ -1,0 +1,18 @@
+[
+    {
+      "model": "core.road",
+      "pk": 1,
+      "fields": {
+        "name": "Test Motorway 1",
+        "archived": false
+      }
+    },
+    {
+      "model": "core.road",
+      "pk": 2,
+      "fields": {
+        "name": "Test A Road",
+        "archived": false
+      }
+    }
+]

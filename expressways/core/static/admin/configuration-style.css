@@ -1,0 +1,16 @@
+#changelist-filter h3:first-of-type {
+    font-size: 18px;
+}
+#changelist-filter ul:first-of-type {
+    background-color: #00e676;
+    padding-top: 10px;
+}
+#changelist-filter ul:first-of-type a {
+    color: #cfd8dc;
+}
+#changelist-filter ul:first-of-type a:hover {
+    color: white;
+}
+#changelist-filter ul:first-of-type .selected a {
+    color: black;
+}
