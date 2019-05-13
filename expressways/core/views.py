@@ -30,6 +30,11 @@ class HomeView(LoginRequiredMixin, View):
 class DeleteOccurrenceConfiguration(LoginRequiredMixin, DeleteView):
     model = OccurrenceConfiguration
 
+    def get_object(self):
+        obj = super(DeleteOccurrenceConfiguration, self).get_object()
+        CalculationResult.objects.filter(config_ids__contains=[obj.pk]).delete()
+        return obj
+
     def delete(self, request, *args, **kwargs):
         response = super().delete(request, *args, **kwargs)
         if 'task_id' in self.request.session:
@@ -48,7 +53,11 @@ class CalculateView(LoginRequiredMixin, View):
 
     def post(self, request):
         items = []
-        for item in OccurrenceConfiguration.objects.filter(road=self.request.session['road_id']):
+        calc_ids = []
+        road_id = self.request.session['road_id']
+
+        for item in OccurrenceConfiguration.objects.filter(road=road_id):
+            calc_ids.append(item.pk)            
             items.append({
                 'lane_closures': item.lane_closures,
                 'duration': item.duration,
@@ -56,11 +65,15 @@ class CalculateView(LoginRequiredMixin, View):
                 'frequency': item.frequency,
             })
 
-        res = calculate.delay(items)
+        try:
+            calculated = CalculationResult.objects.get(config_ids=calc_ids)
+        except CalculationResult.DoesNotExist:
+            res = calculate.delay(calc_ids, items)
+            request.session['task_id'] = res.id
+        else:
+            request.session['task_id'] = calculated.task_id
 
-        request.session['task_id'] = res.id
-
-        return redirect(reverse('core:home', kwargs={'road_id': self.request.session['road_id']}))
+        return redirect(reverse('core:home', kwargs={'road_id': road_id}))
 
 
 class ResultView(LoginRequiredMixin, View):
@@ -102,4 +115,6 @@ class RoadSelectionView(LoginRequiredMixin, FormView):
 
     def get_success_url(self):
         self.request.session['road_id'] = self.road_id
+        if 'task_id' in self.request.session: # reset any previous task id when road is changed
+            del self.request.session['task_id']
         return reverse('core:home', kwargs={'road_id': self.road_id})
