@@ -9,6 +9,11 @@
 {% endblock %}
 
 {% block content %}
+  <div id="road-header">
+    <div class="row col-name">Selected road:</div>
+    <div id="road-name" class="row">{{ road.name }}</div>
+    <div class="row small"><a href="{% url 'core:road' %}">back to road selection</a></div>
+  </div>
   <div class="row">
     <div class="col">
       <div id="error-card" class="card red accent-2" style="display: none;">
@@ -19,9 +24,6 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="row">
-    <p>Road selected: <strong>{{ road.name }}</strong></p>
   </div>
   <section id="configuration-list">
     {% for configuration in configurations %}

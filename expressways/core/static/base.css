@@ -39,7 +39,7 @@ section {
     padding: 5px 0px;
 }    
 
-#configuration-list .title-name {
+.title-name {
     font-weight: 700;
     margin-right: 5px;
 }
@@ -48,7 +48,7 @@ section {
     min-width: 150px;
 }
 
-#configuration-list .col-name {
+.col-name {
     font-weight: 700;
     font-size: 0.7em;
     text-transform: uppercase;
@@ -82,4 +82,8 @@ h2 {
     padding: 50px; 
     width: 500px;
     text-align: center;
+}
+
+#road-header {
+    padding: 15px;
 }
