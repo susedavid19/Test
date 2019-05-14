@@ -1,21 +1,11 @@
-import socket
 import json
-import os
 import unittest
 
-from selenium import webdriver
-from selenium.webdriver.common import desired_capabilities, keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.select import Select
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import override_settings, tag
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
+from expressways.core.tests.selenium_setup import BaseTestCase, Select, WebDriverWait, EC, By
 from expressways.core.models import OccurrenceConfiguration
 from expressways.calculation.models import CalculationResult
 
@@ -24,42 +14,6 @@ User = get_user_model()
 @tag('selenium')
 @override_settings(ALLOWED_HOSTS=['*'])
 @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
-class BaseTestCase(StaticLiveServerTestCase):
-    """
-    Provides base test class which connects to the Docker
-    container running selenium.
-    """
-    host = '0.0.0.0' # bind to allow external access
-
-    @classmethod
-    def setUpClass(cls):
-
-        is_remote_driver = os.getenv("SELENIUM_REMOTE", False)
-
-        super().setUpClass()
-        # Set host to externally accessible web server address
-        cls.host = socket.gethostbyname(socket.gethostname())
-        if is_remote_driver:
-            cls.selenium = webdriver.Remote(
-                command_executor='http://127.0.0.1:4444/wd/hub',
-                desired_capabilities=desired_capabilities.DesiredCapabilities.CHROME,
-            )
-        else:
-            cls.selenium = webdriver.Remote(
-                command_executor='http://selenium-hub:4444/wd/hub',
-                desired_capabilities=desired_capabilities.DesiredCapabilities.CHROME,
-            )
-            
-        cls.selenium.implicitly_wait(5)
-
-    @classmethod
-    def tearDownClass(cls):
-        try:
-            cls.selenium.quit()
-            super().tearDownClass()
-        except:
-            pass
-
 class TestUiUx(BaseTestCase):
     fixtures = ['occurrences']
 

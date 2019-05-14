@@ -44,7 +44,7 @@ class RoadFactory(fdj.DjangoModelFactory):
     class Meta:
         model = Road
 
-    name = 'M6 Junction 9-10'
+    name = f.Sequence('M6 Junction {0}'.format)
 
 class ConfigurationFactory(fdj.DjangoModelFactory):
     class Meta:
