@@ -73,7 +73,7 @@ class TestRoadSelection(BaseTestCase):
             objective_2=obj2
         )
 
-        self.selenium.get(f'{self.live_server_url}/accounts/login/')
+        self.selenium.get(f'{self.live_server_url}')
         username_input = self.selenium.find_element_by_id('id_username')
         username_input.send_keys(self.user.username)
         password_input = self.selenium.find_element_by_id('id_password')

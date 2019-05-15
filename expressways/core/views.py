@@ -67,11 +67,10 @@ class CalculateView(LoginRequiredMixin, View):
 
         try:
             calculated = CalculationResult.objects.get(config_ids=calc_ids)
+            request.session['task_id'] = calculated.task_id
         except CalculationResult.DoesNotExist:
             res = calculate.delay(calc_ids, items)
             request.session['task_id'] = res.id
-        else:
-            request.session['task_id'] = calculated.task_id
 
         return redirect(reverse('core:home', kwargs={'road_id': road_id}))
 
