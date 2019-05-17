@@ -8,7 +8,6 @@ from braces.views import LoginRequiredMixin
 from celery.result import AsyncResult
 import time
 
-from expressways.calculation.tasks import add, calculate
 from expressways.calculation.models import CalculationResult
 from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road
 from expressways.core.forms import OccurrenceConfigurationForm, RoadSelectionForm
@@ -45,7 +44,7 @@ class DeleteOccurrenceConfiguration(LoginRequiredMixin, DeleteView):
         return reverse('core:home', kwargs={'road_id': self.request.session['road_id']})
 
 
-class CalculateView(LoginRequiredMixin, View):
+class CalculateView(LoginRequiredMixin, View):    
     def get(self, request):
         #  clicked calculate button while logged out and then got redirected
         #  here after signing in
@@ -54,25 +53,29 @@ class CalculateView(LoginRequiredMixin, View):
     def post(self, request):
         items = []
         calc_ids = []
-        road_id = self.request.session['road_id']
+        road_id = request.session['road_id']
 
         for item in OccurrenceConfiguration.objects.filter(road=road_id):
             calc_ids.append(item.pk)            
-            items.append({
-                'lane_closures': item.lane_closures,
-                'duration': item.duration,
-                'flow': item.flow,
-                'frequency': item.frequency,
-            })
+            items.append(self.create_calculation_object(item))
 
         try:
             calculated = CalculationResult.objects.get(config_ids=calc_ids)
             request.session['task_id'] = calculated.task_id
         except CalculationResult.DoesNotExist:
+            from expressways.calculation.tasks import calculate
             res = calculate.delay(calc_ids, items)
             request.session['task_id'] = res.id
 
         return redirect(reverse('core:home', kwargs={'road_id': road_id}))
+
+    def create_calculation_object(self, occ_config):
+        return {
+            'lane_closures': occ_config.lane_closures,
+            'duration': occ_config.duration,
+            'flow': occ_config.flow,
+            'frequency': occ_config.frequency,
+        }
 
 
 class ResultView(LoginRequiredMixin, View):
