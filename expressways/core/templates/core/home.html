@@ -9,6 +9,11 @@
 {% endblock %}
 
 {% block content %}
+  <div id="road-header">
+    <div class="row col-name">Selected road:</div>
+    <div id="road-name" class="row">{{ road.name }}</div>
+    <div class="row small"><a href="{% url 'core:road' %}">back to road selection</a></div>
+  </div>
   <div class="row">
     <div class="col">
       <div id="error-card" class="card red accent-2" style="display: none;">
@@ -79,7 +84,7 @@
   <section id="calculation">
     <form class="d-flex flex-column" method="POST" action="{% url 'core:calculate' %}">
       {% csrf_token %}
-      <button id="calculate_btn" type="submit" class="btn green align-self-end">Calculate Results</button>
+      <button id="calculate_btn" type="submit" class="btn green accent-3 align-self-end">Calculate Results</button>
     </form>
   </section>
   <section id="objective-area">

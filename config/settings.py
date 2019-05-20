@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'expressways.core',
     'expressways.calculation',
     'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.auth',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -145,7 +145,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 
-LOGIN_REDIRECT_URL = 'core:home'
+LOGIN_REDIRECT_URL = '/'
 SESSION_COOKIE_AGE = 600
 SESSION_SAVE_EVERY_REQUEST = True
 

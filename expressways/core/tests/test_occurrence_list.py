@@ -3,19 +3,23 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from lxml import etree
 
-from expressways.core.models import Occurrence, SubOccurrence, OccurrenceConfiguration
+from expressways.core.models import Occurrence, SubOccurrence, OccurrenceConfiguration, Road
 
 User = get_user_model()
 
 
 class TestOccurrenceList(TestCase):
-    fixtures = ['occurrences']
+    fixtures = ['occurrences', 'roads']
 
     def setUp(self):
         self.user = User.objects.create(username='jane')
         self.client.force_login(self.user)
 
-        self.url = reverse('core:home')
+        session = self.client.session
+        session['road_id'] = 1
+        session.save()
+
+        self.url = reverse('core:home', args=[1])
 
     def test_occurrence_configuration_table_starts_empty(self):
         resp = self.client.get(self.url)
@@ -28,7 +32,9 @@ class TestOccurrenceList(TestCase):
 
     def test_single_occurrence_configuration_is_displayed(self):
         sub_occurrence = SubOccurrence.objects.first()
-        OccurrenceConfiguration.objects.create(sub_occurrence=sub_occurrence,
+        road = Road.objects.first()
+        OccurrenceConfiguration.objects.create(road=road,
+                                               sub_occurrence=sub_occurrence,
                                                lane_closures='XX',
                                                duration=60,
                                                flow=300,

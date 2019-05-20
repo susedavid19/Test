@@ -14,7 +14,7 @@ def add(x, y):
 
 
 @app.task(bind=True)
-def calculate(self, items):
+def calculate(self, config_ids, items):
     objective_2 = 0
     df = pd.DataFrame()
 
@@ -48,6 +48,7 @@ def calculate(self, items):
     result = CalculationResult()
     result.task_id = self.request.id
     result.items = json.dumps(items)
+    result.config_ids = config_ids
     result.objective_1 = objective_1
     result.objective_2 = objective_2
     result.save()

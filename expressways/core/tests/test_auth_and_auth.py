@@ -42,7 +42,7 @@ class TestAuthAndAuth(TestCase):
         resp = self.client.post(reverse('login'), data)
 
         self.assertEqual(get_user(self.client), self.user)
-        self.assertRedirects(resp, reverse('core:home'))
+        self.assertRedirects(resp, reverse('core:road'))
 
     def test_user_enters_wrong_password(self):
         '''
@@ -72,7 +72,7 @@ class TestAuthAndAuth(TestCase):
         '''
         self.client.force_login(self.user)
 
-        resp = self.client.get(reverse('core:home'))
+        resp = self.client.get(reverse('core:road'))
 
         self.assertEqual(200, resp.status_code)
 
@@ -82,9 +82,9 @@ class TestAuthAndAuth(TestCase):
           When the user returns to the tool
           Then the user is returned to the login page
         '''
-        resp = self.client.get(reverse('core:home'))
+        resp = self.client.get(reverse('core:road'))
         self.assertRedirects(resp, '{}?next={}'.format(reverse('login'),
-                                                       reverse('core:home')))
+                                                       reverse('core:road')))
 
     def test_password_change(self):
         '''
