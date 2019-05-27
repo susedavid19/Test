@@ -6,7 +6,7 @@ from unittest.mock import patch, MagicMock
 from expressways.core.factories import ConfigurationFactory, RoadFactory
 from expressways.core.views import CalculateView
 
-@patch('expressways.calculation.tasks.calculate')
+@patch('expressways.core.views.calculate')
 class TestCalculateView(TestCase):
     def setUp(self):
         self.request = RequestFactory()

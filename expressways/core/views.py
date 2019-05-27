@@ -9,6 +9,7 @@ from celery.result import AsyncResult
 import time
 
 from expressways.calculation.models import CalculationResult
+from expressways.calculation.tasks import calculate
 from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road
 from expressways.core.forms import InterventionForm, RoadSelectionForm
 
@@ -63,7 +64,6 @@ class CalculateView(LoginRequiredMixin, View):
             calculated = CalculationResult.objects.get(config_ids=calc_ids)
             request.session['task_id'] = calculated.task_id
         except CalculationResult.DoesNotExist:
-            from expressways.calculation.tasks import calculate
             res = calculate.delay(calc_ids, items)
             request.session['task_id'] = res.id
 
