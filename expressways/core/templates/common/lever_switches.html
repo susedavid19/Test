@@ -1,0 +1,10 @@
+{% with id=widget.attrs.id %}<div{% if id %} id="{{ id }}"{% endif %}{% if widget.attrs.class %} class="{{ widget.attrs.class }}"{% endif %}>{% for group, options, index in widget.optgroups %}{% if group %}
+  <div>{{ group }}<div{% if id %} id="{{ id }}_{{ index }}"{% endif %}>{% endif %}{% for option in options %}
+    <div class="col-lg-3 col-md-6 col-sm-12">
+      <div class="custom-switch">
+        <input type="checkbox" class="custom-control-input" id="{{ option.name }}-{{ option.value }}" value="{{option.value}}">
+        <label class="custom-control-label" for="{{ option.name }}-{{ option.value }}">{{ option.label }}</label>
+      </div>
+    </div>{% endfor %}{% if group %}
+    </div></div>{% endif %}{% endfor %}
+</div>{% endwith %}

@@ -10,12 +10,12 @@ import time
 
 from expressways.calculation.models import CalculationResult
 from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road
-from expressways.core.forms import OccurrenceConfigurationForm, RoadSelectionForm
+from expressways.core.forms import InterventionForm, RoadSelectionForm
 
 
 class HomeView(LoginRequiredMixin, View):
     def get(self, request, road_id):
-        form = OccurrenceConfigurationForm()
+        form = InterventionForm()
         configurations = OccurrenceConfiguration.objects.filter(road=road_id)
         road = Road.objects.get(id=road_id)
         context = {

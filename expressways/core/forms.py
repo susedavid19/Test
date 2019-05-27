@@ -1,18 +1,24 @@
-from django.forms import Form, ModelForm, ModelChoiceField
+from django.forms import Form, ModelChoiceField
+from django.forms.widgets import CheckboxSelectMultiple
 
-from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road
+from expressways.core.models import Road, DesignComponent
 
-
-class OccurrenceConfigurationForm(ModelForm):
-    occurrence = ModelChoiceField(queryset=Occurrence.objects.all())
-
-    class Meta:
-        model = OccurrenceConfiguration
-        exclude = []
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['sub_occurrence'].queryset = SubOccurrence.objects.none()
 
 class RoadSelectionForm(Form):
-    road = ModelChoiceField(queryset=Road.objects.all(), label='', empty_label=None)
+    road = ModelChoiceField(
+        queryset=Road.objects.all(), 
+        label='', 
+        empty_label=None
+    )
+
+class LeverSwitches(CheckboxSelectMultiple):
+    template_name = 'common/lever_switches.html'
+
+class InterventionForm(Form):   
+    design_components = ModelChoiceField(
+        queryset=DesignComponent.objects.all(),
+        widget=LeverSwitches(attrs={'class' : 'row'}), 
+        label='',
+        empty_label=None,
+        required=False,
+    )

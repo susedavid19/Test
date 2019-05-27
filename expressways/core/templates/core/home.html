@@ -84,6 +84,10 @@
   <section id="calculation">
     <form class="d-flex flex-column" method="POST" action="{% url 'core:calculate' %}">
       {% csrf_token %}
+      <h2>Design Components</h2>
+      <section id="design-components" class="row container-fluid">
+        {{form}}
+      </section>
       <button id="calculate_btn" type="submit" class="btn green accent-3 align-self-end">Calculate Results</button>
     </form>
   </section>
