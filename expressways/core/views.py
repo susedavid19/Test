@@ -45,27 +45,36 @@ class DeleteOccurrenceConfiguration(LoginRequiredMixin, DeleteView):
         return reverse('core:home', kwargs={'road_id': self.request.session['road_id']})
 
 
-class CalculateView(LoginRequiredMixin, View):    
+class CalculateView(LoginRequiredMixin, View):
     def post(self, request):
         items = []
         calc_ids = []
         road_id = request.session['road_id']
-        intform = InterventionForm(request.POST)
-        design_comp = request.POST.getlist('design_components')
-        print('DES: ', design_comp, intform) 
+        form = InterventionForm(request.POST)
+        
+        if form.is_valid(): # for valid or blank selection
+            components = form.cleaned_data['design_components']
+            print('COMP:  ', components)
 
-        for item in OccurrenceConfiguration.objects.filter(road=road_id):
-            calc_ids.append(item.pk)            
-            items.append(self.create_calculation_object(item))
+            for item in OccurrenceConfiguration.objects.filter(road=road_id):
+                calc_ids.append(item.pk)            
+                items.append(self.create_calculation_object(item))
 
-        try:
-            calculated = CalculationResult.objects.get(config_ids=calc_ids)
-            request.session['task_id'] = calculated.task_id
-        except CalculationResult.DoesNotExist:
-            res = calculate.delay(calc_ids, items)
-            request.session['task_id'] = res.id
+            try:
+                calculated = CalculationResult.objects.get(config_ids=calc_ids)
+                request.session['task_id'] = calculated.task_id
+            except CalculationResult.DoesNotExist:
+                res = calculate.delay(calc_ids, items)
+                request.session['task_id'] = res.id
 
-        return redirect(reverse('core:home', kwargs={'road_id': road_id}))
+        configurations = OccurrenceConfiguration.objects.filter(road=road_id)
+        road = Road.objects.get(id=road_id)
+        context = {
+            'road': road,
+            'configurations': configurations,
+            'form': form,
+        }
+        return render(request, 'core/home.html', context)
 
     def create_calculation_object(self, occ_config):
         return {
@@ -74,7 +83,7 @@ class CalculateView(LoginRequiredMixin, View):
             'flow': occ_config.flow,
             'frequency': occ_config.frequency,
         }
-
+    
 
 class ResultView(LoginRequiredMixin, View):
     def get(self, request, task_id):
