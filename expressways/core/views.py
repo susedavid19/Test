@@ -46,15 +46,13 @@ class DeleteOccurrenceConfiguration(LoginRequiredMixin, DeleteView):
 
 
 class CalculateView(LoginRequiredMixin, View):    
-    def get(self, request):
-        #  clicked calculate button while logged out and then got redirected
-        #  here after signing in
-        return redirect(reverse('core:road'))
-
     def post(self, request):
         items = []
         calc_ids = []
         road_id = request.session['road_id']
+        intform = InterventionForm(request.POST)
+        design_comp = request.POST.getlist('design_components')
+        print('DES: ', design_comp, intform) 
 
         for item in OccurrenceConfiguration.objects.filter(road=road_id):
             calc_ids.append(item.pk)            
