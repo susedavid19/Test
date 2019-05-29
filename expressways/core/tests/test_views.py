@@ -8,8 +8,10 @@ from expressways.core.views import CalculateView
 
 @patch('expressways.core.views.calculate')
 class TestCalculateView(TestCase):
+    fixtures = ['designcomponents']
+
     def setUp(self):
-        self.request = RequestFactory()
+        self.factory = RequestFactory()
         self.view = CalculateView()
 
 
@@ -48,9 +50,9 @@ class TestCalculateView(TestCase):
         configurations_a = ConfigurationFactory.create_batch(3, road=road_a)
         configurations_b = ConfigurationFactory.create_batch(5, road=road_b)
 
-        self.request.session = {'road_id': road_a.pk}
-
-        response = self.view.post(self.request)
+        request = self.factory.get(f'/home/{road_a.pk}')
+        request.session = {'road_id': road_a.pk}
+        response = self.view.post(request)
 
         expected_config_ids = list(map(lambda config: config.pk, configurations_a))
         expected_items = list(map(self.view.create_calculation_object, configurations_a))
@@ -65,15 +67,16 @@ class TestCalculateView(TestCase):
         Then the session is updated with the task ID
         '''
         configuration = ConfigurationFactory.create()
-        self.request.session = {'road_id': configuration.road.pk}
+
+        request = self.factory.get(f'/home/{configuration.road.pk}')
+        request.session = {'road_id': configuration.road.pk}
 
         task = MagicMock()
         task.id = 42
         calculate_mock.delay.return_value = task
 
-        self.view.post(self.request)
-
-        self.assertEquals(task.id, self.request.session['task_id'])
+        self.view.post(request)
+        self.assertEquals(task.id, request.session['task_id'])
 
     
     @skip('Outstanding test needed.  EOT-116')
@@ -84,17 +87,3 @@ class TestCalculateView(TestCase):
         Then the previous result is returned
         '''        
         self.assertTrue(False)
-
-
-
-    def test_response_redirects_to_home(self, calculate_mock):
-        '''
-        When a calculation is performed
-        Then the view returns a redirect response with the correct road ID
-        '''
-        configuration = ConfigurationFactory.create()
-        self.request.session = {'road_id': configuration.road.pk}
-
-        response = self.view.post(self.request)
-
-        self.assertEquals(reverse('core:home', kwargs={'road_id': configuration.road.pk}), response.url)
