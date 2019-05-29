@@ -9,8 +9,8 @@ from celery.result import AsyncResult
 import time
 
 from expressways.calculation.models import CalculationResult
-from expressways.calculation.tasks import calculate
-from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road
+from expressways.calculation.tasks import calculate, calculate_expressways
+from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road, DesignComponent, EffectIntervention
 from expressways.core.forms import InterventionForm, RoadSelectionForm
 
 
@@ -46,29 +46,22 @@ class DeleteOccurrenceConfiguration(LoginRequiredMixin, DeleteView):
 
 
 class CalculateView(LoginRequiredMixin, View):
+    road_id = None
+
     def post(self, request):
-        items = []
-        calc_ids = []
-        road_id = request.session['road_id']
+        self.road_id = request.session['road_id']
         form = InterventionForm(request.POST)
-        
-        if form.is_valid(): # for valid or blank selection
-            components = form.cleaned_data['design_components']
-            print('COMP:  ', components)
 
-            for item in OccurrenceConfiguration.objects.filter(road=road_id):
-                calc_ids.append(item.pk)            
-                items.append(self.create_calculation_object(item))
+        if form.is_valid():
+            components = form.cleaned_data['design_components'] 
+            if components:
+                request.session['task_id'] = self.process_expressways_calculation(components)
+            else:
+                request.session['task_id'] = self.process_baseline_calculation()
 
-            try:
-                calculated = CalculationResult.objects.get(config_ids=calc_ids)
-                request.session['task_id'] = calculated.task_id
-            except CalculationResult.DoesNotExist:
-                res = calculate.delay(calc_ids, items)
-                request.session['task_id'] = res.id
 
-        configurations = OccurrenceConfiguration.objects.filter(road=road_id)
-        road = Road.objects.get(id=road_id)
+        configurations = OccurrenceConfiguration.objects.filter(road=self.road_id)
+        road = Road.objects.get(id=self.road_id)
         context = {
             'road': road,
             'configurations': configurations,
@@ -84,6 +77,54 @@ class CalculateView(LoginRequiredMixin, View):
             'frequency': occ_config.frequency,
         }
     
+    def process_baseline_calculation(self):
+        items = []
+        calc_ids = []
+        for item in OccurrenceConfiguration.objects.filter(road=self.road_id):
+            calc_ids.append(item.pk)            
+            items.append(self.create_calculation_object(item))
+
+        try:
+            calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=[])
+            return calculated.task_id
+        except CalculationResult.DoesNotExist:
+            res = calculate.delay(calc_ids, items)
+            return res.id
+
+    def alter_expressways_value(self, occ_config, comp):
+        new_freq = 0
+        new_dur = 0
+        effect = EffectIntervention.objects.get(design_component__pk=comp.pk, configuration_effect__pk=occ_config.pk)
+        
+        freq_change = effect.frequency_change
+        if freq_change != 0:
+            new_freq = occ_config.frequency + ((freq_change / 100) * occ_config.frequency)
+        dur_change = effect.duration_change
+        if dur_change != 0:
+            new_dur = occ_config.duration + ((dur_change / 100) * occ_config.duration)
+
+        return new_freq, new_dur    
+        
+    def process_expressways_calculation(self, components):
+        items = []
+        calc_ids = []
+        comp_ids = []
+        for item in OccurrenceConfiguration.objects.filter(road=self.road_id):
+            calc_ids.append(item.pk)            
+            for comp in components:
+                comp_ids.append(comp.pk)
+                # verify if current configuration has current design component
+                if OccurrenceConfiguration.objects.filter(pk=item.pk, effect__pk=comp.pk).exists():
+                    new_freq, new_dur = self.alter_expressways_value(item, comp)
+                    items.append(self.create_calculation_object(item))
+
+        try:
+            calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=comp_ids)
+            return calculated.task_id
+        except CalculationResult.DoesNotExist:
+            res = calculate_expressways.delay(calc_ids, comp_ids, items)
+            return res.id
+
 
 class ResultView(LoginRequiredMixin, View):
     def get(self, request, task_id):
@@ -93,7 +134,33 @@ class ResultView(LoginRequiredMixin, View):
 
         result = get_object_or_404(CalculationResult, task_id=task_id)
 
-        return JsonResponse({'objective_1': result.objective_1, 'objective_2': result.objective_2})
+        obj = {
+            'objective_1': '-',
+            'objective_2': '-',
+            'objective_exp_1': '-',
+            'objective_exp_2': '-'
+        }
+        if 'result' in request.session:
+            obj = request.session['result']
+
+        if len(result.component_ids) > 0:
+            obj['exp_result'] = True
+            obj['objective_exp_1'] = str(result.objective_1)
+            obj['objective_exp_2'] = str(result.objective_2)
+        else:
+            obj['exp_result'] = False
+            obj['objective_1'] = str(result.objective_1)
+            obj['objective_2'] = str(result.objective_2)
+
+        request.session['result'] = obj 
+
+        return JsonResponse({
+            'exp_result': obj['exp_result'],
+            'objective_1': obj['objective_1'], 
+            'objective_2': obj['objective_2'],
+            'objective_exp_1': obj['objective_exp_1'], 
+            'objective_exp_2': obj['objective_exp_2']
+        })
 
 
 class SubOccurrenceOptionsView(LoginRequiredMixin, ListView):
@@ -126,4 +193,6 @@ class RoadSelectionView(LoginRequiredMixin, FormView):
         self.request.session['road_id'] = self.road_id
         if 'task_id' in self.request.session: # reset any previous task id when road is changed
             del self.request.session['task_id']
+        if 'result' in self.request.session: # reset any previous calculation result
+            del self.request.session['result']
         return reverse('core:home', kwargs={'road_id': self.road_id})

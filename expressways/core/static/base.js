@@ -43,12 +43,14 @@ var getResults = function() {
 
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                var res1 = document.getElementById('result-1');
-                res1.innerHTML = xhttp.response.objective_1;
+                document.getElementById('result-1').innerHTML = xhttp.response.objective_1;
 
-                var res2 = document.getElementById('result-2');
-                res2.innerHTML = xhttp.response.objective_2;
+                document.getElementById('result-2').innerHTML = xhttp.response.objective_2;
                 
+                document.getElementById('result-exp-1').innerHTML = xhttp.response.objective_exp_1;
+
+                document.getElementById('result-exp-2').innerHTML = xhttp.response.objective_exp_2;
+
                 setTimeout(stopSpinner, 500);
             } else if (this.readyState == 4 && this.status == 404) {
                 setTimeout(getResults, 2000);
