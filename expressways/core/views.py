@@ -103,6 +103,8 @@ class CalculateView(LoginRequiredMixin, View):
         }    
         
     def value_to_use(self, value_list: list):
+        if len(value_list) == 0:
+            return 0
         max_val = max(value_list)
         min_val = min(value_list)
         if max_val > 0:

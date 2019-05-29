@@ -3,7 +3,7 @@ from django.urls import reverse
 from unittest import skip
 from unittest.mock import patch, MagicMock
 
-from expressways.core.factories import ConfigurationFactory, RoadFactory
+from expressways.core.factories import ConfigurationFactory, RoadFactory, CalculationResultFactory
 from expressways.core.views import CalculateView
 
 @patch('expressways.core.views.calculate')
@@ -78,12 +78,25 @@ class TestCalculateView(TestCase):
         self.view.post(request)
         self.assertEquals(task.id, request.session['task_id'])
 
-    
-    @skip('Outstanding test needed.  EOT-116')
     def test_calculation_not_performed_when_existing_result_present(self, calculate_mock):
         '''
         Given a calculation has already been performed
         When I perform a calculation with the same OccurrenceConfiguration set
         Then the previous result is returned
         '''        
-        self.assertTrue(False)
+        road = RoadFactory()
+        configurations = ConfigurationFactory.create_batch(3, road=road)
+        expected_config_ids = list(map(lambda config: config.pk, configurations))
+        expected_items = list(map(self.view.create_calculation_object, configurations))
+
+        calc = CalculationResultFactory(
+            config_ids=expected_config_ids,
+            component_ids=[],
+            items=expected_items,
+        )
+
+        request = self.factory.get(f'/home/{road.pk}')
+        request.session = {'road_id': road.pk}
+
+        self.view.post(request)
+        calculate_mock.delay.assert_not_called()        
