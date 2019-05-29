@@ -91,32 +91,42 @@ class CalculateView(LoginRequiredMixin, View):
             res = calculate.delay(calc_ids, items)
             return res.id
 
-    def alter_expressways_value(self, occ_config, comp):
-        new_freq = 0
-        new_dur = 0
-        effect = EffectIntervention.objects.get(design_component__pk=comp.pk, configuration_effect__pk=occ_config.pk)
-        
-        freq_change = effect.frequency_change
-        if freq_change != 0:
-            new_freq = occ_config.frequency + ((freq_change / 100) * occ_config.frequency)
-        dur_change = effect.duration_change
-        if dur_change != 0:
-            new_dur = occ_config.duration + ((dur_change / 100) * occ_config.duration)
+    def create_expressways_object(self, occ_config, freq_val, dur_val):
+        new_freq = occ_config.frequency + ((freq_val / 100) * occ_config.frequency)
+        new_dur = occ_config.duration + ((dur_val / 100) * occ_config.duration)
 
-        return new_freq, new_dur    
+        return {
+            'lane_closures': occ_config.lane_closures,
+            'duration': new_dur,
+            'flow': occ_config.flow,
+            'frequency': new_freq
+        }    
         
+    def value_to_use(self, value_list: list):
+        max_val = max(value_list)
+        min_val = min(value_list)
+        if max_val > 0:
+            return max_val
+        else:
+            return min_val
+
     def process_expressways_calculation(self, components):
         items = []
         calc_ids = []
         comp_ids = []
-        for item in OccurrenceConfiguration.objects.filter(road=self.road_id):
-            calc_ids.append(item.pk)            
+        freq_list = []
+        dur_list = []
+        for occ_config in OccurrenceConfiguration.objects.filter(road=self.road_id):
+            calc_ids.append(occ_config.pk)            
             for comp in components:
                 comp_ids.append(comp.pk)
-                # verify if current configuration has current design component
-                if OccurrenceConfiguration.objects.filter(pk=item.pk, effect__pk=comp.pk).exists():
-                    new_freq, new_dur = self.alter_expressways_value(item, comp)
-                    items.append(self.create_calculation_object(item))
+                for item in EffectIntervention.objects.filter(configuration_effect__pk=occ_config.pk, design_component__pk=comp.pk):
+                    freq_list.append(item.frequency_change) 
+                    dur_list.append(item.duration_change)
+
+            marked_freq_val = self.value_to_use(freq_list)
+            marked_dur_val = self.value_to_use(dur_list)  
+            items.append(self.create_expressways_object(occ_config, marked_freq_val, marked_dur_val))      
 
         try:
             calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=comp_ids)
