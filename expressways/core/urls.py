@@ -4,8 +4,7 @@ from expressways.core.views import (HomeView,
                                     DeleteOccurrenceConfiguration,
                                     CalculateView,
                                     ResultView,
-                                    RoadSelectionView,
-                                    SubOccurrenceOptionsView)
+                                    RoadSelectionView)
 
 app_name = 'core'
 urlpatterns = [
@@ -14,5 +13,4 @@ urlpatterns = [
     path('delete/<int:pk>', DeleteOccurrenceConfiguration.as_view(), name='delete'),
     path('calculate', CalculateView.as_view(), name='calculate'),
     path('result/<str:task_id>', ResultView.as_view(), name='result'),
-    path('load-sub-occurrences/', SubOccurrenceOptionsView.as_view(), name='load_sub_occurrences'),
 ]
