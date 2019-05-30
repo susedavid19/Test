@@ -156,34 +156,21 @@ class ResultView(LoginRequiredMixin, View):
             obj = request.session['result']
 
         if len(result.component_ids) > 0:
-            obj['exp_result'] = True
             obj['objective_exp_1'] = str(result.objective_1)
             obj['objective_exp_2'] = str(result.objective_2)
         else:
-            obj['exp_result'] = False
             obj['objective_1'] = str(result.objective_1)
             obj['objective_2'] = str(result.objective_2)
 
         request.session['result'] = obj 
 
         return JsonResponse({
-            'exp_result': obj['exp_result'],
             'objective_1': obj['objective_1'], 
             'objective_2': obj['objective_2'],
             'objective_exp_1': obj['objective_exp_1'], 
             'objective_exp_2': obj['objective_exp_2']
         })
 
-
-class SubOccurrenceOptionsView(LoginRequiredMixin, ListView):
-    model = SubOccurrence
-    template_name = 'core/sub_occurrences_list_options.html'
-    context_object_name = 'sub_occurrences'
-
-    def get_queryset(self):
-        occurrence_id = self.request.GET.get('occurrence')
-        query_set = self.model.objects.filter(occurrence_id=occurrence_id).order_by('name')
-        return query_set
 
 class RoadSelectionView(LoginRequiredMixin, FormView):
     template_name = 'core/road_selection.html'
