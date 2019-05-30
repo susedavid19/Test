@@ -25,62 +25,6 @@
       </div>
     </div>
   </div>
-  <section id="configuration-list">
-    {% for configuration in configurations %}
-    <div class="card">
-      <div class="card-body">
-        <div class="row card-title d-flex justify-content-between">
-          <div class="title-name">
-            {{configuration.sub_occurrence.occurrence.name}}
-          </div>
-          <div class="flex-grow-1">
-            {{configuration.sub_occurrence}}
-          </div>
-          <div>
-            <form class="text-center" method="POST" action="{% url 'core:delete' configuration.pk %}">
-              {% csrf_token %}
-              <button class="fas fa-trash"></button>
-            </form>
-          </div>
-        </div>
-        <div class="row card-text d-flex justify-content-between">
-          <div class="config">
-            <div class="col-name">
-              Frequency
-            </div>
-            <div>
-              {{configuration.frequency}}
-            </div>
-          </div>
-          <div class="config">
-            <div class="col-name">
-              Lane Closure
-            </div>
-            <div>
-              {{configuration.lane_closures}}
-            </div>
-          </div>
-          <div class="config">
-            <div class="col-name">
-              Duration
-            </div>
-            <div>
-              {{configuration.duration}} mins
-            </div>
-          </div>
-          <div class="config">
-            <div class="col-name">
-              Flow Rate
-            </div>
-            <div>
-              {{configuration.get_flow_display}}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  </section>
   <section id="calculation" class="container-fluid">
     <form class="d-flex flex-column" method="POST" action="{% url 'core:calculate' %}">
       {% csrf_token %}
