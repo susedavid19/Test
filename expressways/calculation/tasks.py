@@ -52,3 +52,17 @@ def calculate(self, config_ids, items):
     result.objective_1 = objective_1
     result.objective_2 = objective_2
     result.save()
+
+@app.task(bind=True)
+def calculate_expressways(self, config_ids, component_ids, items):
+    objective_1 = 1.23
+    objective_2 = 4.56
+    
+    result = CalculationResult()
+    result.task_id = self.request.id
+    result.items = json.dumps(items)
+    result.config_ids = config_ids
+    result.component_ids = component_ids
+    result.objective_1 = objective_1
+    result.objective_2 = objective_2
+    result.save()

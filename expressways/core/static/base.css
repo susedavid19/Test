@@ -87,3 +87,9 @@ h2 {
 #road-header {
     padding: 15px;
 }
+
+#design-components {
+    margin: auto;
+    margin-bottom: 5px;
+    border-bottom: 1px solid lightgray;
+}

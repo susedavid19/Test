@@ -3,6 +3,7 @@ import factory.django as fdj
 from django.contrib.auth.models import User
 
 from .models import *
+from expressways.calculation.models import CalculationResult
 
 class UserFactory(fdj.DjangoModelFactory):
     class Meta:
@@ -85,3 +86,11 @@ class ConfigWithMultEffectsFactory(ConfigurationFactory):
         'configuration_effect', 
         design_component__name='Emergency Areas'
     )
+
+class CalculationResultFactory(fdj.DjangoModelFactory):
+    class Meta:
+        model = CalculationResult
+
+    task_id = '1234'
+    objective_1 = 1.23
+    objective_2 = 4.56
