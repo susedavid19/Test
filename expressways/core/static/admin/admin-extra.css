@@ -3,21 +3,30 @@ body.login {
     background-color: #002E5F;
 }
 
+.logos {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.logos img {
+    height: 60px;
+}
+
+.logos span {
+    font-size: 1.6rem;
+    color: #002E5F;
+}
+
 #header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     background-color: white;
     border-bottom: 2px solid #002E5F;
     color: #002E5F;
-}
-
-#site-name img {
-    width: 100px;
-    height: 40px;
-}
-
-#site-name span {
-    font-size: 16px;
-    color: #002E5F;
-    padding: 0 5px;
+    height: 60px;
 }
 
 #user-tools a,
@@ -39,4 +48,12 @@ body.login {
 #content caption,
 div.breadcrumbs {
     background-color: #002E5F;
+}
+
+.login .logos {
+    justify-content: center;
+}
+
+.module h2, .module caption, .inline-group h2 {
+    background: #002E5F;
 }

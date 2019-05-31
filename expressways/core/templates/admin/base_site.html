@@ -9,9 +9,10 @@
 {% block branding %}
 <h1 id="site-name">
     <a href="{% url 'admin:index' %}">
-        <img src="{% static 'img/wsp_logo.png' %}" alt="WSP Logo">
-        <span>on behalf of</span>
-        <img src="{% static 'img/he_logo.png' %}" alt="Highways England Logo">
+        <div class="logos">
+            <img src="{% static 'img/expressways-logo.png' %}" alt="Expressways Logo">
+            <div><span class="navbar-text">Expressways Admin</span></div>
+        </div>
     </a>
 </h1>
 {% endblock %}
