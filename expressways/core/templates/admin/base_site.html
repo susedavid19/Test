@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Expressways Administration') }}{% endblock %}
+
+{% block extrahead %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/admin-extra.css" %}" />{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <div class="logos">
+            <img src="{% static 'img/expressways-logo.png' %}" alt="Expressways Logo">
+            <div><span class="navbar-text">Expressways Admin</span></div>
+        </div>
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
