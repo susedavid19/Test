@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <img src="{% static 'img/wsp_logo.png' %}" alt="WSP Logo" style="height: 40px; width: 100px;">
+        <span style="font-size: 20px;">on behalf of</span>
+        <img src="{% static 'img/he_logo.png' %}" alt="Highways England Logo" style="height: 40px; width: 100px;">
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
