@@ -53,15 +53,16 @@ class TestDesignComponentSelection(TestCase):
         mock_configuration.duration = 30
         mock_configuration.flow = 'third'
         mock_configuration.frequency = 50
-        dur_val = -10
+        dur_val = -20
         freq_val = 10
 
         actual = self.view.create_expressways_object(mock_configuration, freq_val, dur_val)
         expected = {
             'lane_closures': 'first',
-            'duration': 27,
+            'duration': 30,
             'flow': 'third',
-            'frequency': 55,
+            'frequency': 44,
+            'dur_change': -20
         }
 
         self.assertEquals(expected, actual)
