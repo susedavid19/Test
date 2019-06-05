@@ -62,7 +62,7 @@ class TestDesignComponentSelection(TestCase):
             'duration': 30,
             'flow': 'third',
             'frequency': 44,
-            'dur_change': -20
+            'dur_change': -0.2
         }
 
         self.assertEquals(expected, actual)
