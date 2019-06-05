@@ -142,3 +142,57 @@ def norm_freqs(freq_list):
     gcd_value = reduce(GCD, freq_list)
     # normalise the items of the list by dividing with the GCD
     return [int(x / gcd_value) for x in freq_list]
+
+
+def duration_bin(freq_list, change_perc, durations):
+    """
+    Perform a frequency transform based on the percentages that affect the durations from the design components.
+    We split the frequency change to its decimal and integer part and cascade the decimal part to smaller durations by
+    scaling it according the ratios between durations.
+    :param freq_list: a list with the frequencies of the models
+    :param change_perc: a list with the percentages that the durations should change
+    :param: list of all available durations
+    :return: a list with the transformed frequencies of the models
+    """
+
+
+
+    times_rel = [0] * len(durations)
+    times_rel[len(durations) - 1] = 1
+    for i in range(len(durations) - 1, 0, -1):
+        times_rel[i - 1] = durations[i] / durations[i - 1]
+
+    incr_perc = []
+    reduct_perc = []
+    for i in change_perc:
+        if i > 0:
+            incr_perc.append(i)
+            reduct_perc.append(0)
+        elif i < 0:
+            incr_perc.append(0)
+            reduct_perc.append(i)
+        else:
+            incr_perc.append(0)
+            reduct_perc.append(0)
+
+    reduct = [a * abs(b) for a, b in zip(freq_list, reduct_perc)]
+
+    for i in range(len(reduct) - 1, 0, -1):
+        i_part = int(reduct[i] // 1)
+        d_part = float("{0:.4f}".format(reduct[i] - i_part))
+        d_part_new = d_part * times_rel[i - 1]
+        reduct[i] = i_part
+        reduct[i - 1] = reduct[i - 1] + d_part_new
+
+
+    incr = [a * b for a, b in zip(freq_list, incr_perc)]
+
+    for i in range(len(incr) - 1, 0, -1):
+        i_part = int(incr[i] // 1)
+        d_part = float("{0:.4f}".format(incr[i] - i_part))
+        d_part_new = d_part * times_rel[i - 1]
+        incr[i] = i_part
+        incr[i - 1] = incr[i - 1] + d_part_new
+
+    final_change = [int(round(a - b)) for a, b in zip(incr, reduct)]
+    return [(a + b) for a, b in zip(freq_list, final_change)]

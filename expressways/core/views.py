@@ -59,7 +59,6 @@ class CalculateView(LoginRequiredMixin, View):
             else:
                 request.session['task_id'] = self.process_baseline_calculation()
 
-
         configurations = OccurrenceConfiguration.objects.filter(road=self.road_id)
         road = Road.objects.get(id=self.road_id)
         context = {
@@ -92,16 +91,17 @@ class CalculateView(LoginRequiredMixin, View):
             return res.id
 
     def create_expressways_object(self, occ_config, freq_val, dur_val):
-        new_freq = occ_config.frequency + ((freq_val / 100) * occ_config.frequency)
-        new_dur = occ_config.duration + ((dur_val / 100) * occ_config.duration)
+        new_freq = int(occ_config.frequency + ((freq_val / 100) * occ_config.frequency))
+
 
         return {
             'lane_closures': occ_config.lane_closures,
-            'duration': new_dur,
+            'duration': occ_config.duration,
             'flow': occ_config.flow,
-            'frequency': new_freq
-        }    
-        
+            'frequency': new_freq,
+            'dur_change': (dur_val / 100)
+        }
+
     def value_to_use(self, value_list: list):
         if len(value_list) == 0:
             return 0
