@@ -99,7 +99,7 @@ class CalculateView(LoginRequiredMixin, View):
             'duration': occ_config.duration,
             'flow': occ_config.flow,
             'frequency': new_freq,
-            'dur_change': (dur_val / 100)
+            'duration_change': (dur_val / 100)
         }
 
     def value_to_use(self, value_list: list):

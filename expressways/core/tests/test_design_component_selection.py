@@ -37,7 +37,7 @@ class TestDesignComponentSelection(TestCase):
 
         expected_config_ids = list(map(lambda config: config.pk, configurations))
         expected_component_ids = [component.pk for config in configurations]
-        expected_items = list(map(self.view.create_calculation_object, configurations))
+        expected_items = list(map(self.view.create_expressways_object, configurations, [0, 0, 0], [0, 0, 0]))
 
         calculate_exp_mock.delay.assert_called_once_with(expected_config_ids, expected_component_ids, expected_items)
         calculate_mock.delay.assert_not_called()
@@ -61,8 +61,8 @@ class TestDesignComponentSelection(TestCase):
             'lane_closures': 'first',
             'duration': 30,
             'flow': 'third',
-            'frequency': 44,
-            'dur_change': -0.2
+            'frequency': 55,
+            'duration_change': -0.2
         }
 
         self.assertEquals(expected, actual)
