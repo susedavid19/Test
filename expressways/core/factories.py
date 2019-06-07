@@ -54,8 +54,8 @@ class ConfigurationFactory(fdj.DjangoModelFactory):
     road = f.SubFactory(RoadFactory)
     sub_occurrence = f.SubFactory(SubOccurrenceFactory)
     lane_closures = 'II'
-    duration = 15
-    flow = 300
+    duration = 10.0
+    flow = 'Low'
     speed_limit = 70
     frequency = 30
 

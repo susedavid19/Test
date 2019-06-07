@@ -51,25 +51,23 @@ class Road(CommonInfo):
 
 LANE_CHOICES = (
     ('II', 'II'),
-    ('IX', 'IX'),
     ('XI', 'XI'),
     ('XX', 'XX'),
+    ('S', 'S'),
 )
 
 DURATION_CHOICES = (
-    (15, '15'),
-    (30, '30'),
+    (2.5, '2.5'),
+    (10, '10'),
+    (25, '25'),
     (45, '45'),
-    (60, '60'),
-    (120, '120'),
-    (300, '300'),
+    (90, '90'),
 )
 
 FLOW_CHOICES = (
-    (1750, 'High'),
-    (1250, 'Medium High'),
-    (750, 'Medium Low'),
-    (300, 'Low'),
+    ('High', 'High'),
+    ('Medium', 'Medium'),
+    ('Low', 'Low'),
 )
 
 SPEED_CHOICES = (
@@ -98,16 +96,17 @@ class OccurrenceConfiguration(models.Model):
         choices=LANE_CHOICES,
         default='II',
     )
-    duration = models.PositiveIntegerField(
+    duration = models.FloatField(
         help_text=_('Select how long the incident occurs for. i.e. 2.5 = 0 to 5 minutes; 10 = 5 to 15 minutes; 25 = 15 to 30 minutes; 45 = 30 to 60 minutes; 90 = 60 to 120 minutes. Not required for "slow moving vehicle" or "all lanes open" incident.'),
         choices=DURATION_CHOICES,
-        default=15,
+        default=2.5,
     )
-    flow = models.PositiveIntegerField(
+    flow = models.CharField(
         help_text=_('Select traffic flow condition: High = >1000 Medium = >400 <1000 Low = <400 (vph)​'),
         verbose_name='flow rate',
+        max_length=20,
         choices=FLOW_CHOICES,
-        default=300,
+        default='Low',
     )
     speed_limit = models.PositiveIntegerField(
         help_text=_('Select prevailing traffic speed (mph) for given occurrence (set default to 70mph)​​'),
@@ -155,3 +154,10 @@ class EffectIntervention(models.Model):
 
     def __str__(self):
         return f'{self.design_component.name} with {self.frequency_change}% frequency and {self.duration_change}% duration change'
+
+
+class OperationalObjective(CommonInfo):
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name

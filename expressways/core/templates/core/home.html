@@ -65,30 +65,20 @@
         <h2 class="text-center">Expressways result</h2>
       </div>
     </div>
+    {% for objective in objectives %}
     <div class="row">
       <div class="col-6">
-        <h2>Operational Objective 1</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vehicula porta fermentum. Ut placerat odio vel ipsum cursus imperdiet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas eu pulvinar lorem, a mattis elit. Sed sollicitudin consectetur scelerisque.</p>
+        <h2>{{ objective.name }}</h2>
+        <p>{{ objective.description }}</p>
       </div>
       <div class="col result align-self-center">
-        <div id="result-1">-</div>
+        <div id="result-{{ objective.id }}">-</div>
       </div>
       <div class="col result align-self-center">
-        <div id="result-exp-1">-</div>
+        <div id="result-exp-{{ objective.id }}">-</div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-6">
-        <h2>Operational Objective 2</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vehicula porta fermentum. Ut placerat odio vel ipsum cursus imperdiet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas eu pulvinar lorem, a mattis elit. Sed sollicitudin consectetur scelerisque.</p>
-      </div>
-      <div class="col result align-self-center">
-        <div id="result-2">-</div>
-      </div>
-      <div class="col result align-self-center">
-        <div id="result-exp-2">-</div>
-      </div>
-    </div>
+    {% endfor %}
   </section>
 
   <div id="spinner" class="modal fade">
