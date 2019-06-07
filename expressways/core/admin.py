@@ -67,7 +67,7 @@ class EffectInterventionAdmin(admin.ModelAdmin):
     list_filter = ('design_component', 'configuration_effect')
     verbose_name = 'Effect Intervention'
     verbose_name_plural = 'Effect Interventions'
-    readonly_fields = ('design_component', 'configuration_effect', 'frequency_change', 'duration_change')
+    readonly_fields = ('design_component', 'configuration_effect', 'frequency_change', 'duration_change', 'justification')
 
     def has_add_permission(self, request):
         return False
