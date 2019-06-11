@@ -24,7 +24,6 @@ class HomeView(LoginRequiredMixin, View):
         
         form = InterventionForm()
         configurations = OccurrenceConfiguration.objects.filter(road=road_id)
-        road = Road.objects.get(id=road_id)
         objectives = OperationalObjective.objects.all()
         context = {
             'road': road,
