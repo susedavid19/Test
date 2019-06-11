@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Page not found' %}{% endblock %}
+
+{% block content %}
+
+<h2>{% trans 'Page not found' %}</h2>
+
+<p>We're sorry, but the requested page could not be found. {{ message }}</p>
+<a href="javascript:window.history.back()">Go back</a>
+
+{% endblock %}
