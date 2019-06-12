@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expressways-${CICD_GIT_BRANCH}
+  labels:
+    app: expressways-${CICD_GIT_BRANCH}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expressways-${CICD_GIT_BRANCH}
+  template:
+    metadata:
+      labels:
+        app: expressways-${CICD_GIT_BRANCH}
+    spec:    
+      imagePullSecrets:
+        - name: pipeline-docker-registry
+      containers:
+        - name: expressways-application
+          image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+          command: ['/data/docker-entrypoint.sh']
+          workingDir: /data
+        - name: expressways-worker
+          image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+          command: ['celery']
+          args: ['-A', 'expressways.calculation', 'worker', '--loglevel=info']
+          workingDir: /data
+        - name: queue
+          image: redis:5
+        - name: expressways-proxy
+          image: nginx:alpine 
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: static
+              mountPath: /static
+            - name: media
+              mountPath: /media
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+      initContainers:
+        - name: nginx-configuration
+          image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+          command: ['/bin/sh', '-c', 'python3 /data/manage.py collectstatic && cp -rfv /static/* /expressways/static/']
+          volumeMounts:
+            - name: static
+              mountPath: /expressways/static
+            - name: media
+              mountPath: /expressways/media
+            - name: nginx-config
+              mountPath: /tmp/nginx
+      volumes:
+        - name: static
+          emptyDir: {}
+        - name: media 
+          emptyDir: {}
+        - name: nginx-config
+          configMap:
+            name: nginx
