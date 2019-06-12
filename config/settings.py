@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '4(p^o-!%@8*rk+2=-g5#1#$$x!2dz#qdroma3=&(y(a55#l_8+'
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='4(p^o-!%@8*rk+2=-g5#1#$$x!2dz#qdroma3=&(y(a55#l_8+')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG', default=False)
@@ -148,4 +148,8 @@ STATIC_ROOT = '/static/'
 LOGIN_REDIRECT_URL = '/'
 SESSION_COOKIE_AGE = 600
 SESSION_SAVE_EVERY_REQUEST = True
+
+# Celery queue settings
+CELERY_BACKEND_URL = env('CELERY_BACKEND_URL', default='redis://queue:6379/0')
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://queue:6379/0')
 
