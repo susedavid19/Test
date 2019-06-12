@@ -11,7 +11,7 @@ import time
 
 from expressways.calculation.models import CalculationResult
 from expressways.calculation.tasks import calculate, calculate_expressways
-from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road, DesignComponent, EffectIntervention
+from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road, DesignComponent, EffectIntervention, OperationalObjective
 from expressways.core.forms import InterventionForm, RoadSelectionForm
 
 
@@ -24,8 +24,10 @@ class HomeView(LoginRequiredMixin, View):
         
         form = InterventionForm()
         configurations = OccurrenceConfiguration.objects.filter(road=road_id)
+        objectives = OperationalObjective.objects.all()
         context = {
             'road': road,
+            'objectives': objectives,
             'configurations': configurations,
             'form': form,
         }
@@ -67,8 +69,10 @@ class CalculateView(LoginRequiredMixin, View):
 
         configurations = OccurrenceConfiguration.objects.filter(road=self.road_id)
         road = Road.objects.get(id=self.road_id)
+        objectives = OperationalObjective.objects.all()
         context = {
             'road': road,
+            'objectives': objectives,
             'configurations': configurations,
             'form': form,
         }
