@@ -144,6 +144,16 @@ def norm_freqs(freq_list):
     return [int(x / gcd_value) for x in freq_list]
 
 
+def frequency_change(freq_list, change_perc):
+    """
+    Function to apply percentage change on frequencies for expressways objects
+    :param freq_list: a list with the frequencies of the models
+    :param change_perc: a list with the percentages that the frequencies should change
+    :return:a list with the transformed frequencies of the models
+    """
+    return [int(freq + (change_perc[i] * freq)) for i, freq in enumerate(freq_list)]
+
+
 def duration_bin(freq_list, change_perc, durations):
     """
     Perform a frequency transform based on the percentages that affect the durations from the design components.
@@ -155,13 +165,13 @@ def duration_bin(freq_list, change_perc, durations):
     :return: a list with the transformed frequencies of the models
     """
 
-
-
+    # Calculate the ratio between the durations starting from the last (largest) to the first (smallest)
     times_rel = [0] * len(durations)
     times_rel[len(durations) - 1] = 1
     for i in range(len(durations) - 1, 0, -1):
         times_rel[i - 1] = durations[i] / durations[i - 1]
 
+    # Split the change percentages in two lists based on their sign
     incr_perc = []
     reduct_perc = []
     for i in change_perc:
@@ -175,6 +185,11 @@ def duration_bin(freq_list, change_perc, durations):
             incr_perc.append(0)
             reduct_perc.append(0)
 
+    # Negative changes (reduction): Iteratively we calculate the decrease for each of the duration bins.
+    # We first split the floats in their integer and decimal part. We keep the decimal part and propagate the decimal
+    # part by scaling it with the relative ratio above. Finally we should have a list of integers (apart from the first
+    # list item) that represent the frequency that should be reduced from the initial frequencies
+
     reduct = [a * abs(b) for a, b in zip(freq_list, reduct_perc)]
 
     for i in range(len(reduct) - 1, 0, -1):
@@ -183,8 +198,7 @@ def duration_bin(freq_list, change_perc, durations):
         d_part_new = d_part * times_rel[i - 1]
         reduct[i] = i_part
         reduct[i - 1] = reduct[i - 1] + d_part_new
-
-
+    # Same as above for percentage increases
     incr = [a * b for a, b in zip(freq_list, incr_perc)]
 
     for i in range(len(incr) - 1, 0, -1):
@@ -193,6 +207,7 @@ def duration_bin(freq_list, change_perc, durations):
         d_part_new = d_part * times_rel[i - 1]
         incr[i] = i_part
         incr[i - 1] = incr[i - 1] + d_part_new
-
+    # Merge the positive and negative changes for the above percentages and round them (for the first items of the list)
+    # Then return the updated frequencies list.
     final_change = [int(round(a - b)) for a, b in zip(incr, reduct)]
     return [(a + b) for a, b in zip(freq_list, final_change)]

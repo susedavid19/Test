@@ -9,9 +9,10 @@ from unittest.mock import patch, MagicMock
 from expressways.core.factories import UserFactory, DesignComponentFactory, EffectInterventionFactory, ConfigWithEffectFactory, RoadFactory, CalculationResultFactory
 from expressways.core.views import CalculateView, ResultView
 from expressways.core.models import DesignComponent
+from expressways.calculation.import_model import frequency_change, duration_bin
 
 @patch('expressways.core.views.calculate')
-@patch('expressways.core.views.calculate_expressways')
+
 class TestDesignComponentSelection(TestCase):
     fixtures = ['designcomponents']
 
@@ -20,7 +21,7 @@ class TestDesignComponentSelection(TestCase):
         self.view = CalculateView()
         self.road = RoadFactory()
 
-    def test_calculation_with_design_component(self, calculate_exp_mock, calculate_mock):
+    def test_calculation_with_design_component(self, calculate_exp_mock):
         '''
         Given there are OccurrenceConfigurations for selected road and selected design component
         When I select related design component and perform a calculation
@@ -37,12 +38,14 @@ class TestDesignComponentSelection(TestCase):
 
         expected_config_ids = list(map(lambda config: config.pk, configurations))
         expected_component_ids = [component.pk for config in configurations]
-        expected_items = list(map(self.view.create_expressways_object, configurations, [0, 0, 0], [0, 0, 0]))
+        freq_val = [0, 0, 0]
+        dur_val = [0, 0, 0]
+        expected_items = list(map(self.view.create_expressways_object, configurations, freq_val, dur_val))
 
-        calculate_exp_mock.delay.assert_called_once_with(expected_config_ids, expected_component_ids, expected_items)
-        calculate_mock.delay.assert_not_called()
+        calculate_exp_mock.delay.assert_called_once_with(expected_config_ids, expected_items, expected_component_ids )
 
-    def test_expressways_calculation_object_format(self, calculate_exp_mock, calculate_mock):
+
+    def test_expressways_calculation_object_format(self, calculate_exp_mock):
         '''
         Given an object of the correct format with to be applied frequency and duration values
         When the function is called
@@ -61,13 +64,15 @@ class TestDesignComponentSelection(TestCase):
             'lane_closures': 'first',
             'duration': 30,
             'flow': 'third',
-            'frequency': 55,
-            'duration_change': -0.2
+            'frequency': 50,
+            'duration_change': -0.2,
+            'frequency_change': 0.1
+
         }
 
         self.assertEquals(expected, actual)
 
-    def test_expressways_value_to_use(self, calculate_exp_mock, calculate_mock):
+    def test_expressways_value_to_use(self, calculate_exp_mock):
         '''
         Given a list of positive and negative values of possible duration or frequency change
         When the function is called
@@ -88,7 +93,7 @@ class TestDesignComponentSelection(TestCase):
         ret_val = self.view.value_to_use(mock_list)
         self.assertEqual(10, ret_val)
 
-    def test_selecting_vms_not_tos(self, calculate_exp_mock, calculate_mock):
+    def test_selecting_vms_not_tos(self, calculate_exp_mock):
         '''
         On calculation page
         When user selects Variable Message Sign without Traffic Officer Service design component,
@@ -110,7 +115,7 @@ class TestDesignComponentSelection(TestCase):
         self.assertNotIn('<p>Error: * VMS has to be selected together with Traffic Officer Service</p>', html)
 
     @patch('expressways.core.views.AsyncResult')
-    def test_view_calculation_result_only(self, async_result, calculate_exp_mock, calculate_mock):
+    def test_view_calculation_result_only(self, async_result, calculate_exp_mock):
         '''
         Given there are calculation results
         When user selects related design component with expected configuration, 
@@ -154,3 +159,45 @@ class TestDesignComponentSelection(TestCase):
             "objective_exp_2": str(objective2)
         }
         self.assertJSONEqual(json.dumps(expressways_expected), force_text(response.content))
+
+    def test_expressways_frequency_change(self,  calculate_exp_mock):
+        '''
+        Given a list of positive and negative percentages of frequency change along with a list of frequencies
+        When the function is called
+        Then the returned list of frequencies is as expected
+        '''
+
+        mock_freqs = [55]
+        mock_perc = [-0.2]
+        expected = [44]
+        self.assertEqual(frequency_change(mock_freqs, mock_perc), expected)
+
+        mock_freqs = [55]
+        mock_perc = [0.2]
+        expected = [66]
+        self.assertEqual(frequency_change(mock_freqs, mock_perc), expected)
+
+        mock_freqs = [55, 20, 35]
+        mock_perc = [0.2, -0.1, 0.1]
+        expected = [66, 18, 38]
+        self.assertEqual(frequency_change(mock_freqs, mock_perc), expected)
+
+    def test_expressways_duration_bin(self, calculate_exp_mock):
+        '''
+        Given a list of positive and negative percentages of duration change along with a list of frequencies
+        and the relevant durations
+        When the function is called
+        Then the returned list of frequencies is as expected
+        '''
+
+        mock_freqs = [55]
+        mock_perc = [-0.2]
+        mock_duration = [15]
+        expected = [44]
+        self.assertEqual(duration_bin(mock_freqs, mock_perc, mock_duration), expected)
+
+        mock_freqs = [20, 16, 46]
+        mock_perc = [0.3, 0.1, -0.1]
+        mock_duration = [15, 30, 60]
+        expected = [27, 16, 42]
+        self.assertEqual(duration_bin(mock_freqs, mock_perc, mock_duration), expected)

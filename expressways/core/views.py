@@ -9,7 +9,7 @@ from celery.result import AsyncResult
 import time
 
 from expressways.calculation.models import CalculationResult
-from expressways.calculation.tasks import calculate, calculate_expressways
+from expressways.calculation.tasks import calculate
 from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road, DesignComponent, EffectIntervention
 from expressways.core.forms import InterventionForm, RoadSelectionForm
 
@@ -91,15 +91,14 @@ class CalculateView(LoginRequiredMixin, View):
             return res.id
 
     def create_expressways_object(self, occ_config, freq_val, dur_val):
-        new_freq = int(occ_config.frequency + ((freq_val / 100) * occ_config.frequency))
-
-
+    
         return {
             'lane_closures': occ_config.lane_closures,
             'duration': occ_config.duration,
             'flow': occ_config.flow,
-            'frequency': new_freq,
-            'duration_change': (dur_val / 100)
+            'frequency': occ_config.frequency,
+            'duration_change': (dur_val / 100),
+            'frequency_change': (freq_val / 100)
         }
 
     def value_to_use(self, value_list: list):
@@ -134,7 +133,7 @@ class CalculateView(LoginRequiredMixin, View):
             calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=comp_ids)
             return calculated.task_id
         except CalculationResult.DoesNotExist:
-            res = calculate_expressways.delay(calc_ids, comp_ids, items)
+            res = calculate.delay(calc_ids, items, comp_ids)
             return res.id
 
 
