@@ -1,0 +1,15 @@
+stages:
+- name: Publish Image
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./ci/Dockerfile-prod
+      buildContext: .
+      tag: expressways:${CICD_EXECUTION_SEQUENCE}
+- name: Deploy
+  steps:
+  - applyYamlConfig:
+      path: ./ci/k8s/deployment.yml
+  - applyYamlConfig:
+      path: ./ci/k8s/ingress.yml
+  - applyYamlConfig:
+      path: ./ci/k8s/service.yml

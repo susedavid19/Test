@@ -1,6 +1,7 @@
 from django.views import View
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, DeleteView, FormView
+from django.views.defaults import page_not_found, server_error
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse
@@ -10,17 +11,23 @@ import time
 
 from expressways.calculation.models import CalculationResult
 from expressways.calculation.tasks import calculate
-from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road, DesignComponent, EffectIntervention
+from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road, DesignComponent, EffectIntervention, OperationalObjective
 from expressways.core.forms import InterventionForm, RoadSelectionForm
 
 
 class HomeView(LoginRequiredMixin, View):
     def get(self, request, road_id):
+        try:
+            road = Road.objects.get(id=road_id)        
+        except Road.DoesNotExist:
+            return render(request, '404.html', { 'message': 'The road does not exist.' })
+        
         form = InterventionForm()
         configurations = OccurrenceConfiguration.objects.filter(road=road_id)
-        road = Road.objects.get(id=road_id)
+        objectives = OperationalObjective.objects.all()
         context = {
             'road': road,
+            'objectives': objectives,
             'configurations': configurations,
             'form': form,
         }
@@ -61,8 +68,10 @@ class CalculateView(LoginRequiredMixin, View):
 
         configurations = OccurrenceConfiguration.objects.filter(road=self.road_id)
         road = Road.objects.get(id=self.road_id)
+        objectives = OperationalObjective.objects.all()
         context = {
             'road': road,
+            'objectives': objectives,
             'configurations': configurations,
             'form': form,
         }
@@ -194,3 +203,10 @@ class RoadSelectionView(LoginRequiredMixin, FormView):
         if 'result' in self.request.session: # reset any previous calculation result
             del self.request.session['result']
         return reverse('core:home', kwargs={'road_id': self.road_id})
+
+
+def custom404(request):
+    return page_not_found(request, None, '404.html')
+
+def custom500(request):
+    return server_error(request, '500.html')

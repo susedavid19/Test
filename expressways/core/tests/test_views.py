@@ -88,15 +88,23 @@ class TestCalculateView(TestCase):
         configurations = ConfigurationFactory.create_batch(3, road=road)
         expected_config_ids = list(map(lambda config: config.pk, configurations))
         expected_items = list(map(self.view.create_calculation_object, configurations))
+        dummy_task = 'taskidindb'
 
         calc = CalculationResultFactory(
+            task_id=dummy_task,
             config_ids=expected_config_ids,
             component_ids=[],
             items=expected_items,
         )
 
         request = self.factory.get(f'/home/{road.pk}')
-        request.session = {'road_id': road.pk}
+        request.session = {'road_id': road.pk, 'task_id': 'currenttaskid'}
 
-        self.view.post(request)
-        calculate_mock.delay.assert_not_called()        
+        task = MagicMock()
+        task.id = 42
+        calculate_mock.delay.return_value = task
+
+        response = self.view.post(request)
+        calculate_mock.delay.assert_not_called()   
+        self.assertEqual(200, response.status_code)
+        self.assertInHTML(f'<script>var result_url = "/result/{dummy_task}";</script>', response.content.decode())     

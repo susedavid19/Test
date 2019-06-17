@@ -29,5 +29,17 @@ docker-compose exec application python3 /data/manage.py createsuperuser
 #### Loading Initial Data
 Default data will be loaded during container build. If you need to reload the data, run below command:
 ```
-docker-compose exec application python3 /data/manage.py loaddata occurrences designcomponents roads --app core
+docker-compose exec application python3 /data/manage.py loaddata occurrences designcomponents roads operationalobjectives --app core
 ```
+
+## Production
+This section details important settings needed for production deployments.  It is
+not exhaustive and should only be treated as a work-in-progress.
+
+### Environment Variables
+`DJANGO_SECRET_KEY` = a secret key used for cryptographic signing.  This is provided
+by django when creating a project and should only be overriden if really needed.  See [this](https://docs.djangoproject.com/en/2.1/ref/settings/#secret-key) for more details.
+
+`CELERY_BACKEND_URL` = the full url of the queue container.  Defaults to 'redis://queue:6379/0'
+
+`CELERY_BROKER_URL` = the full url of the queue container.  Defaults to 'redis://queue:6379/0'

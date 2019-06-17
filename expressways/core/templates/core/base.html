@@ -11,8 +11,13 @@
     {% endblock %}
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark primary-color">
-      <a href="/" class="navbar-brand">Expressways</a>
+    <nav class="navbar navbar-expand-lg transparent">
+      <a href="/" class="navbar-brand">
+        <div class="logos">
+          <img src="{% static 'img/expressways-logo.png' %}" alt="Expressways Logo">
+          <div><span class="navbar-text">Expressways</span></div>
+        </div>
+      </a>
       {% if not request.user.is_anonymous %}
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

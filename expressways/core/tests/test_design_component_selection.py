@@ -89,7 +89,7 @@ class TestDesignComponentSelection(TestCase):
         self.assertEqual(8, ret_val)
  
         # if there are mixed of negative and positive, ignore the negatives and choose one with largest absolute value
-        mock_list = [-15, -6, 0, 10]
+        mock_list = [-15, -6, 0, 2, 10]
         ret_val = self.view.value_to_use(mock_list)
         self.assertEqual(10, ret_val)
 

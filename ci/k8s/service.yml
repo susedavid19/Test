@@ -1,0 +1,14 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: expressways-${CICD_GIT_BRANCH}-service
+spec:
+  selector:
+    app: expressways-${CICD_GIT_BRANCH}
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
