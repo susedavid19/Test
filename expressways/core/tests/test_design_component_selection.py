@@ -190,11 +190,21 @@ class TestDesignComponentSelection(TestCase):
         Then the returned list of frequencies is as expected
         '''
 
+        # The simple version: single percentage and no other available durations to transfer so acts as the frequency
+        # change
         mock_freqs = [55]
         mock_perc = [-0.2]
         mock_duration = [15]
         expected = [44]
         self.assertEqual(duration_bin(mock_freqs, mock_perc, mock_duration), expected)
+
+        # The standard test: three available durations with three duration percentages (both positive and negative)
+        # Starting from the largest duration value, we multiply the frequency with the relevant percentage and we add
+        # (the negative) result to the final frequency keeping only the integer part. Therefore 46 - 10% = 42 and we
+        # keep a -0.6 that we propagate to the next duration by multiplying with the ratio of the durations (60/30). The
+        # -1.2 is combined with the percentage change of 30 (1.6) and the result 0.4 doesn't affect the second frequency.
+        # However, the 0.4 is multiplied again with the ratio 30/15 and the result 0.8 is combined with the 20*0.3
+        # giving a total of 6.8 that is rounded up to 7 as this is the last smallest duration.
 
         mock_freqs = [20, 16, 46]
         mock_perc = [0.3, 0.1, -0.1]
