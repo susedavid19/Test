@@ -10,7 +10,7 @@ from celery.result import AsyncResult
 import time
 
 from expressways.calculation.models import CalculationResult
-from expressways.calculation.tasks import calculate, calculate_expressways
+from expressways.calculation.tasks import calculate
 from expressways.core.models import OccurrenceConfiguration, Occurrence, SubOccurrence, Road, DesignComponent, EffectIntervention, OperationalObjective
 from expressways.core.forms import InterventionForm, RoadSelectionForm
 
@@ -66,7 +66,6 @@ class CalculateView(LoginRequiredMixin, View):
             else:
                 request.session['task_id'] = self.process_baseline_calculation()
 
-
         configurations = OccurrenceConfiguration.objects.filter(road=self.road_id)
         road = Road.objects.get(id=self.road_id)
         objectives = OperationalObjective.objects.all()
@@ -101,16 +100,16 @@ class CalculateView(LoginRequiredMixin, View):
             return res.id
 
     def create_expressways_object(self, occ_config, freq_val, dur_val):
-        new_freq = occ_config.frequency + ((freq_val / 100) * occ_config.frequency)
-        new_dur = occ_config.duration + ((dur_val / 100) * occ_config.duration)
-
+    
         return {
             'lane_closures': occ_config.lane_closures,
-            'duration': new_dur,
+            'duration': occ_config.duration,
             'flow': occ_config.flow,
-            'frequency': new_freq
-        }    
-        
+            'frequency': occ_config.frequency,
+            'duration_change': (dur_val / 100),
+            'frequency_change': (freq_val / 100)
+        }
+
     def value_to_use(self, value_list: list):
         if len(value_list) == 0:
             return 0
@@ -143,7 +142,7 @@ class CalculateView(LoginRequiredMixin, View):
             calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=comp_ids)
             return calculated.task_id
         except CalculationResult.DoesNotExist:
-            res = calculate_expressways.delay(calc_ids, comp_ids, items)
+            res = calculate.delay(calc_ids, items, comp_ids)
             return res.id
 
 
