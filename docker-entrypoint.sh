@@ -11,3 +11,4 @@ echo "Creating default superuser..."
 echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@expressways.com', '!23Express')" | python3 manage.py shell
 echo "Loading initial data..."
 python3 manage.py loaddata occurrences designcomponents roads operationalobjectives --app core
+tail -f /dev/null

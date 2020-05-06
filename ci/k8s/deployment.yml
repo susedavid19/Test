@@ -27,8 +27,7 @@ spec:
               name: application-${CICD_GIT_BRANCH}
         - name: expressways-worker
           image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
-          command: ['celery']
-          args: ['-A', 'expressways.calculation', 'worker', '--loglevel=info']
+          command: ['/data/docker-worker-entrypoint.sh']
           workingDir: /data
           envFrom:
           - secretRef:
