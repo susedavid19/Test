@@ -61,6 +61,9 @@ spec:
               mountPath: /expressways/media
             - name: nginx-config
               mountPath: /tmp/nginx
+          envFrom:
+          - secretRef:
+              name: worker-${CICD_GIT_BRANCH}
       volumes:
         - name: static
           emptyDir: {}
