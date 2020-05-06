@@ -17,5 +17,7 @@ COPY docker-entrypoint.sh /data/docker-entrypoint.sh
 COPY docker-worker-entrypoint.sh /data/docker-worker-entrypoint.sh
 COPY docker-flower-entrypoint.sh /data/docker-flower-entrypoint.sh
 
-RUN adduser --system --disabled-login wspreadonly && mkdir /static && chown -R wspreadonly /data /static
-USER wspreadonly
+RUN ["chmod", "+x", "/data/docker-entrypoint.sh"]
+
+#RUN adduser --system --disabled-login wspreadonly && mkdir /static && chown -R wspreadonly /data /static
+#USER wspreadonly
