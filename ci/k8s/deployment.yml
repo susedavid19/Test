@@ -21,12 +21,18 @@ spec:
         - name: expressways-application
           image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
           command: ['/data/docker-entrypoint.sh']
+          envFrom:
+          - secretRef:
+              name: application-${CICD_GIT_BRANCH}
           workingDir: /data
         - name: expressways-worker
           image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
           command: ['celery']
           args: ['-A', 'expressways.calculation', 'worker', '--loglevel=info']
           workingDir: /data
+          envFrom:
+          - secretRef:
+              name: worker-${CICD_GIT_BRANCH}
         - name: queue
           image: redis:5
         - name: expressways-proxy
@@ -41,6 +47,9 @@ spec:
             - name: nginx-config
               mountPath: /etc/nginx/conf.d/default.conf
               subPath: default.conf
+          envFrom:
+          - configMapRef:
+              name: nginx
       initContainers:
         - name: nginx-configuration
           image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
