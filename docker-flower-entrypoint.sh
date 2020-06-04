@@ -1,4 +1,5 @@
 #!/bin/bash
 
 cd /data
-celery -A expressways.calculation flower --port=5555
+pip3 install -r requirements/development.txt
+celery flower -A expressways.calculation --port=5555

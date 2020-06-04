@@ -28,6 +28,9 @@ services:
   flower:
     build: . 
     command: bash -c /data/docker-flower-entrypoint.sh
+    environment:
+      DJANGO_SETTINGS_MODULE: "config.settings"
+      DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
     ports:
       - 5555:5555
     depends_on:
