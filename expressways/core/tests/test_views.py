@@ -35,7 +35,7 @@ class TestCalculateView(TestCase):
             'frequency': 'fourth',
         }
 
-        self.assertEquals(expected, actual)
+        self.assertEqual(expected, actual)
 
     
     def test_calculation_filters_list_by_road(self, calculate_mock):
@@ -76,7 +76,7 @@ class TestCalculateView(TestCase):
         calculate_mock.delay.return_value = task
 
         self.view.post(request)
-        self.assertEquals(task.id, request.session['task_id'])
+        self.assertEqual(task.id, request.session['task_id'])
 
     def test_calculation_not_performed_when_existing_result_present(self, calculate_mock):
         '''
