@@ -77,8 +77,6 @@ class CalculateView(LoginRequiredMixin, View):
             'configurations': configurations,
             'form': form,
         }
-        taskid = request.session['task_id']
-        print(f'Task id: {taskid}')
         return render(request, 'core/home.html', context)
 
     def create_calculation_object(self, occ_config):
