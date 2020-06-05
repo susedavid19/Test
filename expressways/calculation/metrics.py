@@ -34,9 +34,18 @@ def weighted_quantile(values, quantiles, sample_weight=None, values_sorted=False
     return np.interp(quantiles, weighted_quantiles, values)
 
 
-def pti(df, type="Car"):
-    free_flow = df["Journey Duration (s)"].loc[df['Vehicle Type Description'] == "Car"].quantile(0.15)
-    np_data = np.array(df[["Journey Duration (s)", "Flows"]])
-
+def pti(df):
+    free_flow = df['Time Taken (s)'].loc[df['Vehicle Type'] == 1].quantile(0.15)
+    np_data = np.array(df[['Time Taken (s)', "Flows"]])
     planning_time = weighted_quantile(np_data[:, 0], 0.95, sample_weight=np_data[:, 1])  # 0.95 the 95th percentile
     return planning_time / free_flow
+
+def acceptable_journeys(df):
+    free_flow = df['Time Taken (s)'].loc[df['Vehicle Type'] == 1].quantile(0.15)
+    faster_ff = df['Time Taken (s)'].loc[df['Vehicle Type'] == 1][df['Time Taken (s)'] < (4/3)*free_flow].count()
+    return (faster_ff/df['Time Taken (s)'].count())
+
+def average_speed(df):
+    df['Departure Time (HH:MM:SS)'] = pd.to_datetime(df['Departure Time (HH:MM:SS)'],format='%H:%M:%S')
+    mean15min = df.groupby(pd.Grouper(key='Departure Time (HH:MM:SS)', freq='15min')).mean()
+    return 3.6*((mean15min['Distance (m)']*mean15min['Flows']).sum()/(mean15min['Time Taken (s)']*mean15min['Flows']).sum())

@@ -38,25 +38,31 @@ def calculate(self, config_ids, items, component_ids= None):
 
 
     freqs_list = norm_freqs(freqs_list)
-
     for i, item in enumerate(items):
         if item['lane_closures'] == 'II':
-            df = load_csv_model_freq_light(df, os.path.join(r'expressways/calculation/models',
-                                                            query_data(header,
-                                                                       [str(item['flow']), item['lane_closures']])),
-                                           str(item['flow']), freqs_list[i])
+            df = load_csv_model_freq(
+                    df, 
+                    os.path.join(r'expressways/calculation/models',
+                        query_data(
+                            header,
+                            [str(item['flow']).upper(), item['lane_closures']]
+                        )),
+                    str(item['flow']), freqs_list[i]
+                )
 
         else:
-            df = load_csv_model_freq_light(df, os.path.join(r'expressways/calculation/models',
-                                                            query_data(header,
-                                                                       [str(item['flow']), item['lane_closures'],
-                                                                        str(item['duration'])])), str(item['flow']),
-                                           freqs_list[i])
+            df = load_csv_model_freq(
+                    df, 
+                    os.path.join(r'expressways/calculation/models',
+                        query_data(
+                            header,
+                            [str(item['flow']).upper(), item['lane_closures'], str(item['duration']).replace('.', '_')]
+                        )),
+                    str(item['flow']), freqs_list[i]
+                )
 
-    # Will be switched to the actual metrics on EOT-115
-    # objective_1 = pti(df)
-    objective_1 = 1.77
-    objective_2 = 4.77
+    objective_1 = pti(df)
+    objective_2 = acceptable_journeys(df)
     result = CalculationResult()
     result.task_id = self.request.id
     result.items = json.dumps(items)
