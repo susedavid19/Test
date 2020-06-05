@@ -1,7 +1,6 @@
 import json
 import os
 import pandas as pd
-import logging
 from expressways.calculation.celery import app
 from expressways.calculation.models import CalculationResult
 from expressways.calculation.import_model import *
@@ -17,7 +16,7 @@ def add(x, y):
 def calculate(self, config_ids, items, component_ids= None):
     df = pd.DataFrame()
     header = load_header_data(r'expressways/calculation/models', 'csv')
-    logging.warning(f'HEADER: {header.head()}')
+    print(f'HEADER: {header.head()}')
     freqs_list = []
     if component_ids:
         freq_change = []
@@ -40,7 +39,7 @@ def calculate(self, config_ids, items, component_ids= None):
     freqs_list = norm_freqs(freqs_list)
     for i, item in enumerate(items):
         lane_closure = item['lane_closures']
-        logging.warning(f'Lane Type: {lane_closure}')
+        print(f'Lane Type: {lane_closure}')
         if item['lane_closures'] == 'II':
             df = load_csv_model_freq(
                     df, 

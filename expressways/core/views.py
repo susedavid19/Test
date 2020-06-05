@@ -8,7 +8,6 @@ from django.http import JsonResponse
 from braces.views import LoginRequiredMixin
 from celery.result import AsyncResult
 import time
-import logging
 
 from expressways.calculation.models import CalculationResult
 from expressways.calculation.tasks import calculate
@@ -60,7 +59,7 @@ class CalculateView(LoginRequiredMixin, View):
         self.road_id = request.session['road_id']
         print(f'Road id: {self.road_id}')
         form = InterventionForm(request.POST)
-
+        print(f'Valid form? {form.is_valid()}')
         if form.is_valid():
             components = form.cleaned_data['design_components'] 
             if components:
@@ -90,17 +89,18 @@ class CalculateView(LoginRequiredMixin, View):
     def process_baseline_calculation(self):
         items = []
         calc_ids = []
+        print(f'')
         for item in OccurrenceConfiguration.objects.filter(road=self.road_id):
             calc_ids.append(item.pk)            
             items.append(self.create_calculation_object(item))
 
         try:
             calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=[])
+            print(f'DB BASE ID: {calculated.task_id}')
             return calculated.task_id
         except CalculationResult.DoesNotExist:
             res = calculate.delay(calc_ids, items)
-            print(f'BASE ID: {res.id}')
-            logging.warning(f'BASE ID: {res.id}')
+            print(f'NOT exist BASE ID: {res.id}')
             return res.id
 
     def create_expressways_object(self, occ_config, freq_val, dur_val):
@@ -144,24 +144,23 @@ class CalculateView(LoginRequiredMixin, View):
 
         try:
             calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=comp_ids)
+            print(f'DB EXP ID: {calculated.task_id}')
             return calculated.task_id
         except CalculationResult.DoesNotExist:
             res = calculate.delay(calc_ids, items, comp_ids)
             print(f'EXP ID: {res.id}')
-            logging.warning(f'EXP ID: {res.id}')
             return res.id
 
 
 class ResultView(LoginRequiredMixin, View):
     def get(self, request, task_id):
         print(f'Task id: {task_id}')
-        logging.warning(f'Task id: {task_id}')
         res = AsyncResult(task_id)
         if res.failed():
             return JsonResponse({'msg': 'The Task Failed'}, status=500)
 
         result = get_object_or_404(CalculationResult, task_id=task_id)
-        logging.warning(f'Result: {result}')
+        print(f'Result: {result}')
         obj = {
             'objective_1': '-',
             'objective_2': '-',
