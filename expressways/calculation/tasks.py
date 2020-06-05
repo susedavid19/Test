@@ -39,7 +39,8 @@ def calculate(self, config_ids, items, component_ids= None):
 
     freqs_list = norm_freqs(freqs_list)
     for i, item in enumerate(items):
-        logging.warning(f'Lane Type: {item["lane_closures"]}')
+        lane_closure = item['lane_closures']
+        logging.warning(f'Lane Type: {lane_closure}')
         if item['lane_closures'] == 'II':
             df = load_csv_model_freq(
                     df, 
