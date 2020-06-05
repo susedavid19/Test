@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from braces.views import LoginRequiredMixin
 from celery.result import AsyncResult
 import time
+import logging
 
 from expressways.calculation.models import CalculationResult
 from expressways.calculation.tasks import calculate
@@ -57,6 +58,7 @@ class CalculateView(LoginRequiredMixin, View):
 
     def post(self, request):
         self.road_id = request.session['road_id']
+        print(f'Road id: {self.road_id}')
         form = InterventionForm(request.POST)
 
         if form.is_valid():
@@ -75,6 +77,7 @@ class CalculateView(LoginRequiredMixin, View):
             'configurations': configurations,
             'form': form,
         }
+        print(f'Task id: {request.session["task_id"]}')
         return render(request, 'core/home.html', context)
 
     def create_calculation_object(self, occ_config):
@@ -97,6 +100,8 @@ class CalculateView(LoginRequiredMixin, View):
             return calculated.task_id
         except CalculationResult.DoesNotExist:
             res = calculate.delay(calc_ids, items)
+            print(f'BASE ID: {res.id}')
+            logging.warning(f'BASE ID: {res.id}')
             return res.id
 
     def create_expressways_object(self, occ_config, freq_val, dur_val):
@@ -143,17 +148,21 @@ class CalculateView(LoginRequiredMixin, View):
             return calculated.task_id
         except CalculationResult.DoesNotExist:
             res = calculate.delay(calc_ids, items, comp_ids)
+            print(f'EXP ID: {res.id}')
+            logging.warning(f'EXP ID: {res.id}')
             return res.id
 
 
 class ResultView(LoginRequiredMixin, View):
     def get(self, request, task_id):
+        print(f'Task id: {task_id}')
+        logging.warning(f'Task id: {task_id}')
         res = AsyncResult(task_id)
         if res.failed():
             return JsonResponse({'msg': 'The Task Failed'}, status=500)
 
         result = get_object_or_404(CalculationResult, task_id=task_id)
-
+        logging.warning(f'Result: {result}')
         obj = {
             'objective_1': '-',
             'objective_2': '-',
