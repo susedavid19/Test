@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd /data
-gunicorn config.wsgi:application
+gunicorn config.wsgi:application 
 
 echo "Migrating data..."
 python3 manage.py migrate
