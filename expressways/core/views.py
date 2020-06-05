@@ -89,11 +89,12 @@ class CalculateView(LoginRequiredMixin, View):
     def process_baseline_calculation(self):
         items = []
         calc_ids = []
-        print(f'')
         for item in OccurrenceConfiguration.objects.filter(road=self.road_id):
             calc_ids.append(item.pk)            
             items.append(self.create_calculation_object(item))
 
+        print(f'Calc ids: {calc_ids}')
+        print(f'Items: {items}')
         try:
             calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=[])
             print(f'DB BASE ID: {calculated.task_id}')
