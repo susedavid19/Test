@@ -70,7 +70,7 @@ class TestDesignComponentSelection(TestCase):
 
         }
 
-        self.assertEquals(expected, actual)
+        self.assertEqual(expected, actual)
 
     def test_expressways_value_to_use(self, calculate_exp_mock):
         '''

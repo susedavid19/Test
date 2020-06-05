@@ -205,7 +205,7 @@ class RoadSelectionView(LoginRequiredMixin, FormView):
         return reverse('core:home', kwargs={'road_id': self.road_id})
 
 
-def custom404(request):
+def custom404(request, exception=None):
     return page_not_found(request, None, '404.html')
 
 def custom500(request):
