@@ -14,6 +14,7 @@ def add(x, y):
 
 @app.task(bind=True)
 def calculate(self, config_ids, items, component_ids= None):
+    print(f'In calculate...')
     df = pd.DataFrame()
     header = load_header_data(r'expressways/calculation/models', 'csv')
     print(f'HEADER: {header.head()}')
