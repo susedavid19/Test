@@ -61,8 +61,9 @@ def calculate(self, config_ids, items, component_ids= None):
                     str(item['flow']), freqs_list[i]
                 )
 
-    objective_1 = pti(df)
-    objective_2 = acceptable_journeys(df)
+    objective_pti = pti(df)
+    objective_journey = acceptable_journeys(df)
+    objective_speed = average_speed(df)
     result = CalculationResult()
     result.task_id = self.request.id
     result.items = json.dumps(items)
@@ -70,6 +71,7 @@ def calculate(self, config_ids, items, component_ids= None):
     if component_ids:
         result.component_ids = component_ids
     result.freq_list = freqs_list
-    result.objective_1 = objective_1
-    result.objective_2 = objective_2
+    result.objective_pti = objective_pti
+    result.objective_journey = objective_journey
+    result.objective_speed = objective_speed
     result.save()
