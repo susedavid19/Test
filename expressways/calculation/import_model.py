@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import logging
 from functools import reduce
 import os
 
@@ -114,7 +113,6 @@ def query_data(header, params):
     :param params: Parameters for model selection
     :return filename as str
     """
-    logging.warning(f'Params: {params}')
     param_names = ['Flow', 'LaneBlockage', 'Duration']
     for i in range(len(params)):
         header = header.loc[header[param_names[i]] == params[i]]
