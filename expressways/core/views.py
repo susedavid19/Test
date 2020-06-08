@@ -57,8 +57,9 @@ class CalculateView(LoginRequiredMixin, View):
 
     def post(self, request):
         self.road_id = request.session['road_id']
+        print(f'Road id: {self.road_id}')
         form = InterventionForm(request.POST)
-
+        print(f'Valid form? {form.is_valid()}')
         if form.is_valid():
             components = form.cleaned_data['design_components'] 
             if components:
@@ -92,11 +93,15 @@ class CalculateView(LoginRequiredMixin, View):
             calc_ids.append(item.pk)            
             items.append(self.create_calculation_object(item))
 
+        print(f'Calc ids: {calc_ids}')
+        print(f'Items: {items}')
         try:
             calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=[])
+            print(f'DB BASE ID: {calculated.task_id}')
             return calculated.task_id
         except CalculationResult.DoesNotExist:
             res = calculate.delay(calc_ids, items)
+            print(f'NOT exist BASE ID: {res.id}')
             return res.id
 
     def create_expressways_object(self, occ_config, freq_val, dur_val):
@@ -140,20 +145,23 @@ class CalculateView(LoginRequiredMixin, View):
 
         try:
             calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=comp_ids)
+            print(f'DB EXP ID: {calculated.task_id}')
             return calculated.task_id
         except CalculationResult.DoesNotExist:
             res = calculate.delay(calc_ids, items, comp_ids)
+            print(f'EXP ID: {res.id}')
             return res.id
 
 
 class ResultView(LoginRequiredMixin, View):
     def get(self, request, task_id):
+        print(f'Task id: {task_id}')
         res = AsyncResult(task_id)
         if res.failed():
             return JsonResponse({'msg': 'The Task Failed'}, status=500)
 
         result = get_object_or_404(CalculationResult, task_id=task_id)
-
+        print(f'Result: {result}')
         obj = {
             'objective_pti': '-',
             'objective_journey': '-',

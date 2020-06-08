@@ -13,3 +13,15 @@ stages:
       path: ./ci/k8s/ingress.yml
   - applyYamlConfig:
       path: ./ci/k8s/service.yml
+# Ensure that these stages only run on the five branches.
+branch:
+  include: [ test, stag, prod ]
+
+notification:
+  recipients:
+  - recipient: "#expressways_feeds"
+    notifier: "c-jlrn6:n-5kvbs"
+  condition:
+  - Success
+  - Changed
+  - Failed
