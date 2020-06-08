@@ -14,10 +14,8 @@ def add(x, y):
 
 @app.task(bind=True)
 def calculate(self, config_ids, items, component_ids= None):
-    print(f'In calculate...')
     df = pd.DataFrame()
     header = load_header_data(r'expressways/calculation/models', 'csv')
-    print(f'HEADER: {header.head()}')
     freqs_list = []
     if component_ids:
         freq_change = []
@@ -40,7 +38,6 @@ def calculate(self, config_ids, items, component_ids= None):
     freqs_list = norm_freqs(freqs_list)
     for i, item in enumerate(items):
         lane_closure = item['lane_closures']
-        print(f'Lane Type: {lane_closure}')
         if item['lane_closures'] == 'II':
             df = load_csv_model_freq(
                     df, 
