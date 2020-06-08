@@ -42,7 +42,6 @@ var getResults = function() {
         xhttp.timeout = 5000;
 
         xhttp.onreadystatechange = function() {
-            console.log(`Ready state: ${this.readyState}, status: ${this.status}`)
             if (this.readyState == 4 && this.status == 200) {
                 document.getElementById('result-pti').innerHTML = xhttp.response.objective_pti;
 
