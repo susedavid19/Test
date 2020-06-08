@@ -58,6 +58,7 @@ class CalculateView(LoginRequiredMixin, View):
     def post(self, request):
         self.road_id = request.session['road_id']
         form = InterventionForm(request.POST)
+
         if form.is_valid():
             components = form.cleaned_data['design_components'] 
             if components:
@@ -152,6 +153,7 @@ class ResultView(LoginRequiredMixin, View):
             return JsonResponse({'msg': 'The Task Failed'}, status=500)
 
         result = get_object_or_404(CalculationResult, task_id=task_id)
+        
         obj = {
             'objective_pti': '-',
             'objective_journey': '-',

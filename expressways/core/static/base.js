@@ -34,7 +34,7 @@ var displayError = function(msg) {
 var getResults = function() {
     if (typeof result_url !== "undefined") {
         startSpinner();
-        console.log(`in getResults for ${result_url}`)
+
         var xhttp = new XMLHttpRequest();
         xhttp.open("GET", result_url, true);
         xhttp.send();
