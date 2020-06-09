@@ -115,12 +115,11 @@ class TestDesignComponentSelection(TestCase):
         self.assertNotIn('<p>Error: * VMS has to be selected together with Traffic Officer Service</p>', html)
 
     @patch('expressways.core.views.AsyncResult')
-    def test_view_calculation_result_only(self, async_result, calculate_exp_mock):
+    def test_view_expressways_calculation_result_only(self, async_result, calculate_exp_mock):
         '''
         Given there are calculation results
         When user selects related design component with expected configuration, 
         Then calculation result is populated with expected value
-        Otherwise if no design component is selected, only baseline result is populated with expected value
         '''
         result_view = ResultView()
         
