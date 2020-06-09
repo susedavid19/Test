@@ -37,28 +37,20 @@ def calculate(self, config_ids, items, component_ids= None):
 
     freqs_list = norm_freqs(freqs_list)
     for i, item in enumerate(items):
-        lane_closure = item['lane_closures']
-        if item['lane_closures'] == 'II':
-            df = load_csv_model_freq(
-                    df, 
-                    os.path.join(r'expressways/calculation/models',
-                        query_data(
-                            header,
-                            [str(item['flow']).upper(), item['lane_closures']]
-                        )),
-                    str(item['flow']), freqs_list[i]
-                )
+        params_list = [str(item['flow']).upper(), item['lane_closures']]
+        if item['lane_closures'] != 'II':
+            # Add duration to factor in if any lane is impacted with closure
+            params_list.append(str(item['duration']).replace('.', '_'))
 
-        else:
-            df = load_csv_model_freq(
-                    df, 
-                    os.path.join(r'expressways/calculation/models',
-                        query_data(
-                            header,
-                            [str(item['flow']).upper(), item['lane_closures'], str(item['duration']).replace('.', '_')]
-                        )),
-                    str(item['flow']), freqs_list[i]
-                )
+        df = load_csv_model_freq(
+                df, 
+                os.path.join(r'expressways/calculation/models',
+                    query_data(
+                        header,
+                        params_list
+                    )),
+                str(item['flow']), freqs_list[i]
+            )
 
     objective_pti = pti(df)
     objective_journey = acceptable_journeys(df)
