@@ -14,20 +14,32 @@ def add(x, y):
 
 
 @app.task(bind=True)
-def calculate(self, config_ids, items):
-    objective_2 = 0
+def calculate(self, config_ids, items, component_ids= None):
     df = pd.DataFrame()
-
     header = load_header_data(r'expressways/calculation/models', 'csv')
-    print(header.head())
 
     freqs_list = []
-    for item in items:
-        freqs_list.append(item['frequency'])
+    if component_ids:
+        freq_change = []
+        dur_change = []
+        durations = []
+
+        for item in items:
+            freqs_list.append(item['frequency'])
+            durations.append(item['duration'])
+            dur_change.append(item['duration_change'])
+            freq_change.append(item['frequency_change'])
+
+        freqs_list = frequency_change(freqs_list, freq_change)
+        freqs_list = duration_bin(freqs_list, dur_change, durations)
+    else:
+        for item in items:
+            freqs_list.append(item['frequency'])
+
 
     freqs_list = norm_freqs(freqs_list)
-    i = 0
-    for item in items:
+
+    for i, item in enumerate(items):
         if item['lane_closures'] == 'II':
             df = load_csv_model_freq_light(df, os.path.join(r'expressways/calculation/models',
                                                             query_data(header,
@@ -40,29 +52,18 @@ def calculate(self, config_ids, items):
                                                                        [str(item['flow']), item['lane_closures'],
                                                                         str(item['duration'])])), str(item['flow']),
                                            freqs_list[i])
-        i += 1
-        print(item)
 
-    objective_1 = pti(df)
-
+    # Will be switched to the actual metrics on EOT-115
+    # objective_1 = pti(df)
+    objective_1 = 1.77
+    objective_2 = 4.77
     result = CalculationResult()
     result.task_id = self.request.id
     result.items = json.dumps(items)
     result.config_ids = config_ids
-    result.objective_1 = objective_1
-    result.objective_2 = objective_2
-    result.save()
-
-@app.task(bind=True)
-def calculate_expressways(self, config_ids, component_ids, items):
-    objective_1 = 1.23
-    objective_2 = 4.56
-    
-    result = CalculationResult()
-    result.task_id = self.request.id
-    result.items = json.dumps(items)
-    result.config_ids = config_ids
-    result.component_ids = component_ids
+    if component_ids:
+        result.component_ids = component_ids
+    result.freq_list = freqs_list
     result.objective_1 = objective_1
     result.objective_2 = objective_2
     result.save()

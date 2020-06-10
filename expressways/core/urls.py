@@ -16,5 +16,5 @@ urlpatterns = [
     path('result/<str:task_id>', ResultView.as_view(), name='result'),
 ]
 
-handler404 = 'core.views.custom404'
-handler500 = 'core.views.custom500'
+handler404 = 'expressways.core.views.custom404'
+handler500 = 'expressways.core.views.custom500'
