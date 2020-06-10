@@ -45,19 +45,19 @@ def load_csv_model_freq(df, path, flow, freq):
     :return df: dataframe with the loaded data
     """
 
+    # sampling that needs to be done due to the models having 5 times the same runs;
+    # combine all together and drop the four fifths in order to have a reasonable model
+    with open(path) as csvfile:
+        row_count = sum(1 for row in csvfile)
+    skip = np.random.randint(1, row_count, int(4/5*row_count))
+
     if df.empty:
         del df
-        with open(path) as csvfile:
-            row_count = sum(1 for row in csvfile)
-        skip = np.random.randint(1, row_count, int(4/5*row_count))
         df = pd.read_csv(path, skiprows=skip)
         df_copy = df.copy()
         for i in range(freq - 1):
             df = df.append(df_copy, ignore_index=True)
     else:
-        with open(path) as csvfile:
-            row_count = sum(1 for row in csvfile)
-        skip = np.random.randint(1, row_count, int(4/5*row_count))
         df_temp = pd.read_csv(path, skiprows=skip)
         for i in range(freq):
             df = df.append(df_temp, ignore_index=True)
