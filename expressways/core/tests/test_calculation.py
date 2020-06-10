@@ -5,7 +5,6 @@ import json
 
 from expressways.core.views import CalculateView, ResultView
 from expressways.core.factories import RoadFactory, CalculationResultFactory, ConfigurationFactory
-from expressways.calculation.import_model import load_csv_model_freq, load_header_data
 
 
 class TestCalculation(TestCase):
@@ -44,7 +43,7 @@ class TestCalculation(TestCase):
             task_id=task.id,
             config_ids=[configuration.pk],
             component_ids=[],
-            items=[self.view.create_expressways_object(configuration, 5, -5)],
+            items=[self.view.create_calculation_object(configuration)],
             objective_incident=test_objective.get('incident'),
             objective_pti=test_objective.get('pti'),
             objective_journey=test_objective.get('journey'),
@@ -56,7 +55,7 @@ class TestCalculation(TestCase):
         response = result_view.get(request, task.id)
 
         async_result.assert_called_once_with(task.id)
-        expressways_expected = {
+        baseline_expected = {
             'objective_incident': str(test_objective.get('incident')), 
             'objective_pti': str(test_objective.get('pti')), 
             'objective_journey': str(test_objective.get('journey')),
@@ -66,4 +65,5 @@ class TestCalculation(TestCase):
             'objective_exp_journey': '-', 
             'objective_exp_speed': '-'
         }
-        self.assertJSONEqual(json.dumps(expressways_expected), force_text(response.content))
+        self.assertJSONEqual(json.dumps(baseline_expected), force_text(response.content))
+
