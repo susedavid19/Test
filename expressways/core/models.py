@@ -158,6 +158,11 @@ class EffectIntervention(models.Model):
 
 class OperationalObjective(CommonInfo):
     description = models.TextField()
+    identifier = models.CharField(
+        help_text=_('Operational objective identifier​'),
+        max_length=10,
+        default='',
+    )
 
     def __str__(self):
         return self.name

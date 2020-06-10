@@ -115,12 +115,11 @@ class TestDesignComponentSelection(TestCase):
         self.assertNotIn('<p>Error: * VMS has to be selected together with Traffic Officer Service</p>', html)
 
     @patch('expressways.core.views.AsyncResult')
-    def test_view_calculation_result_only(self, async_result, calculate_exp_mock):
+    def test_view_expressways_calculation_result_only(self, async_result, calculate_exp_mock):
         '''
         Given there are calculation results
         When user selects related design component with expected configuration, 
         Then calculation result is populated with expected value
-        Otherwise if no design component is selected, only baseline result is populated with expected value
         '''
         result_view = ResultView()
         
@@ -132,8 +131,11 @@ class TestDesignComponentSelection(TestCase):
         async_obj.failed.return_value = False
         async_result.return_value = async_obj
 
-        objective1 = 1.234
-        objective2 = 4.567
+        test_objective = {
+            "pti": 2.468,
+            "journey": 3.579,
+            "speed": 4.681
+        }
 
         component = DesignComponent.objects.get(id=1)
         effect = EffectInterventionFactory(design_component=component)
@@ -143,8 +145,9 @@ class TestDesignComponentSelection(TestCase):
             config_ids=[configuration.pk],
             component_ids=[component.pk],
             items=[self.view.create_expressways_object(configuration, 5, -5)],
-            objective_1=objective1,
-            objective_2=objective2
+            objective_pti=test_objective.get('pti'),
+            objective_journey=test_objective.get('journey'),
+            objective_speed=test_objective.get('speed')
         )
 
         request = self.factory
@@ -153,10 +156,12 @@ class TestDesignComponentSelection(TestCase):
 
         async_result.assert_called_once_with(task.id)
         expressways_expected = {
-            "objective_1": "-", 
-            "objective_2": "-", 
-            "objective_exp_1": str(objective1), 
-            "objective_exp_2": str(objective2)
+            "objective_pti": "-", 
+            "objective_journey": "-", 
+            "objective_speed": "-", 
+            "objective_exp_pti": str(test_objective.get('pti')), 
+            "objective_exp_journey": str(test_objective.get('journey')),
+            "objective_exp_speed": str(test_objective.get('speed'))
         }
         self.assertJSONEqual(json.dumps(expressways_expected), force_text(response.content))
 

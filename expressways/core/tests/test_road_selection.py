@@ -59,8 +59,12 @@ class TestRoadSelection(BaseTestCase):
         session['task_id'] = dummy_task
         session.save()
 
-        obj1 = 1.234
-        obj2 = 5.678
+        test_objective = {
+            "pti": 2.468,
+            "journey": 3.579,
+            "speed": 4.681
+        }
+
         CalculationResult.objects.create(
             task_id=dummy_task,
             config_ids=[right_config.id],
@@ -70,8 +74,9 @@ class TestRoadSelection(BaseTestCase):
                 'flow': right_config.flow,
                 'frequency': right_config.frequency,
             }],
-            objective_1=obj1,
-            objective_2=obj2
+            objective_pti=test_objective.get('pti'),
+            objective_journey=test_objective.get('journey'),
+            objective_speed=test_objective.get('speed')
         )
 
         self.selenium.get(f'{self.live_server_url}')

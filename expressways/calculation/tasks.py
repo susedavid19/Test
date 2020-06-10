@@ -1,7 +1,6 @@
 import json
 import os
 import pandas as pd
-
 from expressways.calculation.celery import app
 from expressways.calculation.models import CalculationResult
 from expressways.calculation.import_model import *
@@ -17,7 +16,6 @@ def add(x, y):
 def calculate(self, config_ids, items, component_ids= None):
     df = pd.DataFrame()
     header = load_header_data(r'expressways/calculation/models', 'csv')
-
     freqs_list = []
     if component_ids:
         freq_change = []
@@ -38,25 +36,33 @@ def calculate(self, config_ids, items, component_ids= None):
 
 
     freqs_list = norm_freqs(freqs_list)
-
     for i, item in enumerate(items):
+        lane_closure = item['lane_closures']
         if item['lane_closures'] == 'II':
-            df = load_csv_model_freq_light(df, os.path.join(r'expressways/calculation/models',
-                                                            query_data(header,
-                                                                       [str(item['flow']), item['lane_closures']])),
-                                           str(item['flow']), freqs_list[i])
+            df = load_csv_model_freq(
+                    df, 
+                    os.path.join(r'expressways/calculation/models',
+                        query_data(
+                            header,
+                            [str(item['flow']).upper(), item['lane_closures']]
+                        )),
+                    str(item['flow']), freqs_list[i]
+                )
 
         else:
-            df = load_csv_model_freq_light(df, os.path.join(r'expressways/calculation/models',
-                                                            query_data(header,
-                                                                       [str(item['flow']), item['lane_closures'],
-                                                                        str(item['duration'])])), str(item['flow']),
-                                           freqs_list[i])
+            df = load_csv_model_freq(
+                    df, 
+                    os.path.join(r'expressways/calculation/models',
+                        query_data(
+                            header,
+                            [str(item['flow']).upper(), item['lane_closures'], str(item['duration']).replace('.', '_')]
+                        )),
+                    str(item['flow']), freqs_list[i]
+                )
 
-    # Will be switched to the actual metrics on EOT-115
-    # objective_1 = pti(df)
-    objective_1 = 1.77
-    objective_2 = 4.77
+    objective_pti = pti(df)
+    objective_journey = acceptable_journeys(df)
+    objective_speed = average_speed(df)
     result = CalculationResult()
     result.task_id = self.request.id
     result.items = json.dumps(items)
@@ -64,6 +70,7 @@ def calculate(self, config_ids, items, component_ids= None):
     if component_ids:
         result.component_ids = component_ids
     result.freq_list = freqs_list
-    result.objective_1 = objective_1
-    result.objective_2 = objective_2
+    result.objective_pti = objective_pti
+    result.objective_journey = objective_journey
+    result.objective_speed = objective_speed
     result.save()
