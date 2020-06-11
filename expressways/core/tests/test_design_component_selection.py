@@ -51,26 +51,28 @@ class TestDesignComponentSelection(TestCase):
         When the function is called
         Then the returned object contains all the correct fields
         '''
-        mock_configuration = MagicMock()
-        mock_configuration.lane_closures = 'first'
-        mock_configuration.duration = 30
-        mock_configuration.flow = 'third'
-        mock_configuration.frequency = 50
-        dur_val = -20
-        freq_val = 10
-
-        actual = self.view.create_expressways_object(mock_configuration, freq_val, dur_val)
-        expected = {
-            'lane_closures': 'first',
+        expected_obj = {
+            'lane_closures': 'XI',
             'duration': 30,
-            'flow': 'third',
+            'flow': 'low',
             'frequency': 50,
+            'incidents_cleared': True,
             'duration_change': -0.2,
             'frequency_change': 0.1
-
         }
 
-        self.assertEqual(expected, actual)
+        mock_configuration = MagicMock()
+        mock_configuration.lane_closures = expected_obj.get('lane_closures')
+        mock_configuration.duration = expected_obj.get('duration')
+        mock_configuration.flow = expected_obj.get('flow')
+        mock_configuration.frequency = expected_obj.get('frequency')
+        mock_configuration.incidents_cleared = expected_obj.get('incidents_cleared')
+        dur_val = expected_obj.get('duration_change') * 100
+        freq_val = expected_obj.get('frequency_change') * 100
+
+        actual_obj = self.view.create_expressways_object(mock_configuration, freq_val, dur_val)
+
+        self.assertEqual(expected_obj, actual_obj)
 
     def test_expressways_value_to_use(self, calculate_exp_mock):
         '''
@@ -115,12 +117,11 @@ class TestDesignComponentSelection(TestCase):
         self.assertNotIn('<p>Error: * VMS has to be selected together with Traffic Officer Service</p>', html)
 
     @patch('expressways.core.views.AsyncResult')
-    def test_view_calculation_result_only(self, async_result, calculate_exp_mock):
+    def test_view_expressways_calculation_result_only(self, async_result, calculate_exp_mock):
         '''
         Given there are calculation results
         When user selects related design component with expected configuration, 
         Then calculation result is populated with expected value
-        Otherwise if no design component is selected, only baseline result is populated with expected value
         '''
         result_view = ResultView()
         
@@ -132,8 +133,12 @@ class TestDesignComponentSelection(TestCase):
         async_obj.failed.return_value = False
         async_result.return_value = async_obj
 
-        objective1 = 1.234
-        objective2 = 4.567
+        test_objective = {
+            'incident': 1.357,
+            'pti': 2.468,
+            'journey': 3.579,
+            'speed': 4.681
+        }
 
         component = DesignComponent.objects.get(id=1)
         effect = EffectInterventionFactory(design_component=component)
@@ -143,8 +148,10 @@ class TestDesignComponentSelection(TestCase):
             config_ids=[configuration.pk],
             component_ids=[component.pk],
             items=[self.view.create_expressways_object(configuration, 5, -5)],
-            objective_1=objective1,
-            objective_2=objective2
+            objective_incident=test_objective.get('incident'),
+            objective_pti=test_objective.get('pti'),
+            objective_journey=test_objective.get('journey'),
+            objective_speed=test_objective.get('speed')
         )
 
         request = self.factory
@@ -153,10 +160,14 @@ class TestDesignComponentSelection(TestCase):
 
         async_result.assert_called_once_with(task.id)
         expressways_expected = {
-            "objective_1": "-", 
-            "objective_2": "-", 
-            "objective_exp_1": str(objective1), 
-            "objective_exp_2": str(objective2)
+            'objective_incident': '-', 
+            'objective_pti': '-', 
+            'objective_journey': '-', 
+            'objective_speed': '-', 
+            'objective_exp_incident': str(test_objective.get('incident')), 
+            'objective_exp_pti': str(test_objective.get('pti')), 
+            'objective_exp_journey': str(test_objective.get('journey')),
+            'objective_exp_speed': str(test_objective.get('speed'))
         }
         self.assertJSONEqual(json.dumps(expressways_expected), force_text(response.content))
 

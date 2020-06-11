@@ -83,6 +83,7 @@ class CalculateView(LoginRequiredMixin, View):
             'duration': occ_config.duration,
             'flow': occ_config.flow,
             'frequency': occ_config.frequency,
+            'incidents_cleared': occ_config.incidents_cleared
         }
     
     def process_baseline_calculation(self):
@@ -100,12 +101,12 @@ class CalculateView(LoginRequiredMixin, View):
             return res.id
 
     def create_expressways_object(self, occ_config, freq_val, dur_val):
-    
         return {
             'lane_closures': occ_config.lane_closures,
             'duration': occ_config.duration,
             'flow': occ_config.flow,
             'frequency': occ_config.frequency,
+            'incidents_cleared': occ_config.incidents_cleared,
             'duration_change': (dur_val / 100),
             'frequency_change': (freq_val / 100)
         }
@@ -153,30 +154,42 @@ class ResultView(LoginRequiredMixin, View):
             return JsonResponse({'msg': 'The Task Failed'}, status=500)
 
         result = get_object_or_404(CalculationResult, task_id=task_id)
-
+        
         obj = {
-            'objective_1': '-',
-            'objective_2': '-',
-            'objective_exp_1': '-',
-            'objective_exp_2': '-'
+            'objective_incident': '-',
+            'objective_pti': '-',
+            'objective_journey': '-',
+            'objective_speed': '-',
+            'objective_exp_incident': '-',
+            'objective_exp_pti': '-',
+            'objective_exp_journey': '-',
+            'objective_exp_speed': '-'
         }
         if 'result' in request.session:
             obj = request.session['result']
 
         if len(result.component_ids) > 0:
-            obj['objective_exp_1'] = str(result.objective_1)
-            obj['objective_exp_2'] = str(result.objective_2)
+            obj['objective_exp_incident'] = str(result.objective_incident)
+            obj['objective_exp_pti'] = str(result.objective_pti)
+            obj['objective_exp_journey'] = str(result.objective_journey)
+            obj['objective_exp_speed'] = str(result.objective_speed)
         else:
-            obj['objective_1'] = str(result.objective_1)
-            obj['objective_2'] = str(result.objective_2)
+            obj['objective_incident'] = str(result.objective_incident)
+            obj['objective_pti'] = str(result.objective_pti)
+            obj['objective_journey'] = str(result.objective_journey)
+            obj['objective_speed'] = str(result.objective_speed)
 
         request.session['result'] = obj 
 
         return JsonResponse({
-            'objective_1': obj['objective_1'], 
-            'objective_2': obj['objective_2'],
-            'objective_exp_1': obj['objective_exp_1'], 
-            'objective_exp_2': obj['objective_exp_2']
+            'objective_incident': obj['objective_incident'], 
+            'objective_pti': obj['objective_pti'], 
+            'objective_journey': obj['objective_journey'],
+            'objective_speed': obj['objective_speed'],
+            'objective_exp_incident': obj['objective_exp_incident'], 
+            'objective_exp_pti': obj['objective_exp_pti'], 
+            'objective_exp_journey': obj['objective_exp_journey'],
+            'objective_exp_speed': obj['objective_exp_speed']
         })
 
 

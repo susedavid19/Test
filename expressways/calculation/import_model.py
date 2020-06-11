@@ -37,7 +37,7 @@ def load_csv_model(df, path, flow):
     return df
 
 
-def load_csv_model_freq_light(df, path, flow, freq):
+def load_csv_model_freq(df, path, flow, freq):
     """
     Load a excel file from a path and return a dataframe
     :param path: path as str to the desired filename
@@ -45,20 +45,20 @@ def load_csv_model_freq_light(df, path, flow, freq):
     :return df: dataframe with the loaded data
     """
 
+    # sampling that needs to be done due to the models having 5 times the same runs;
+    # combine all together and drop the four fifths in order to have a reasonable model
+    with open(path) as csvfile:
+        row_count = sum(1 for row in csvfile)
+    skip = np.random.randint(1, row_count, int(4/5*row_count))
+
     if df.empty:
         del df
-        df = pd.read_csv(path, usecols=[5, 6, 8, 14])
-        df['Flows'] = int(flow)
-        df = df.loc[df['Vehicle Type Description'] == "Car"]
-        df = df.loc[df['Path Name'] == "Main- ALL"]
+        df = pd.read_csv(path, skiprows=skip)
         df_copy = df.copy()
         for i in range(freq - 1):
             df = df.append(df_copy, ignore_index=True)
     else:
-        df_temp = pd.read_csv(path, usecols=[5, 6, 8, 14])
-        df_temp['Flows'] = int(flow)
-        df_temp = df_temp.loc[df_temp['Vehicle Type Description'] == "Car"]
-        df_temp = df_temp.loc[df_temp['Path Name'] == "Main- ALL"]
+        df_temp = pd.read_csv(path, skiprows=skip)
         for i in range(freq):
             df = df.append(df_temp, ignore_index=True)
     return df
@@ -73,9 +73,9 @@ def load_header_data(folder, filetype):
     header = []
     for file in os.listdir(folder):
         if file.endswith('.' + filetype):
-            header.append(os.path.splitext(file)[0].split()[2:])
+            header.append(os.path.splitext(file)[0].split())
             header[-1].insert(0, file)
-    header_df = pd.DataFrame(header, columns=['Filename', 'NoLanes', 'Flow', 'LaneBlockage', 'Duration'])
+    header_df = pd.DataFrame(header, columns=['Filename',  'Flow', 'Speed','LaneBlockage', 'Duration'])
     return header_df
 
 

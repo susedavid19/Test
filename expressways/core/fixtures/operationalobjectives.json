@@ -4,6 +4,7 @@
     "pk": 1,
     "fields": {
       "name": "Operational Objective 1",
+      "identifier": "incident",
       "archived": false,
       "description": "Incidents cleared. Target “At least 85% of all lane impact closures between 0600 and 2200 are cleared within one hour.”"
     }
@@ -13,6 +14,7 @@
     "pk": 2,
     "fields": {
       "name": "Operational Objective 2",
+      "identifier": "pti",
       "archived": false,
       "description": "Planning Time Index (reliability of journeys). The ratio of the 95th percentile journey time of all journeys and the free-flow journey time. Target: The averaged performance of Highways England’s motorway network for the latest available year of data."
     }
@@ -22,6 +24,7 @@
     "pk": 3,
     "fields": {
       "name": "Operational Objective 3",
+      "identifier": "journey",
       "archived": false,
       "description": "Acceptable Journeys. Proportion of journeys faster than 4/3 of the free flow journey time. Target: The averaged performance of Highways England’s motorway network for the latest available year of data."
     }
@@ -31,6 +34,7 @@
     "pk": 4,
     "fields": {
       "name": "Operational Objective 4",
+      "identifier": "speed",
       "archived": false,
       "description": "Average Speed. The flow weighted average speed of car journeys. Target: The averaged performance of Highways England’s motorway network for the latest available year of data."
     }
