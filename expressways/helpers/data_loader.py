@@ -11,7 +11,11 @@ PROFORMA_COLUMN = {
     'Flow level': 8,
     'Speed': 10,
     'Duration': 12,
-    'Frequency': 13
+    'Frequency': 13,
+    'WCH & Slow Moving Vehicle Prohibition': 15,
+    'Emergency Areas': 19,
+    'Traffic Officer Service': 23,
+    'VMS': 27,
 }
 
 class DataLoader:
@@ -20,16 +24,18 @@ class DataLoader:
         df = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=1, header=2)
         recs_created = 0
 
+        OccurrenceConfiguration.objects.all().delete()
+        EffectIntervention.objects.all().delete()
+
         # Reading through the rows
         for index, row in df.iterrows():
             # Check configuration completion status
             if row[0] == 'Complete':
                 config, created = cls.get_or_update_configuration(row, index)
                 if created:
+                    for component in DesignComponent.objects.values('name'):
+                        cls.add_intervention(config, component['name'], row, index + 5)
                     recs_created += 1
-        #     for component in DesignComponent.objects.values('name'):
-        #         continue
-                # self.add_intervention(config, component['name'], df.iloc[i])
 
         print('Records added: ', recs_created)
 
@@ -78,7 +84,7 @@ class DataLoader:
         duration = data[PROFORMA_COLUMN['Duration']]
         frequency = cls.format_frequency(data[PROFORMA_COLUMN['Frequency']])
         incidents_cleared = cls.format_incidents_cleared(data[PROFORMA_COLUMN['Incidents cleared']])
-
+        
         if (not pd.isnull(lane_closures) 
             and (not pd.isnull(flow)) 
             and (not pd.isnull(speed_limit))
@@ -90,12 +96,11 @@ class DataLoader:
                 lane_closures=lane_closures,
                 flow=flow,
                 speed_limit=int(speed_limit),
-                duration=int(duration),
+                duration=float(duration),
                 frequency=frequency,
                 incidents_cleared=incidents_cleared
             )
-            #if not created:
-                #print(f'X -> {obj.sub_occurrence.name} {row_idx}')
+
             return obj, created
 
         else:
@@ -107,41 +112,36 @@ class DataLoader:
         return obj
 
     @classmethod
-    def add_intervention(cls, config, component_name, data):
-        if component_name == 'WCH & Slow Moving Vehicle Prohibition':
-            component = cls.get_design_component(component_name)
-            freq_value = data['WCH:Impact Assumption:Frequency']
-            freq_text = data['WCH:Evidence Source:Frequency']
-            dur_value = data['WCH:Impact Assumption:Duration']
-            dur_text = data['WCH:Evidence Source:Duration']
-        elif component_name == 'Emergency Areas':
-            component = cls.get_design_component(component_name)
-            freq_value = data['EA:Impact Assumption:Frequency']
-            freq_text = data['EA:Evidence Source:Frequency']
-            dur_value = data['EA:Impact Assumption:Duration']
-            dur_text = data['EA:Evidence Source:Duration']
-        elif component_name == 'Traffic Officer Service':
-            component = cls.get_design_component(component_name)
-            freq_value = data['TOS:Impact Assumption:Frequency']
-            freq_text = data['TOS:Evidence Source:Frequency']
-            dur_value = data['TOS:Impact Assumption:Duration']
-            dur_text = data['TOS:Evidence Source:Duration']
-        elif component_name == 'VMS':
-            component = cls.get_design_component(component_name)
-            freq_value = data['VMS:Impact Assumption:Frequency']
-            freq_text = data['VMS:Evidence Source:Frequency']
-            dur_value = data['VMS:Impact Assumption:Duration']
-            dur_text = data['VMS:Evidence Source:Duration']
+    def format_justification(cls, freq_text, dur_text):
+        justification = ''
+        if freq_text:
+            justification += f'For frequency change: {freq_text}'
+        if dur_text:
+            justification += f'\nFor duration change: {dur_text}'
+        return justification
 
-        if (component
-            and not pd.isnull(freq_value) 
-            and (not pd.isnull(dur_value)) 
-        ):
+    @classmethod
+    def format_change_value(cls, value):
+        if value == 'N/A':
+            return 0
+        else:
+            return float(value) * 100
+
+    @classmethod
+    def add_intervention(cls, config, component_name, data, idx):
+        component = cls.get_design_component(component_name)
+        comp_idx = PROFORMA_COLUMN[component_name]
+        freq_value = cls.format_change_value(data[comp_idx])
+        dur_value = cls.format_change_value(data[comp_idx + 1])
+        freq_text = data[comp_idx + 2]
+        dur_text = data[comp_idx + 3]
+        
+        if (freq_value != 0 or dur_value != 0):
             obj, created = EffectIntervention.objects.get_or_create(
                 design_component=component,
                 configuration_effect=config,
-                frequency_change=freq_value,
-                duration_change=dur_value,
-                justification=freq_text
+                frequency_change=int(freq_value),
+                duration_change=int(dur_value),
+                justification=cls.format_justification(freq_text, dur_text)
             )
             return obj

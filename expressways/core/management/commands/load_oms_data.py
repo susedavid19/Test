@@ -33,6 +33,6 @@ class Command(BaseCommand):
             except:
                 self.stdout.write(self.style.ERROR('Error: File upload failed. Check content and try again later.'))
             else:
-                self.stdout.write(self.style.SUCCESS(f'Success: File {file_path} is now processed.'))
+                self.stdout.write(self.style.SUCCESS(f'Success: File {file_path} processing completed.'))
         else:
             self.stdout.write(self.style.ERROR(f'Error: File {file_path} does not exist.'))
