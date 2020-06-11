@@ -17,16 +17,22 @@ class Command(BaseCommand):
             required=True,
             help='Name of file with full path and extension'
         )
+        parser.add_argument(
+            '-s', '--sheet',
+            required=True,
+            help='Name of active sheet to be processed'
+        )
 
     def handle(self, *args, **options):
         file_path = options['file']
+        sheet_name = options['sheet']
         if os.path.isfile(file_path):
             dl = DataLoader()
             try:
-                dl.load_to_configuration(file_path)
+                dl.load_to_configuration(file_path, sheet_name)
             except:
                 self.stdout.write(self.style.ERROR('Error: File upload failed. Check content and try again later.'))
             else:
-                self.stdout.write(self.style.SUCCESS(f'Success: File {file_path} is now uploaded.'))
+                self.stdout.write(self.style.SUCCESS(f'Success: File {file_path} is now processed.'))
         else:
             self.stdout.write(self.style.ERROR(f'Error: File {file_path} does not exist.'))
