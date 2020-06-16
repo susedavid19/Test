@@ -7,17 +7,14 @@ from expressways.calculation.import_model import *
 from expressways.calculation.metrics import *
 
 
-@app.task
-def add(x, y):
-    return x + y
-
+BOTH_LANES_OPEN = 'II'
 
 @app.task(bind=True)
 def calculate(self, config_ids, items, component_ids= None):
     df = pd.DataFrame()
     header = load_header_data(r'expressways/calculation/models', 'csv')
     freqs_list = []
-    less_an_hour_list = []
+    lte_an_hour_list = []
     if component_ids:
         freq_change = []
         dur_change = []
@@ -30,7 +27,7 @@ def calculate(self, config_ids, items, component_ids= None):
             freq_change.append(item['frequency_change'])
 
             if item['duration'] <= 60 and item['incidents_cleared']:
-                less_an_hour_list.append(item)
+                lte_an_hour_list.append(item)
 
         freqs_list = frequency_change(freqs_list, freq_change)
         freqs_list = duration_bin(freqs_list, dur_change, durations)
@@ -39,12 +36,12 @@ def calculate(self, config_ids, items, component_ids= None):
             freqs_list.append(item['frequency'])
 
             if item['duration'] <= 60 and item['incidents_cleared']:
-                less_an_hour_list.append(item)
+                lte_an_hour_list.append(item)
 
     freqs_list = norm_freqs(freqs_list)
     for i, item in enumerate(items):
         params_list = [str(item['flow']).upper(), item['lane_closures']]
-        if item['lane_closures'] != 'II':
+        if item['lane_closures'] != BOTH_LANES_OPEN:
             # Add duration to factor in if any lane is impacted with closure
             params_list.append(str(item['duration']).replace('.', '_'))
 
@@ -58,7 +55,7 @@ def calculate(self, config_ids, items, component_ids= None):
                 str(item['flow']), freqs_list[i]
             )
 
-    objective_incident = incidents_cleared(less_an_hour_list, items)
+    objective_incident = incidents_cleared(lte_an_hour_list, items)
     objective_pti = pti(df)
     objective_journey = acceptable_journeys(df)
     objective_speed = average_speed(df)
