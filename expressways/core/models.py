@@ -120,6 +120,10 @@ class OccurrenceConfiguration(models.Model):
         help_text=_('If ticked, incidents occurring as a result of this Operational Occurrence will be included in the ‘Incidents Cleared’ calculation'),
         default=False
     )
+    references = models.TextField(
+        help_text=_('Provide references to data sources or a detailed explanation of any assumptions used e.g. calculations to determine frequencies or durations.'),
+        default=''
+    )
     effect = models.ManyToManyField(
         DesignComponent,
         verbose_name='Possible intervention',
