@@ -22,17 +22,38 @@ class Command(BaseCommand):
             required=True,
             help='Name of active sheet to be processed'
         )
+        parser.add_argument(
+            '-o', '--output',
+            action='store',
+            help='Name of output file'
+        )
+        parser.add_argument(
+            '--skiprows',
+            action='store',
+            type=int,
+            help='Number of rows to skip in the file before data can be processed'
+        )
+        parser.add_argument(
+            '--header',
+            action='store',
+            type=int,
+            help='Number of header rows'
+        )
 
     def handle(self, *args, **options):
         file_path = options['file']
         sheet_name = options['sheet']
+        output = options['output']
+        skip_rows = options.get('skiprows', 1)
+        header = options.get('header', 2)
+
         if os.path.isfile(file_path):
-            dl = DataLoader()
+            dl = DataLoader(output)
             try:
-                dl.load_to_configuration(file_path, sheet_name)
+                dl.load_to_configuration(file_path, sheet_name, skip_rows, header)
             except:
                 self.stdout.write(self.style.ERROR('Error: File upload failed. Check content and try again later.'))
             else:
-                self.stdout.write(self.style.SUCCESS(f'Success: File {file_path} processing completed.'))
+                self.stdout.write(self.style.SUCCESS(f'\nSuccess: File {file_path} processing completed.'))
         else:
             self.stdout.write(self.style.ERROR(f'Error: File {file_path} does not exist.'))
