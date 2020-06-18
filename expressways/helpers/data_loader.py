@@ -19,6 +19,13 @@ PROFORMA_COLUMN = {
     'VMS': 27,
 }
 
+PROCESSED_DESIGN_COMPONENTS = [
+    'WCH & Slow Moving Vehicle Prohibition',
+    'Emergency Areas',
+    'Traffic Officer Service',
+    'VMS'
+]
+
 class DataLoader:
     def __init__(self, output_file):
         '''
@@ -43,7 +50,7 @@ class DataLoader:
         '''
         df = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=skiprows, header=header)
         recs_created = 0
-        self.log_output(f'Processing {sheet_name} sheet of file{file_path}\n{"-"*25}')
+        self.log_output(f'Processing {sheet_name} sheet of file{file_path}\n{"-"*50}')
 
         # Reading through the rows
         for index, row in df.iterrows():
@@ -52,14 +59,14 @@ class DataLoader:
                 config, created = self.get_or_update_configuration(row, index + 5)
                 if created:
                     # If new configuration is added, proceed to setup related design components intervention
-                    for component in DesignComponent.objects.values('name'):
-                        self.add_intervention(config, component['name'], row, index + 5)
+                    for component in PROCESSED_DESIGN_COMPONENTS:
+                        self.add_intervention(config, component, row, index + 5)
                     recs_created += 1
             # Print out progress dot to screen
             if index % 10 == 0:
                 print('.', end='', flush=True)
 
-        self.log_output(f'\n{"-"*25}\nRecords added: {recs_created}')
+        self.log_output(f'\n{"-"*50}\nRecords added: {recs_created}\n')
         self.output_file.close()
 
     def get_occurrence(self, name):
@@ -153,7 +160,7 @@ class DataLoader:
         '''
         Retrieve design component if exist under provided name; otherwise create new
         '''
-        obj = DesignComponent.objects.get(name=name)
+        obj, created = DesignComponent.objects.get_or_create(name=name)
         return obj
 
     def format_justification(self, freq_text, dur_text):

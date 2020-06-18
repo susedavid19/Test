@@ -51,9 +51,9 @@ class Command(BaseCommand):
             dl = DataLoader(output)
             try:
                 dl.load_to_configuration(file_path, sheet_name, skip_rows, header)
-            except:
-                self.stdout.write(self.style.ERROR('Error: File upload failed. Check content and try again later.'))
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f'\nFile upload failed. Check content and try again later.\nError: {str(e)}'))
             else:
                 self.stdout.write(self.style.SUCCESS(f'\nSuccess: File {file_path} processing completed.'))
         else:
-            self.stdout.write(self.style.ERROR(f'Error: File {file_path} does not exist.'))
+            self.stdout.write(self.style.ERROR(f'\nError: File {file_path} does not exist.'))
