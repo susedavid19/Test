@@ -1,3 +1,4 @@
+import os
 from io import StringIO
 from django.core.management import call_command
 from django.test import TestCase
@@ -12,7 +13,8 @@ class TestProformaLoader(TestCase):
         There is also another sheet ie. Invalid Sheet with invalid record that has 
         blank lane closure and speed value.
         '''
-        self.test_file = '/data/expressways/core/tests/data/Test_Proforma.xlsx'
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        self.test_file = os.path.join(file_path, 'data/Test_Proforma.xlsx')
         self.test_sheet = 'Test Sheet'
         self.invalid_sheet = 'Invalid Sheet'
         self.io = StringIO()
