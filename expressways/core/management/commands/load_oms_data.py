@@ -30,25 +30,39 @@ class Command(BaseCommand):
         parser.add_argument(
             '--skiprows',
             action='store',
+            nargs='?',
             type=int,
+            default=1,
             help='Number of rows to skip in the file before data can be processed'
         )
         parser.add_argument(
             '--header',
             action='store',
+            nargs='?',
             type=int,
+            default=2,
             help='Number of header rows'
         )
+        parser.add_argument(
+            '--road',
+            action='store',
+            nargs='?',
+            type=str,
+            default='Expressways Test Road',
+            help='Name of road these configurations will be put into'
+        )
+
 
     def handle(self, *args, **options):
         file_path = options['file']
         sheet_name = options['sheet']
         output = options['output']
-        skip_rows = options.get('skiprows', 1)
-        header = options.get('header', 2)
+        skip_rows = options['skiprows']
+        header = options['header']
+        road_name = options['road']
 
         if os.path.isfile(file_path):
-            dl = DataLoader(output)
+            dl = DataLoader(output, road_name)
             try:
                 dl.load_to_configuration(file_path, sheet_name, skip_rows, header)
             except Exception as e:

@@ -27,7 +27,7 @@ PROCESSED_DESIGN_COMPONENTS = [
 ]
 
 class DataLoader:
-    def __init__(self, output_file):
+    def __init__(self, output_file, road_name):
         '''
         Initialise the data loader with new log file if supplied
         '''
@@ -36,6 +36,8 @@ class DataLoader:
             self.output_file = open(output_file, 'w+')
         else:
             self.log_required = False
+
+        self.road_name = road_name
 
     def log_output(self, msg):
         '''
@@ -88,10 +90,10 @@ class DataLoader:
 
     def get_road(self):
         '''
-        Create new road by default (keep in this format if future requirement changes)
+        Retrieve road if exist under provided name; otherwise create new
         '''
         obj, created = Road.objects.get_or_create(
-            name='Expressways Test Road'
+            name=self.road_name
         )
         return obj 
 
