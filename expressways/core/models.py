@@ -114,11 +114,15 @@ class OccurrenceConfiguration(models.Model):
         default=70,
     )
     frequency = models.PositiveIntegerField(
-        help_text=_('Define the frequency of the occurrence (per mile per year)​')
+        help_text=_('Define the frequency of the occurrence (average per mile per year)​')
     )
     incidents_cleared = models.BooleanField(
         help_text=_('If ticked, incidents occurring as a result of this Operational Occurrence will be included in the ‘Incidents Cleared’ calculation (as defined by the "IncidentClearance" field code in ControlWorks data)'),
         default=False
+    )
+    references = models.TextField(
+        help_text=_('Provide references to data sources or a detailed explanation of any assumptions used e.g. calculations to determine frequencies or durations.'),
+        default=''
     )
     effect = models.ManyToManyField(
         DesignComponent,
@@ -146,11 +150,13 @@ class EffectIntervention(models.Model):
     )
     frequency_change = models.IntegerField(
         help_text=_(f'% change in frequency'),
-        validators=[MinValueValidator(-100)]
+        validators=[MinValueValidator(-100)],
+        verbose_name='Frequency change (%)',
     )
     duration_change = models.IntegerField(
         help_text=_(f'% change in duration'),
-        validators=[MinValueValidator(-100)]
+        validators=[MinValueValidator(-100)],
+        verbose_name='Duration change (%)',
     )
     justification = models.TextField(
         help_text=_('Provide a detailed explanation and references for the sources of the impact sources. Must be based on real data, published research or an assumption agreed with relevant subject matter experts')
