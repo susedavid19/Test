@@ -21,21 +21,24 @@ class TestCalculateView(TestCase):
         When the function is called
         Then the returned object contains all the correct fields
         '''
-        mock_configuration = MagicMock()
-        mock_configuration.lane_closures = 'first'
-        mock_configuration.duration = 'second'
-        mock_configuration.flow = 'third'
-        mock_configuration.frequency = 'fourth'
-
-        actual = self.view.create_calculation_object(mock_configuration)
-        expected = {
-            'lane_closures': 'first',
-            'duration': 'second',
-            'flow': 'third',
-            'frequency': 'fourth',
+        expected_obj = {
+            'lane_closures': 'II',
+            'duration': 2.5,
+            'flow': 'S',
+            'frequency': 10,
+            'incidents_cleared': False
         }
 
-        self.assertEqual(expected, actual)
+        mock_configuration = MagicMock()
+        mock_configuration.lane_closures = expected_obj.get('lane_closures')
+        mock_configuration.duration = expected_obj.get('duration')
+        mock_configuration.flow = expected_obj.get('flow')
+        mock_configuration.frequency = expected_obj.get('frequency')
+        mock_configuration.incidents_cleared = expected_obj.get('incidents_cleared')
+
+        actual_obj = self.view.create_calculation_object(mock_configuration)
+
+        self.assertEqual(expected_obj, actual_obj)
 
     
     def test_calculation_filters_list_by_road(self, calculate_mock):

@@ -116,6 +116,10 @@ class OccurrenceConfiguration(models.Model):
     frequency = models.PositiveIntegerField(
         help_text=_('Define the frequency of the occurrence (per mile per year)​')
     )
+    incidents_cleared = models.BooleanField(
+        help_text=_('If ticked, incidents occurring as a result of this Operational Occurrence will be included in the ‘Incidents Cleared’ calculation (as defined by the "IncidentClearance" field code in ControlWorks data)'),
+        default=False
+    )
     effect = models.ManyToManyField(
         DesignComponent,
         verbose_name='Possible intervention',

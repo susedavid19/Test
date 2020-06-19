@@ -33,7 +33,12 @@ def weighted_quantile(values, quantiles, sample_weight=None, values_sorted=False
         weighted_quantiles /= np.sum(sample_weight)
     return np.interp(quantiles, weighted_quantiles, values)
 
-
+def incidents_cleared(less_than_equal_hour_list, event_dur_list):
+    """
+    Number of incidents that are last less than an hour and divide them by the number of all incidents
+    """
+    return len(less_than_equal_hour_list) / len(event_dur_list)
+    
 def pti(df):
     """
     The ratio of the 95th percentile journey time of all journeys and the free-flow journey time.

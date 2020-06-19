@@ -32,6 +32,7 @@ class TestCalculation(TestCase):
         async_result.return_value = async_obj
 
         test_objective = {
+            'incident': 1.357,
             'pti': 2.468,
             'journey': 3.579,
             'speed': 4.681
@@ -43,6 +44,7 @@ class TestCalculation(TestCase):
             config_ids=[configuration.pk],
             component_ids=[],
             items=[self.view.create_calculation_object(configuration)],
+            objective_incident=test_objective.get('incident'),
             objective_pti=test_objective.get('pti'),
             objective_journey=test_objective.get('journey'),
             objective_speed=test_objective.get('speed')
@@ -54,9 +56,11 @@ class TestCalculation(TestCase):
 
         async_result.assert_called_once_with(task.id)
         baseline_expected = {
+            'objective_incident': str(test_objective.get('incident')), 
             'objective_pti': str(test_objective.get('pti')), 
             'objective_journey': str(test_objective.get('journey')),
             'objective_speed': str(test_objective.get('speed')),
+            'objective_exp_incident': '-', 
             'objective_exp_pti': '-', 
             'objective_exp_journey': '-', 
             'objective_exp_speed': '-'
