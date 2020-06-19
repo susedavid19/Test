@@ -7,8 +7,10 @@ from expressways.helpers.data_loader import DataLoader
 class Command(BaseCommand):
     help = '''
         Load OMS excel data to database.
-        Run the command as "manage.py load_oms_data <file name with full path and extension>"
-        Example: python3 manage.py load_oms_data /data/expressways/core/management/files/OMS.xlsx
+        Run the command as "manage.py load_oms_data -f <full processed file path> -s <sheet to be processed>"
+        Example: python3 manage.py load_oms_data -f /data/expressways/core/management/files/OMS.xlsx -s 'Occurrence_Proforma'
+        There are also other optional arguments to help in processing the file.
+        Run "manage.py load_oms_data --help" to see them.
     '''
 
     def add_arguments(self, parser):
