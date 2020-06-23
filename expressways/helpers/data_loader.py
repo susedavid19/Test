@@ -38,13 +38,16 @@ class DataLoader:
             self.log_required = False
 
         self.road_name = road_name
+        self.error_raised = False
 
-    def log_output(self, msg):
+    def log_output(self, msg, err=False):
         '''
         Write the log message to the output file specified if log is required
         '''
         if self.log_required:
             self.output_file.write(msg)
+        if err:
+            self.error_raised = True
 
     def load_to_configuration(self, file_path, sheet_name, skiprows, header):
         '''
@@ -69,6 +72,10 @@ class DataLoader:
                 print('.', end='', flush=True)
 
         self.log_output(f'\n{"-"*50}\nRecords added: {recs_created}\n')
+
+        if self.error_raised:
+            raise Exception('Invalid data detected. Check output log if available.')
+        
         if self.log_required:
             self.output_file.close()
 
@@ -132,13 +139,13 @@ class DataLoader:
         references = data[PROFORMA_COLUMN['References']]
         
         if (pd.isnull(lane_closures) or lane_closures not in dict(LANE_CHOICES)):
-            self.log_output(f'\nRow {row_idx}: Lane closure value [Col: {PROFORMA_COLUMN["Lane closure"]}] ({lane_closures}) is invalid')
+            self.log_output(f'\nRow {row_idx}: Lane closure value [Col: {PROFORMA_COLUMN["Lane closure"]}] ({lane_closures}) is invalid', True)
         elif (pd.isnull(flow) or flow not in dict(FLOW_CHOICES)):
-            self.log_output(f'\nRow {row_idx}: Flow value [Col: {PROFORMA_COLUMN["Flow level"]}] ({flow}) is invalid')
+            self.log_output(f'\nRow {row_idx}: Flow value [Col: {PROFORMA_COLUMN["Flow level"]}] ({flow}) is invalid', True)
         elif (pd.isnull(speed_limit) or speed_limit not in dict(SPEED_CHOICES)):
-            self.log_output(f'\nRow {row_idx}: Speed limit value [Col: {PROFORMA_COLUMN["Speed"]}] ({speed_limit}) is invalid')
+            self.log_output(f'\nRow {row_idx}: Speed limit value [Col: {PROFORMA_COLUMN["Speed"]}] ({speed_limit}) is invalid', True)
         elif (pd.isnull(duration) or duration not in dict(DURATION_CHOICES)):
-            self.log_output(f'\nRow {row_idx}: Duration value [Col: {PROFORMA_COLUMN["Duration"]}] ({duration}) is invalid')
+            self.log_output(f'\nRow {row_idx}: Duration value [Col: {PROFORMA_COLUMN["Duration"]}] ({duration}) is invalid', True)
         else:
             obj, created = OccurrenceConfiguration.objects.get_or_create(
                 road=road,
