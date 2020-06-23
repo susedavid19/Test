@@ -69,7 +69,8 @@ class DataLoader:
                 print('.', end='', flush=True)
 
         self.log_output(f'\n{"-"*50}\nRecords added: {recs_created}\n')
-        self.output_file.close()
+        if self.log_required:
+            self.output_file.close()
 
     def get_occurrence(self, name):
         '''
@@ -88,12 +89,12 @@ class DataLoader:
         )
         return obj
 
-    def get_road(self):
+    def get_road(self, name):
         '''
         Retrieve road if exist under provided name; otherwise create new
         '''
         obj, created = Road.objects.get_or_create(
-            name=self.road_name
+            name=name
         )
         return obj 
 
@@ -120,7 +121,7 @@ class DataLoader:
         Retrieve occurrence configuration if exist under provided data in particular row; otherwise create new
         '''
         occurrence = self.get_occurrence(data[PROFORMA_COLUMN['Operational occurrence']])
-        road = self.get_road()
+        road = self.get_road(self.road_name)
         sub_occurrence = self.get_sub_occurrence(occurrence, data[PROFORMA_COLUMN['Operational sub-occurrence']])
         lane_closures = data[PROFORMA_COLUMN['Lane closure']]
         flow = data[PROFORMA_COLUMN['Flow level']]
