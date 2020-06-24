@@ -6,7 +6,6 @@ metadata:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/secure-backends: "true" # optional
-    ingress.kubernetes.io/rewrite-target: /$2
     rancher.io/globalDNS.hostname: "expressways.${CICD_GIT_BRANCH}.apps.wsp-lattice.io"
   name: expressways-${CICD_GIT_BRANCH}-ingress
 spec:
@@ -18,11 +17,31 @@ spec:
         backend:
           serviceName: expressways-${CICD_GIT_BRANCH}-service
           servicePort: 80
-      - path: /flower(/|$)(.*)
+  tls:
+  - hosts:
+    -  expressways.${CICD_GIT_BRANCH}.apps.wsp-lattice.io
+    secretName: expressways-${CICD_GIT_BRANCH}-cert
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/secure-backends: "true" # optional
+    rancher.io/globalDNS.hostname: "flower.${CICD_GIT_BRANCH}.apps.wsp-lattice.io"
+  name: flower-${CICD_GIT_BRANCH}-ingress
+spec:
+  rules:
+  - host: flower.${CICD_GIT_BRANCH}.apps.wsp-lattice.io
+    http:
+      paths:
+      - path: /
         backend:
           serviceName: expressways-${CICD_GIT_BRANCH}-service
           servicePort: 81
   tls:
   - hosts:
-    -  expressways.${CICD_GIT_BRANCH}.apps.wsp-lattice.io
-    secretName: expressways-${CICD_GIT_BRANCH}-cert
+    -  flower.${CICD_GIT_BRANCH}.apps.wsp-lattice.io
+    secretName: flower-${CICD_GIT_BRANCH}-cert

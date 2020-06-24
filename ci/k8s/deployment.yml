@@ -42,7 +42,7 @@ spec:
         - name: queue
           image: redis:5
         - name: expressways-proxy
-          image: ${CICD_REGISTRY}/expressways-nginx:${CICD_EXECUTION_SEQUENCE}
+          image: nginx:alpine 
           ports:
             - containerPort: 80
           volumeMounts:
@@ -50,6 +50,9 @@ spec:
               mountPath: /static
             - name: media
               mountPath: /media
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
       initContainers:
         - name: nginx-configuration
           image: ${CICD_REGISTRY}/expressways:${CICD_EXECUTION_SEQUENCE}
@@ -67,3 +70,6 @@ spec:
           emptyDir: {}
         - name: media 
           emptyDir: {}
+        - name: nginx-config
+          configMap:
+            name: nginx
