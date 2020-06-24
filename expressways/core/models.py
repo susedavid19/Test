@@ -57,11 +57,12 @@ LANE_CHOICES = (
 )
 
 DURATION_CHOICES = (
+    (0.0, '0'),
     (2.5, '2.5'),
-    (10, '10'),
-    (25, '25'),
-    (45, '45'),
-    (90, '90'),
+    (10.0, '10'),
+    (25.0, '25'),
+    (45.0, '45'),
+    (90.0, '90'),
 )
 
 FLOW_CHOICES = (
@@ -114,7 +115,7 @@ class OccurrenceConfiguration(models.Model):
         default=70,
     )
     frequency = models.PositiveIntegerField(
-        help_text=_('Define the frequency of the occurrence (average per mile per year)​')
+        help_text=_('Define the frequency of the occurrence (average per 1000 miles per year)​')
     )
     incidents_cleared = models.BooleanField(
         help_text=_('If ticked, incidents occurring as a result of this Operational Occurrence will be included in the ‘Incidents Cleared’ calculation (as defined by the "IncidentClearance" field code in ControlWorks data)'),
