@@ -43,13 +43,21 @@ var getResults = function() {
 
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById('result-1').innerHTML = xhttp.response.objective_1;
+                document.getElementById('result-incident').innerHTML = xhttp.response.objective_incident;
 
-                document.getElementById('result-2').innerHTML = xhttp.response.objective_2;
+                document.getElementById('result-pti').innerHTML = xhttp.response.objective_pti;
+
+                document.getElementById('result-journey').innerHTML = xhttp.response.objective_journey;
                 
-                document.getElementById('result-exp-1').innerHTML = xhttp.response.objective_exp_1;
+                document.getElementById('result-speed').innerHTML = xhttp.response.objective_speed;
+                
+                document.getElementById('result-exp-incident').innerHTML = xhttp.response.objective_exp_incident;
+                
+                document.getElementById('result-exp-pti').innerHTML = xhttp.response.objective_exp_pti;
 
-                document.getElementById('result-exp-2').innerHTML = xhttp.response.objective_exp_2;
+                document.getElementById('result-exp-journey').innerHTML = xhttp.response.objective_exp_journey;
+
+                document.getElementById('result-exp-speed').innerHTML = xhttp.response.objective_exp_speed;
 
                 setTimeout(stopSpinner, 500);
             } else if (this.readyState == 4 && this.status == 404) {

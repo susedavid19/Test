@@ -92,5 +92,6 @@ class CalculationResultFactory(fdj.DjangoModelFactory):
         model = CalculationResult
 
     task_id = '1234'
-    objective_1 = 1.23
-    objective_2 = 4.56
+    objective_pti = 2.222
+    objective_journey = 3.333
+    objective_speed = 4.444

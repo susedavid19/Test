@@ -33,9 +33,9 @@ class InterventionInline(admin.TabularInline):
     extra = 0
 
 class OccurrenceConfigurationAdmin(admin.ModelAdmin):
-    fields = ('road', 'sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'frequency')
-    list_display = ('road', 'sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'frequency', 'possible_interventions')
-    list_filter = (RoadListFilter, 'sub_occurrence__occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration')
+    fields = ('road', 'sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'frequency', 'incidents_cleared', 'references')
+    list_display = ('road', 'sub_occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'frequency', 'incidents_cleared', 'possible_interventions')
+    list_filter = (RoadListFilter, 'sub_occurrence__occurrence', 'flow', 'lane_closures', 'speed_limit', 'duration', 'incidents_cleared')
     list_editable = ('frequency',)
     inlines = (InterventionInline,)
     exclude = ('effect',)
