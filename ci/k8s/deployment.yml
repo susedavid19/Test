@@ -43,7 +43,7 @@ spec:
           image: redis:5
         - name: expressways-proxy
           image: ${CICD_REGISTRY}/expressways-nginx:${CICD_EXECUTION_SEQUENCE}
-          ports
+          ports:
             - containerPort: 80
           volumeMounts:
             - name: static
