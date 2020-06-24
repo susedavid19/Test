@@ -32,6 +32,13 @@ spec:
           envFrom:
           - secretRef:
               name: worker-${CICD_GIT_BRANCH}
+        - name: expressways-flower
+          image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+          command: ['/data/docker-flower-entrypoint.sh']
+          workingDir: /data
+          envFrom:
+          - secretRef:
+              name: worker-${CICD_GIT_BRANCH}
         - name: queue
           image: redis:5
         - name: expressways-proxy
