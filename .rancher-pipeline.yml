@@ -5,6 +5,15 @@ stages:
       dockerfilePath: ./ci/Dockerfile-prod
       buildContext: .
       tag: expressways:${CICD_EXECUTION_SEQUENCE}
+- name: Publish Image Nginx
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile-nginx
+      buildContext: .
+      tag: expressways-nginx:${CICD_EXECUTION_SEQUENCE}
+    env:
+      AUTH0_NAMESPACE: https://wsp-lattice.io/
+      PLUGIN_STORAGE_PATH: /var/lib/docker/2
 - name: Deploy
   steps:
   - applyYamlConfig:

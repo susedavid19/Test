@@ -17,6 +17,10 @@ spec:
         backend:
           serviceName: expressways-${CICD_GIT_BRANCH}-service
           servicePort: 80
+      - path: /flower
+        backend:
+          serviceName: expressways-${CICD_GIT_BRANCH}-service
+          servicePort: 81
   tls:
   - hosts:
     -  expressways.${CICD_GIT_BRANCH}.apps.wsp-lattice.io
