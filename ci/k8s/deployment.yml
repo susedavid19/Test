@@ -19,15 +19,22 @@ spec:
         - name: pipeline-docker-registry
       containers:
         - name: expressways-application
-          image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+          image: ${CICD_REGISTRY}/expressways:${CICD_EXECUTION_SEQUENCE}
           command: ['/data/docker-entrypoint.sh']
           workingDir: /data
           envFrom:
           - secretRef:
               name: application-${CICD_GIT_BRANCH}
         - name: expressways-worker
-          image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+          image: ${CICD_REGISTRY}/expressways:${CICD_EXECUTION_SEQUENCE}
           command: ['/data/docker-worker-entrypoint.sh']
+          workingDir: /data
+          envFrom:
+          - secretRef:
+              name: worker-${CICD_GIT_BRANCH}
+        - name: expressways-flower
+          image: ${CICD_REGISTRY}/expressways:${CICD_EXECUTION_SEQUENCE}
+          command: ['/data/docker-flower-entrypoint.sh']
           workingDir: /data
           envFrom:
           - secretRef:
@@ -48,15 +55,13 @@ spec:
               subPath: default.conf
       initContainers:
         - name: nginx-configuration
-          image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+          image: ${CICD_REGISTRY}/expressways:${CICD_EXECUTION_SEQUENCE}
           command: ['/bin/sh', '-c', 'python3 /data/manage.py collectstatic && cp -rfv /static/* /expressways/static/']
           volumeMounts:
             - name: static
               mountPath: /expressways/static
             - name: media
               mountPath: /expressways/media
-            - name: nginx-config
-              mountPath: /tmp/nginx
           envFrom:
           - secretRef:
               name: application-${CICD_GIT_BRANCH}
