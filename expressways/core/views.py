@@ -62,9 +62,14 @@ class CalculateView(LoginRequiredMixin, View):
         if form.is_valid():
             components = form.cleaned_data['design_components'] 
             if components:
-                request.session['task_id'] = self.process_expressways_calculation(components)
+                task = self.process_expressways_calculation(components)
             else:
-                request.session['task_id'] = self.process_baseline_calculation()
+                task = self.process_baseline_calculation()
+            
+            request.session['task_id'] = task
+            if task == -1:
+                return render(request, 'core:result', kwargs={'task_id': task})
+
 
         configurations = OccurrenceConfiguration.objects.filter(road=self.road_id)
         road = Road.objects.get(id=self.road_id)
@@ -89,9 +94,13 @@ class CalculateView(LoginRequiredMixin, View):
     def process_baseline_calculation(self):
         items = []
         calc_ids = []
-        for item in OccurrenceConfiguration.objects.filter(road=self.road_id):
+        for item in OccurrenceConfiguration.objects.filter(road=self.road_id).exclude(frequency=0):
             calc_ids.append(item.pk)            
             items.append(self.create_calculation_object(item))
+
+        # Dont trigger the task if no items to be processed
+        if len(items) == 0:
+            return -1
 
         try:
             calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=[])
@@ -127,7 +136,7 @@ class CalculateView(LoginRequiredMixin, View):
         comp_ids = []
         freq_list = []
         dur_list = []
-        for occ_config in OccurrenceConfiguration.objects.filter(road=self.road_id):
+        for occ_config in OccurrenceConfiguration.objects.filter(road=self.road_id).exclude(frequency=0):
             calc_ids.append(occ_config.pk)            
             for comp in components:
                 comp_ids.append(comp.pk)
@@ -139,6 +148,10 @@ class CalculateView(LoginRequiredMixin, View):
             marked_dur_val = self.value_to_use(dur_list)  
             items.append(self.create_expressways_object(occ_config, marked_freq_val, marked_dur_val))      
 
+        # Dont trigger the task if no items to be processed
+        if len(items) == 0:
+            return -1
+
         try:
             calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=comp_ids)
             return calculated.task_id
@@ -149,6 +162,9 @@ class CalculateView(LoginRequiredMixin, View):
 
 class ResultView(LoginRequiredMixin, View):
     def get(self, request, task_id):
+        if task_id == -1:
+            return JsonResponse({'msg': 'Empty/invalid occurrence configurations'}, status=500)
+
         res = AsyncResult(task_id)
         if res.failed():
             return JsonResponse({'msg': 'The Task Failed'}, status=500)
