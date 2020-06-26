@@ -37,7 +37,7 @@ def incidents_cleared(less_than_equal_hour_list, event_dur_list):
     """
     Number of incidents that are last less than an hour and divide them by the number of all incidents
     """
-    return len(less_than_equal_hour_list) / len(event_dur_list)
+    return 100 * (len(less_than_equal_hour_list) / len(event_dur_list))
     
 def pti(df):
     """
