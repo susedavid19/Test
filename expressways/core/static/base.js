@@ -1,3 +1,19 @@
+const OBJECTIVE_ITEMS = [
+    {
+        name: 'incident',
+        unit: '%'
+    },{
+        name: 'pti',
+        unit: ''
+    },{
+        name: 'journey',
+        unit: '%'
+    },{
+        name: 'speed',
+        unit: 'kph'
+    }
+] 
+
 var element_class_obj = {
     'select': 'custom-select',
     'input': 'form-control'
@@ -31,6 +47,15 @@ var displayError = function(msg) {
     card.style.display = 'block';
 };
 
+var setResult = function(obj, resp) {
+    // setting baseline result
+    var value = resp[`objective_${obj.name}`]
+    document.getElementById(`result-${obj.name}`).innerHTML = `${value}${value === '-' ? '' : obj.unit}`
+    // setting expressways result
+    value = resp[`objective_exp_${obj.name}`]
+    document.getElementById(`result-exp-${obj.name}`).innerHTML = `${value}${value === '-' ? '' : obj.unit}`
+}
+
 var getResults = function() {
     if (typeof result_url !== "undefined") {
         startSpinner();
@@ -43,21 +68,9 @@ var getResults = function() {
 
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById('result-incident').innerHTML = xhttp.response.objective_incident;
-
-                document.getElementById('result-pti').innerHTML = xhttp.response.objective_pti;
-
-                document.getElementById('result-journey').innerHTML = xhttp.response.objective_journey;
-                
-                document.getElementById('result-speed').innerHTML = xhttp.response.objective_speed;
-                
-                document.getElementById('result-exp-incident').innerHTML = xhttp.response.objective_exp_incident;
-                
-                document.getElementById('result-exp-pti').innerHTML = xhttp.response.objective_exp_pti;
-
-                document.getElementById('result-exp-journey').innerHTML = xhttp.response.objective_exp_journey;
-
-                document.getElementById('result-exp-speed').innerHTML = xhttp.response.objective_exp_speed;
+                OBJECTIVE_ITEMS.map(item => {
+                    setResult(item, xhttp.response)
+                })
 
                 setTimeout(stopSpinner, 500);
             } else if (this.readyState == 4 && this.status == 404) {
