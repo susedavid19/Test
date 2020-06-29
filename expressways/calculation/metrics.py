@@ -46,10 +46,11 @@ def pti(df):
     Planning Time Index = [Planning Time] / [Free-flow journey time] 
     :param df: Dataframe of model data
     """
-    df['Departure Time (HH:MM:SS)'] = pd.to_datetime(df['Departure Time (HH:MM:SS)'],format='%H:%M:%S')
     time_start = datetime.datetime.strptime('06:00:00', '%H:%M:%S')
     time_end = datetime.datetime.strptime('20:00:00', '%H:%M:%S')
-    df2 = df.loc[(df['Departure Time (HH:MM:SS)']>time_start) & (df['Departure Time (HH:MM:SS)']<time_end)]
+
+    df2 = df.loc[(df['Departure Time (HH:MM:SS)'] > time_start) & (df['Departure Time (HH:MM:SS)'] < time_end)]
+
     free_flow = df2['Time Taken (s)'].loc[df2['Vehicle Type'] == 1].quantile(0.15)
     np_data = np.array(df2[['Time Taken (s)', "Flows"]])
     planning_time = weighted_quantile(np_data[:, 0], 0.95, sample_weight=np_data[:, 1])  # 0.95 the 95th percentile
@@ -62,13 +63,13 @@ def acceptable_journeys(df):
     Proportion of acceptable journeys = [Traffic Faster than 4/3 journey time] / [all traffic]  
     :param df: Dataframe of model data
     """
-    df['Departure Time (HH:MM:SS)'] = pd.to_datetime(df['Departure Time (HH:MM:SS)'],format='%H:%M:%S')
     time_start = datetime.datetime.strptime('06:00:00', '%H:%M:%S')
     time_end = datetime.datetime.strptime('20:00:00', '%H:%M:%S')
-    df2 = df.loc[(df['Departure Time (HH:MM:SS)']>time_start) & (df['Departure Time (HH:MM:SS)']<time_end)]
+
+    df2 = df.loc[(df['Departure Time (HH:MM:SS)'] > time_start) & (df['Departure Time (HH:MM:SS)'] < time_end)]
     free_flow = df2['Time Taken (s)'].loc[df2['Vehicle Type'] == 1].quantile(0.15)
-    faster_ff = df2['Time Taken (s)'].loc[df2['Vehicle Type'] == 1][df2['Time Taken (s)'] < (4/3)*free_flow].count() 
-    return (100*faster_ff/df2['Time Taken (s)'].count())
+    faster_ff = df2['Time Taken (s)'].loc[df2['Vehicle Type'] == 1][df2['Time Taken (s)'] < (4 / 3) * free_flow].count()
+    return (100 * faster_ff / df2['Time Taken (s)'].count())
 
 def average_speed(df):
     """
@@ -77,6 +78,6 @@ def average_speed(df):
     Average speed = Sum over all 15 minute periods (link length * flow)/ Sum over all 15 minute periods (15 minute average speed*flow) 
     :param df: Dataframe of model data
     """
-    df['Departure Time (HH:MM:SS)'] = pd.to_datetime(df['Departure Time (HH:MM:SS)'],format='%H:%M:%S')
     mean15min = df.groupby(pd.Grouper(key='Departure Time (HH:MM:SS)', freq='15min')).mean()
-    return 3.6*((mean15min['Distance (m)']*mean15min['Flows']).sum()/(mean15min['Time Taken (s)']*mean15min['Flows']).sum())
+    return 3.6 * ((mean15min['Distance (m)'] * mean15min['Flows']).sum() / (
+                mean15min['Time Taken (s)'] * mean15min['Flows']).sum())
