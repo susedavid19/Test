@@ -77,7 +77,7 @@ var getResults = function() {
                 setTimeout(getResults, 2000);
             } else if (this.readyState == 4) {
                 setTimeout(stopSpinner, 500);
-                displayError(this.statusText);
+                displayError(`${this.statusText}: ${xhttp.response.msg}`);
             }
         };
 

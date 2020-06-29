@@ -33,6 +33,16 @@ def weighted_quantile(values, quantiles, sample_weight=None, values_sorted=False
         weighted_quantiles /= np.sum(sample_weight)
     return np.interp(quantiles, weighted_quantiles, values)
 
+def get_data_on_time_range(df):
+    """
+    Retrieve from data frame only rows within specified time range
+    """
+    time_start = datetime.datetime.strptime('06:00:00', '%H:%M:%S')
+    time_end = datetime.datetime.strptime('20:00:00', '%H:%M:%S')
+
+    valid_df = df.loc[(df['Departure Time (HH:MM:SS)'] > time_start) & (df['Departure Time (HH:MM:SS)'] < time_end)]
+    return valid_df
+
 def incidents_cleared(less_than_equal_hour_list, event_dur_list):
     """
     Number of incidents that are last less than an hour and divide them by the number of all incidents
@@ -46,11 +56,7 @@ def pti(df):
     Planning Time Index = [Planning Time] / [Free-flow journey time] 
     :param df: Dataframe of model data
     """
-    time_start = datetime.datetime.strptime('06:00:00', '%H:%M:%S')
-    time_end = datetime.datetime.strptime('20:00:00', '%H:%M:%S')
-
-    df2 = df.loc[(df['Departure Time (HH:MM:SS)'] > time_start) & (df['Departure Time (HH:MM:SS)'] < time_end)]
-
+    df2 = get_data_on_time_range(df)
     free_flow = df2['Time Taken (s)'].loc[df2['Vehicle Type'] == 1].quantile(0.15)
     np_data = np.array(df2[['Time Taken (s)', "Flows"]])
     planning_time = weighted_quantile(np_data[:, 0], 0.95, sample_weight=np_data[:, 1])  # 0.95 the 95th percentile
@@ -63,10 +69,7 @@ def acceptable_journeys(df):
     Proportion of acceptable journeys = [Traffic Faster than 4/3 journey time] / [all traffic]  
     :param df: Dataframe of model data
     """
-    time_start = datetime.datetime.strptime('06:00:00', '%H:%M:%S')
-    time_end = datetime.datetime.strptime('20:00:00', '%H:%M:%S')
-
-    df2 = df.loc[(df['Departure Time (HH:MM:SS)'] > time_start) & (df['Departure Time (HH:MM:SS)'] < time_end)]
+    df2 = get_data_on_time_range(df)
     free_flow = df2['Time Taken (s)'].loc[df2['Vehicle Type'] == 1].quantile(0.15)
     faster_ff = df2['Time Taken (s)'].loc[df2['Vehicle Type'] == 1][df2['Time Taken (s)'] < (4 / 3) * free_flow].count()
     return (100 * faster_ff / df2['Time Taken (s)'].count())

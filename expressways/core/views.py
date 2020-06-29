@@ -89,7 +89,7 @@ class CalculateView(LoginRequiredMixin, View):
     def process_baseline_calculation(self):
         items = []
         calc_ids = []
-        for item in OccurrenceConfiguration.objects.filter(road=self.road_id).exclude(frequency=0):
+        for item in OccurrenceConfiguration.objects.filter(road=self.road_id):
             calc_ids.append(item.pk)            
             items.append(self.create_calculation_object(item))
 
@@ -127,7 +127,7 @@ class CalculateView(LoginRequiredMixin, View):
         comp_ids = []
         freq_list = []
         dur_list = []
-        for occ_config in OccurrenceConfiguration.objects.filter(road=self.road_id).exclude(frequency=0):
+        for occ_config in OccurrenceConfiguration.objects.filter(road=self.road_id):
             calc_ids.append(occ_config.pk)            
             for comp in components:
                 comp_ids.append(comp.pk)
@@ -150,6 +150,9 @@ class CalculateView(LoginRequiredMixin, View):
 class ResultView(LoginRequiredMixin, View):
     def get(self, request, task_id):
         res = AsyncResult(task_id)
+        if res.state == 'APP':
+            return JsonResponse({'msg': res.result["msg"]}, status=500)
+
         if res.failed():
             return JsonResponse({'msg': 'The Task Failed'}, status=500)
 
