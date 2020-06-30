@@ -65,7 +65,7 @@ class CalculateView(LoginRequiredMixin, View):
                 request.session['task_id'] = self.process_expressways_calculation(components)
             else:
                 request.session['task_id'] = self.process_baseline_calculation()
-
+            
         configurations = OccurrenceConfiguration.objects.filter(road=self.road_id)
         road = Road.objects.get(id=self.road_id)
         objectives = OperationalObjective.objects.all()
@@ -150,6 +150,9 @@ class CalculateView(LoginRequiredMixin, View):
 class ResultView(LoginRequiredMixin, View):
     def get(self, request, task_id):
         res = AsyncResult(task_id)
+        if res.state == 'APP':
+            return JsonResponse({'msg': res.result["msg"]}, status=500)
+
         if res.failed():
             return JsonResponse({'msg': 'The Task Failed'}, status=500)
 

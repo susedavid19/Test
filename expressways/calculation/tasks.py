@@ -1,7 +1,7 @@
 import json
 import os
 import pandas as pd
-from expressways.calculation.celery import app
+from expressways.calculation.celery import app, ExpresswaysException
 from expressways.calculation.models import CalculationResult
 from expressways.calculation.import_model import *
 from expressways.calculation.metrics import *
@@ -12,9 +12,16 @@ BOTH_LANES_OPEN = 'II'
 @app.task(bind=True)
 def calculate(self, config_ids, items, component_ids= None):
     df = pd.DataFrame()
+    experr = ExpresswaysException(self)
     header = load_header_data(r'expressways/calculation/models', 'csv')
     freqs_list = []
     lte_an_hour_list = []
+    zero_freq_list = []
+
+    # raise exception if the road has no configuration item
+    if len(items) == 0:
+        experr.log('No occurrence configuration found for this road.')
+
     if component_ids:
         freq_change = []
         dur_change = []
@@ -28,6 +35,9 @@ def calculate(self, config_ids, items, component_ids= None):
 
             if item['duration'] <= 60 and item['incidents_cleared']:
                 lte_an_hour_list.append(item)
+            
+            if item['frequency'] == 0:
+                zero_freq_list.append(item)
 
         freqs_list = frequency_change(freqs_list, freq_change)
         freqs_list = duration_bin(freqs_list, dur_change, durations)
@@ -37,6 +47,13 @@ def calculate(self, config_ids, items, component_ids= None):
 
             if item['duration'] <= 60 and item['incidents_cleared']:
                 lte_an_hour_list.append(item)
+            
+            if item['frequency'] == 0:
+                zero_freq_list.append(item)
+
+    # raise exception if all configuration items have zero frequency
+    if len(items) == len(zero_freq_list):
+        experr.log('Invalid ie all zero frequency configurations found on this road.')
 
     freqs_list = norm_freqs(freqs_list)
     for i, item in enumerate(items):
@@ -54,6 +71,10 @@ def calculate(self, config_ids, items, component_ids= None):
                     )),
                 str(item['flow']), freqs_list[i]
             )
+
+    # raise exception if configuration outside specified analysis time range
+    if get_data_on_time_range(df).empty:
+        experr.log('No valid analysis found within time range for configuration on this road.')
 
     objective_incident = incidents_cleared(lte_an_hour_list, items)
     objective_pti = pti(df)

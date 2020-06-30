@@ -12,3 +12,6 @@ class CalculationResult(models.Model):
     objective_pti = models.DecimalField(max_digits=7, decimal_places=3, default=0.0, help_text=_('Objective for planning time index'))
     objective_journey = models.DecimalField(max_digits=7, decimal_places=3, default=0.0, help_text=_('Objective for acceptable journeys'))
     objective_speed = models.DecimalField(max_digits=7, decimal_places=3, default=0.0, help_text=_('Objective for average speed'))
+
+    def __str__(self):
+        return self.task_id

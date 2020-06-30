@@ -44,23 +44,28 @@ def load_csv_model_freq(df, path, flow, freq):
     :param freq: frequency of the model
     :return df: dataframe with the loaded data
     """
-
-    # sampling that needs to be done due to the models having 5 times the same runs;
-    # combine all together and drop the four fifths in order to have a reasonable model
-    with open(path) as csvfile:
-        row_count = sum(1 for row in csvfile)
-    skip = np.random.randint(1, row_count, int(4/5*row_count))
-
     if df.empty:
         del df
-        df = pd.read_csv(path, skiprows=skip)
-        df_copy = df.copy()
-        for i in range(freq - 1):
-            df = df.append(df_copy, ignore_index=True)
+        df_temp = pd.read_csv(path, header = 0, skiprows=lambda i: i % 5 != 0)
+        df_temp['Departure Time (HH:MM:SS)'] = pd.to_datetime(df_temp['Departure Time (HH:MM:SS)'], format='%H:%M:%S')
+        df = pd.DataFrame(np.repeat(df_temp.values, freq, axis=0))
+        df.columns = df_temp.columns
+        df['Distance (m)'] = pd.to_numeric(df['Distance (m)'])
+        df['Flows'] = pd.to_numeric(df['Flows'])
+        df['Speed'] = pd.to_numeric(df['Speed'])
+        df['Time Taken (s)'] = pd.to_numeric(df['Time Taken (s)'])
+        df['Vehicle Type'] = pd.to_numeric(df['Vehicle Type'])
     else:
-        df_temp = pd.read_csv(path, skiprows=skip)
-        for i in range(freq):
-            df = df.append(df_temp, ignore_index=True)
+        df_temp = pd.read_csv(path, skiprows=lambda i: i % 5 != 0)
+        df_temp['Departure Time (HH:MM:SS)'] = pd.to_datetime(df_temp['Departure Time (HH:MM:SS)'], format='%H:%M:%S')
+        df_temp_freq = pd.DataFrame(np.repeat(df_temp.values, freq, axis=0))
+        df_temp_freq.columns = df_temp.columns
+        df_temp_freq['Distance (m)'] = pd.to_numeric(df_temp_freq['Distance (m)'])
+        df_temp_freq['Flows'] = pd.to_numeric(df_temp_freq['Flows'])
+        df_temp_freq['Speed'] = pd.to_numeric(df_temp_freq['Speed'])
+        df_temp_freq['Time Taken (s)'] = pd.to_numeric(df_temp_freq['Time Taken (s)'])
+        df_temp_freq['Vehicle Type'] = pd.to_numeric(df_temp_freq['Vehicle Type'])
+        df = df.append(df_temp_freq, ignore_index=True)
     return df
 
 
@@ -75,7 +80,7 @@ def load_header_data(folder, filetype):
         if file.endswith('.' + filetype):
             header.append(os.path.splitext(file)[0].split())
             header[-1].insert(0, file)
-    header_df = pd.DataFrame(header, columns=['Filename',  'Flow', 'Speed','LaneBlockage', 'Duration'])
+    header_df = pd.DataFrame(header, columns=['Filename', 'Flow', 'Speed', 'LaneBlockage', 'Duration'])
     return header_df
 
 
@@ -116,7 +121,7 @@ def query_data(header, params):
     param_names = ['Flow', 'LaneBlockage', 'Duration']
     for i in range(len(params)):
         header = header.loc[header[param_names[i]] == params[i]]
-
+        
     return header['Filename'].iloc[0]
 
 
