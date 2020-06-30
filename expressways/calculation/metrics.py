@@ -37,7 +37,7 @@ def incidents_cleared(less_than_equal_hour_list, event_dur_list):
     """
     Number of incidents that are last less than an hour and divide them by the number of all incidents
     """
-    return len(less_than_equal_hour_list) / len(event_dur_list)
+    return 100 * (len(less_than_equal_hour_list) / len(event_dur_list))
     
 def pti(df):
     """
@@ -60,7 +60,7 @@ def acceptable_journeys(df):
     """
     free_flow = df['Time Taken (s)'].loc[df['Vehicle Type'] == 1].quantile(0.15)
     faster_ff = df['Time Taken (s)'].loc[df['Vehicle Type'] == 1][df['Time Taken (s)'] < (4/3)*free_flow].count()
-    return (faster_ff/df['Time Taken (s)'].count())
+    return 100 * (faster_ff/df['Time Taken (s)'].count())
 
 def average_speed(df):
     """
