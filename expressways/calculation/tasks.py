@@ -28,29 +28,27 @@ def calculate(self, config_ids, items, component_ids= None):
         durations = []
 
         for item in items:
-            if item['frequency'] > 0:
-                freqs_list.append(item['frequency'])
-                durations.append(item['duration'])
-                dur_change.append(item['duration_change'])
-                freq_change.append(item['frequency_change'])
+            freqs_list.append(item['frequency'])
+            durations.append(item['duration'])
+            dur_change.append(item['duration_change'])
+            freq_change.append(item['frequency_change'])
 
-                if item['duration'] <= 60 and item['incidents_cleared']:
-                    lte_an_hour_list.append(item)
+            if item['duration'] <= 60 and item['incidents_cleared']:
+                lte_an_hour_list.append(item)
             
-            else:
+            if item['frequency'] == 0:
                 zero_freq_list.append(item)
 
         freqs_list = frequency_change(freqs_list, freq_change)
         freqs_list = duration_bin(freqs_list, dur_change, durations)
     else:
         for item in items:
-            if item['frequency'] > 0:
-                freqs_list.append(item['frequency'])
+            freqs_list.append(item['frequency'])
 
-                if item['duration'] <= 60 and item['incidents_cleared']:
-                    lte_an_hour_list.append(item)
+            if item['duration'] <= 60 and item['incidents_cleared']:
+                lte_an_hour_list.append(item)
             
-            else:
+            if item['frequency'] == 0:
                 zero_freq_list.append(item)
 
     # raise exception if all configuration items have zero frequency
