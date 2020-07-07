@@ -118,7 +118,7 @@ def query_data(header, params):
     :param params: Parameters for model selection
     :return filename as str
     """
-    param_names = ['Flow', 'LaneBlockage', 'Duration']
+    param_names = ['Flow', 'Speed', 'LaneBlockage', 'Duration']
     for i in range(len(params)):
         header = header.loc[header[param_names[i]] == params[i]]
         

@@ -56,6 +56,7 @@ class TestDesignComponentSelection(TestCase):
             'duration': 30,
             'flow': 'low',
             'frequency': 50,
+            'speed': 70,
             'incidents_cleared': True,
             'duration_change': -0.2,
             'frequency_change': 0.1
@@ -66,6 +67,7 @@ class TestDesignComponentSelection(TestCase):
         mock_configuration.duration = expected_obj.get('duration')
         mock_configuration.flow = expected_obj.get('flow')
         mock_configuration.frequency = expected_obj.get('frequency')
+        mock_configuration.speed_limit = expected_obj.get('speed')
         mock_configuration.incidents_cleared = expected_obj.get('incidents_cleared')
         dur_val = expected_obj.get('duration_change') * 100
         freq_val = expected_obj.get('frequency_change') * 100

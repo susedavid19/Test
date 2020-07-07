@@ -26,6 +26,7 @@ class TestCalculateView(TestCase):
             'duration': 2.5,
             'flow': 'S',
             'frequency': 10,
+            'speed': 70,
             'incidents_cleared': False
         }
 
@@ -34,6 +35,7 @@ class TestCalculateView(TestCase):
         mock_configuration.duration = expected_obj.get('duration')
         mock_configuration.flow = expected_obj.get('flow')
         mock_configuration.frequency = expected_obj.get('frequency')
+        mock_configuration.speed_limit = expected_obj.get('speed')
         mock_configuration.incidents_cleared = expected_obj.get('incidents_cleared')
 
         actual_obj = self.view.create_calculation_object(mock_configuration)

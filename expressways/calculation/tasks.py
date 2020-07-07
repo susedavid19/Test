@@ -57,7 +57,7 @@ def calculate(self, config_ids, items, component_ids= None):
 
     freqs_list = norm_freqs(freqs_list)
     for i, item in enumerate(items):
-        params_list = [str(item['flow']).upper(), item['lane_closures']]
+        params_list = [str(item['flow']).upper(), f'V{item["speed"]}', item['lane_closures']]
         if item['lane_closures'] != BOTH_LANES_OPEN:
             # Add duration to factor in if any lane is impacted with closure
             params_list.append(str(item['duration']).replace('.', '_'))

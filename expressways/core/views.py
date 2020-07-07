@@ -82,6 +82,7 @@ class CalculateView(LoginRequiredMixin, View):
             'lane_closures': occ_config.lane_closures,
             'duration': occ_config.duration,
             'flow': occ_config.flow,
+            'speed': occ_config.speed_limit,
             'frequency': occ_config.frequency,
             'incidents_cleared': occ_config.incidents_cleared
         }
@@ -105,6 +106,7 @@ class CalculateView(LoginRequiredMixin, View):
             'lane_closures': occ_config.lane_closures,
             'duration': occ_config.duration,
             'flow': occ_config.flow,
+            'speed': occ_config.speed_limit,
             'frequency': occ_config.frequency,
             'incidents_cleared': occ_config.incidents_cleared,
             'duration_change': (dur_val / 100),
