@@ -9,7 +9,7 @@ services:
         source: .
         target: /data
     environment:
-      GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --reload --workers=3"
+      GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --reload --workers=3 --timeout 120"
     depends_on:
       - database
   proxy:

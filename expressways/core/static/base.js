@@ -74,10 +74,14 @@ var getResults = function() {
 
                 setTimeout(stopSpinner, 500);
             } else if (this.readyState == 4 && this.status == 404) {
-                setTimeout(getResults, 2000);
+                setTimeout(getResults, 10000);
             } else if (this.readyState == 4) {
                 setTimeout(stopSpinner, 500);
-                displayError(`${this.statusText}: ${xhttp.response.msg}`);
+                if (xhttp.response && 'msg' in xhttp.response) {
+                    displayError(xhttp.response.msg)
+                } else {
+                    displayError(`${this.status}: ${this.statusText}`);
+                }
             }
         };
 

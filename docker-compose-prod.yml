@@ -1,6 +1,14 @@
 version: "3.6"
 
 services:
-  application:
+  flower:
+    build: .
+    command: bash -c /data/docker-flower-entrypoint.sh
     environment:
-      ALLOWED_HOST:
+      DJANGO_SETTINGS_MODULE: "config.settings"
+      DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
+    ports:
+      - 5555:5555
+    restart: unless-stopped
+    depends_on:
+      - application

@@ -10,7 +10,7 @@ services:
     command: bash -c /data/docker-entrypoint.sh
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
-      GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --workers=3"
+      GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --workers=3 --timeout 120"
       ALLOWED_HOST: '${ELB_IP_ADDRESS}'
       DEBUG:
       MINIMUM_PASSWORD_LENGTH: 9
@@ -19,6 +19,7 @@ services:
     volumes:
       - static-files:/static
       - media-files:/media
+    restart: unless-stopped
   proxy:
     build:
       context: .
@@ -28,12 +29,14 @@ services:
     volumes:
       - static-files:/static:ro
       - media-files:/media:ro
+    restart: unless-stopped
     depends_on:
       - application
   queue:
     image: redis:5
     expose:
       - 6379
+    restart: unless-stopped
   worker:
     build: .
     command: bash -c /data/docker-worker-entrypoint.sh
@@ -41,6 +44,7 @@ services:
       DJANGO_SETTINGS_MODULE: "config.settings"
       DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
       DEBUG:
+    restart: unless-stopped
     depends_on:
       - queue
       - application
