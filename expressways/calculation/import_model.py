@@ -37,35 +37,25 @@ def load_csv_model(df, path, flow):
     return df
 
 
-def load_csv_model_freq(df, path, flow, freq):
+def load_csv_model_freq(path, flow, freq):
     """
     Load a excel file from a path and return a dataframe
     :param path: path as str to the desired filename
     :param freq: frequency of the model
     :return df: dataframe with the loaded data
     """
-    if df.empty:
-        del df
-        df_temp = pd.read_csv(path, header = 0, skiprows=lambda i: i % 5 != 0)
-        df_temp['Departure Time (HH:MM:SS)'] = pd.to_datetime(df_temp['Departure Time (HH:MM:SS)'], format='%H:%M:%S')
-        df = pd.DataFrame(np.repeat(df_temp.values, freq, axis=0))
-        df.columns = df_temp.columns
-        df['Distance (m)'] = pd.to_numeric(df['Distance (m)'])
-        df['Flows'] = pd.to_numeric(df['Flows'])
-        df['Speed'] = pd.to_numeric(df['Speed'])
-        df['Time Taken (s)'] = pd.to_numeric(df['Time Taken (s)'])
-        df['Vehicle Type'] = pd.to_numeric(df['Vehicle Type'])
-    else:
-        df_temp = pd.read_csv(path, skiprows=lambda i: i % 5 != 0)
-        df_temp['Departure Time (HH:MM:SS)'] = pd.to_datetime(df_temp['Departure Time (HH:MM:SS)'], format='%H:%M:%S')
-        df_temp_freq = pd.DataFrame(np.repeat(df_temp.values, freq, axis=0))
-        df_temp_freq.columns = df_temp.columns
-        df_temp_freq['Distance (m)'] = pd.to_numeric(df_temp_freq['Distance (m)'])
-        df_temp_freq['Flows'] = pd.to_numeric(df_temp_freq['Flows'])
-        df_temp_freq['Speed'] = pd.to_numeric(df_temp_freq['Speed'])
-        df_temp_freq['Time Taken (s)'] = pd.to_numeric(df_temp_freq['Time Taken (s)'])
-        df_temp_freq['Vehicle Type'] = pd.to_numeric(df_temp_freq['Vehicle Type'])
-        df = df.append(df_temp_freq, ignore_index=True)
+    if freq < 0:
+        freq = 0
+
+    df_temp = pd.read_csv(path, header = 0, skiprows=lambda i: i % 5 != 0)
+    df_temp['Departure Time (HH:MM:SS)'] = pd.to_datetime(df_temp['Departure Time (HH:MM:SS)'], format='%H:%M:%S')
+    df = pd.DataFrame(np.repeat(df_temp.values, freq, axis=0))
+    df.columns = df_temp.columns
+    df['Distance (m)'] = pd.to_numeric(df['Distance (m)'])
+    df['Flows'] = pd.to_numeric(df['Flows'])
+    df['Speed'] = pd.to_numeric(df['Speed'])
+    df['Time Taken (s)'] = pd.to_numeric(df['Time Taken (s)'])
+    df['Vehicle Type'] = pd.to_numeric(df['Vehicle Type'])
     return df
 
 

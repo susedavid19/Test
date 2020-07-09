@@ -7,7 +7,6 @@ from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse
 from braces.views import LoginRequiredMixin
 from celery.result import AsyncResult
-import time
 
 from expressways.calculation.models import CalculationResult
 from expressways.calculation.tasks import calculate
@@ -92,6 +91,9 @@ class CalculateView(LoginRequiredMixin, View):
         calc_ids = []
         for item in OccurrenceConfiguration.objects.filter(road=self.road_id):
             calc_ids.append(item.pk)            
+            if (item.frequency == 0):
+                continue
+
             items.append(self.create_calculation_object(item))
 
         try:
@@ -139,7 +141,9 @@ class CalculateView(LoginRequiredMixin, View):
 
             marked_freq_val = self.value_to_use(freq_list)
             marked_dur_val = self.value_to_use(dur_list)  
-            items.append(self.create_expressways_object(occ_config, marked_freq_val, marked_dur_val))      
+            if (occ_config.frequency == 0) or (occ_config.duration == 0.0 and marked_dur_val < 0):
+                continue
+            items.append(self.create_expressways_object(occ_config, marked_freq_val, marked_dur_val))  
 
         try:
             calculated = CalculationResult.objects.get(config_ids=calc_ids, component_ids=comp_ids)
@@ -159,6 +163,16 @@ class ResultView(LoginRequiredMixin, View):
             return JsonResponse({'msg': 'The Task Failed'}, status=500)
 
         result = get_object_or_404(CalculationResult, task_id=task_id)
+
+        # We need to ensure the worker frees the resources when receiving a result
+        # otherwise the resources (memory) will continue to increase.
+
+        # See documentation:
+
+        # Warning: Backends use resources to store and transmit results. To ensure that
+        # resources are released, you must eventually call get() or forget() on EVERY
+        # AsyncResult instance returned after calling a task.
+        res.forget()
         
         obj = {
             'objective_incident': '-',

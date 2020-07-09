@@ -1,17 +1,14 @@
 import json
-import os
-import pandas as pd
 from expressways.calculation.celery import app, ExpresswaysException
 from expressways.calculation.models import CalculationResult
 from expressways.calculation.import_model import *
 from expressways.calculation.metrics import *
 
-
 BOTH_LANES_OPEN = 'II'
+
 
 @app.task(bind=True)
 def calculate(self, config_ids, items, component_ids= None):
-    df = pd.DataFrame()
     experr = ExpresswaysException(self)
     header = load_header_data(r'expressways/calculation/models', 'csv')
     freqs_list = []
@@ -28,6 +25,7 @@ def calculate(self, config_ids, items, component_ids= None):
         durations = []
 
         for item in items:
+
             freqs_list.append(item['frequency'])
             durations.append(item['duration'])
             dur_change.append(item['duration_change'])
@@ -56,30 +54,34 @@ def calculate(self, config_ids, items, component_ids= None):
         experr.log('Invalid ie all zero frequency configurations found on this road.')
 
     freqs_list = norm_freqs(freqs_list)
+    df_list = []
     for i, item in enumerate(items):
         params_list = [str(item['flow']).upper(), f'V{item["speed"]}', item['lane_closures']]
         if item['lane_closures'] != BOTH_LANES_OPEN:
             # Add duration to factor in if any lane is impacted with closure
             params_list.append(str(item['duration']).replace('.', '_'))
 
-        df = load_csv_model_freq(
-                df, 
+        df_list.append(load_csv_model_freq(
                 os.path.join(r'expressways/calculation/models',
                     query_data(
                         header,
                         params_list
                     )),
                 str(item['flow']), freqs_list[i]
-            )
-
-    # raise exception if configuration outside specified analysis time range
-    if get_data_on_time_range(df).empty:
-        experr.log('No valid analysis found within time range for configuration on this road.')
+            ))
+    df = pd.concat(df_list, ignore_index=True)
 
     objective_incident = incidents_cleared(lte_an_hour_list, items)
+    objective_speed = average_speed(df)
+
+    df = get_data_on_time_range(df)
+    # raise exception if configuration outside specified analysis time range
+    if df.empty:
+        experr.log('No valid analysis found within time range for configuration on this road.')
+
     objective_pti = pti(df)
     objective_journey = acceptable_journeys(df)
-    objective_speed = average_speed(df)
+
     result = CalculationResult()
     result.task_id = self.request.id
     result.items = json.dumps(items)
