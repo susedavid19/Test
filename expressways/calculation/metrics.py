@@ -43,11 +43,22 @@ def get_data_on_time_range(df):
     valid_df = df.loc[(df['Departure Time (HH:MM:SS)'] > time_start) & (df['Departure Time (HH:MM:SS)'] < time_end)]
     return valid_df
 
-def incidents_cleared(less_than_equal_hour_list, event_dur_list):
+def incidents_cleared(incident_list):
     """
-    Number of incidents that are last less than an hour and divide them by the number of all incidents
+    Sum of filtered incidents' frequency that are last less than an hour and divide them by the sum of all filtered incidents' frequency.
+
+    Filtered means only those that has incidents cleared checked and excluding low flow
     """
-    return 100 * (len(less_than_equal_hour_list) / len(event_dur_list))
+    filtered_list = []
+    less_than_hour_list = []
+
+    for incident in incident_list:
+        if incident['flow'] != 'Low' and incident['incidents_cleared']:
+            filtered_list.append(incident['frequency'])
+            if incident['duration'] <= 60:
+                less_than_hour_list.append(incident['frequency'])
+
+    return 100 * (sum(less_than_hour_list) / sum(filtered_list))
     
 def pti(df):
     """
@@ -70,7 +81,7 @@ def acceptable_journeys(df):
     """
     free_flow = df['Time Taken (s)'].loc[df['Vehicle Type'] == 1].quantile(0.15)
     faster_ff = df['Time Taken (s)'].loc[df['Vehicle Type'] == 1][df['Time Taken (s)'] < (4 / 3) * free_flow].count()
-    return (100 * faster_ff / df['Time Taken (s)'].count())
+    return (100 * faster_ff / df['Time Taken (s)'].loc[df['Vehicle Type'] == 1].count())
 
 def average_speed(df):
     """

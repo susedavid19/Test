@@ -12,7 +12,6 @@ def calculate(self, config_ids, items, component_ids= None):
     experr = ExpresswaysException(self)
     header = load_header_data(r'expressways/calculation/models', 'csv')
     freqs_list = []
-    lte_an_hour_list = []
     zero_freq_list = []
 
     # raise exception if the road has no configuration item
@@ -25,15 +24,11 @@ def calculate(self, config_ids, items, component_ids= None):
         durations = []
 
         for item in items:
-
             freqs_list.append(item['frequency'])
             durations.append(item['duration'])
             dur_change.append(item['duration_change'])
             freq_change.append(item['frequency_change'])
 
-            if item['duration'] <= 60 and item['incidents_cleared']:
-                lte_an_hour_list.append(item)
-            
             if item['frequency'] == 0:
                 zero_freq_list.append(item)
 
@@ -43,9 +38,6 @@ def calculate(self, config_ids, items, component_ids= None):
         for item in items:
             freqs_list.append(item['frequency'])
 
-            if item['duration'] <= 60 and item['incidents_cleared']:
-                lte_an_hour_list.append(item)
-            
             if item['frequency'] == 0:
                 zero_freq_list.append(item)
 
@@ -71,7 +63,7 @@ def calculate(self, config_ids, items, component_ids= None):
             ))
     df = pd.concat(df_list, ignore_index=True)
 
-    objective_incident = incidents_cleared(lte_an_hour_list, items)
+    objective_incident = incidents_cleared(items)
     objective_speed = average_speed(df)
 
     df = get_data_on_time_range(df)
