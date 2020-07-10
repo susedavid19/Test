@@ -159,11 +159,14 @@ def duration_bin(freq_list, change_perc, durations):
     :param: list of all available durations
     :return: a list with the transformed frequencies of the models
     """
-
     # Calculate the ratio between the durations starting from the last (largest) to the first (smallest)
     times_rel = [0] * len(durations)
     times_rel[len(durations) - 1] = 1
     for i in range(len(durations) - 1, 0, -1):
+        if durations[i - 1] == 0:
+            # this needs further work in next phase, but for now we set it to 1 (EOT-144)
+            times_rel[i - 1] = 1
+            continue
         times_rel[i - 1] = durations[i] / durations[i - 1]
 
     # Split the change percentages in two lists based on their sign
