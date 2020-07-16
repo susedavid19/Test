@@ -58,7 +58,10 @@ def incidents_cleared(incident_list):
             if incident['duration'] <= 60:
                 less_than_hour_list.append(incident['frequency'])
 
-    return 100 * (sum(less_than_hour_list) / sum(filtered_list))
+    if (len(filtered_list) > 0):
+        return 100 * (sum(less_than_hour_list) / sum(filtered_list))
+    else:
+        return 0
     
 def pti(df):
     """
