@@ -7,13 +7,10 @@ services:
       dockerfile: Dockerfile
     expose:
       - 8000
-    command: bash -c /data/docker-entrypoint.sh
-    environment:
-      DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
-      GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --workers=3 --timeout 120"
-      ALLOWED_HOST: '${ELB_IP_ADDRESS}'
-      DEBUG:
-      MINIMUM_PASSWORD_LENGTH: 9
+    working_dir: /data
+    command: 'gunicorn config.wsgi:application'
+    env_file:
+        - '.env'
     depends_on:
       - queue
     volumes:
@@ -40,10 +37,8 @@ services:
   worker:
     build: .
     command: bash -c /data/docker-worker-entrypoint.sh
-    environment:
-      DJANGO_SETTINGS_MODULE: "config.settings"
-      DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
-      DEBUG:
+    env_file:
+      - '.env'
     restart: unless-stopped
     depends_on:
       - queue

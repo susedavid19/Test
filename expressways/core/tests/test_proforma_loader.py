@@ -14,7 +14,7 @@ class TestProformaLoader(TestCase):
         blank lane closure and speed value.
         '''
         file_path = os.path.dirname(os.path.abspath(__file__))
-        self.test_file = os.path.join(file_path, 'data/Test_Proforma.xlsx')
+        self.test_file = os.path.join(file_path, 'data/Test_Proforma.xls')
         self.test_sheet = 'Test Sheet'
         self.invalid_sheet = 'Invalid Sheet'
         self.io = StringIO()

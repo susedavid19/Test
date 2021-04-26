@@ -8,8 +8,8 @@ services:
       - type: bind
         source: .
         target: /data
-    environment:
-      GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8000 --reload --workers=3 --timeout 120"
+    env_file:
+      - '.env'
     depends_on:
       - database
   proxy:
@@ -28,9 +28,8 @@ services:
   flower:
     build: . 
     command: bash -c /data/docker-flower-entrypoint.sh
-    environment:
-      DJANGO_SETTINGS_MODULE: "config.settings"
-      DATABASE_URL: ${DATABASE_URL:-postgres://express:express@database:5432/express}
+    env_file:
+      - '.env'
     ports:
       - 5555:5555
     depends_on:

@@ -7,10 +7,9 @@ This is the repository for the Expressways OMS Tool.
 ```
 git clone git@bitbucket.org:wspdigitaluk/expressways.git
 cd expressways
-docker-compose -f docker-compose.yml -f docker-compose-local.yml up -d
-docker-compose exec application bash -c /data/docker-entrypoint.sh
+./scripts/launch_local_server.sh
 ```
-You should see the site appear at `localhost:7080`.
+Above script will prepare the local dev environment by running database migration, setting up static files, creating superuser and loading some initial data for the application. You should then see the site appear at `localhost:7080`.
 
 #### Preparing Environment
 All database will be migrated and all static files will be collected during container build. 
