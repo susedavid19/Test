@@ -5,12 +5,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    expose:
-      - 8000
+    ports:
+      - 8000:8000
     working_dir: /data
     command: 'gunicorn config.wsgi:application'
     env_file:
-        - '.env'
+      - '.env'
     depends_on:
       - queue
     volumes:

@@ -33,6 +33,7 @@ DEBUG = env('DEBUG', default=False)
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    '51.132.61.1',
 ]
 
 ALLOWED_HOST = env('ALLOWED_HOST', default=None)
