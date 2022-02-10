@@ -42,3 +42,4 @@ by django when creating a project and should only be overriden if really needed.
 `CELERY_BACKEND_URL` = the full url of the queue container.  Defaults to 'redis://queue:6379/0'
 
 `CELERY_BROKER_URL` = the full url of the queue container.  Defaults to 'redis://queue:6379/0'
+# oms
